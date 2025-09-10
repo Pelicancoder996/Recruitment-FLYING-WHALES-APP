@@ -320,8 +320,8 @@
       "Responsable Commercial": { p25:55000, p50:60000, p75:75000 },
       "Directeur Commercial": { p25:75000, p50:85000, p75:110000 }
     };
-       // ===============================
-    // Bloc 7 : Logique principale corrigée
+    // ===============================
+    // Bloc 7 : Logique principale corrigée finale
     // ===============================
 
     const subdomainCoef = {
@@ -358,13 +358,17 @@
 
       // Liste fonctions transverses
       fonctionSel.innerHTML="";
-      fonctionSel.add(new Option("-- Pas de fonction transverse --","")); // ✅ nouvelle option par défaut
+      fonctionSel.add(new Option("-- Pas de fonction transverse --","")); // ✅ neutre
       const allFunctions = {
         ...functionsAchats, ...functionsImmo, ...functionsRH, ...functionsFinance, ...functionsCommerciaux
       };
       Object.keys(allFunctions).forEach(k=>fonctionSel.add(new Option(k,k)));
 
+      // Liste sous-domaines ingénierie
+      subSel.innerHTML="";
+      subSel.add(new Option("-- Pas de sous-domaine --","")); // ✅ neutre
       Object.keys(subdomainCoef).forEach(k=>subSel.add(new Option(k,k)));
+
       roles.forEach(r=>roleSel.add(new Option(r,r)));
 
       document.querySelectorAll("#school, #fonction, #subdomain, #role, #classification, #region, #companySize, #source")
@@ -419,7 +423,7 @@
       // === Cas 3 : Hybride (école + fonction transverse volontairement sélectionnés) ===
       if(origin!=="fonction"){
         const fn=document.getElementById("fonction").value;
-        if(fn){ // uniquement si utilisateur a choisi une fonction transverse
+        if(fn){ // uniquement si utilisateur choisit une fonction transverse
           const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux};
           const f=allFunctions[fn];
           if(f){
@@ -440,33 +444,36 @@
 
       // Coeffs
       const sd=subdomainCoef[document.getElementById("subdomain").value]||1;
-      const regionCoef=document.getElementById("region").value==="hors"?0.86:1.0;
+      const regionCoef=document.getElementById("region").value==="hors"?0.86:1.14; // ✅ corrigé
       const sizeCoef={startup:0.9,PME:1.0,ETI:1.05,"grand-groupe":1.15}[document.getElementById("companySize").value]||1;
       let coef=sd*regionCoef*sizeCoef;
 
       // Rôle / classification
       const classification=document.getElementById("classification").value;
       let roleCoef=1;
-      if (classification==="M1") roleCoef=1.08;
-      if (classification==="M2") roleCoef=1.10;
-      if (classification==="M3") roleCoef=1.12;
-      if (classification==="RDept") roleCoef=1.15;
+      if (classification==="M1") roleCoef=1.10;
+      if (classification==="M2") roleCoef=1.15;
+      if (classification==="M3") roleCoef=1.20;
+      if (classification==="RDept") roleCoef=1.25;
       if (classification==="RLot") roleCoef=1.07;
 
-      // Source
+      // Source (appliquer région + taille dans tous les cas)
       const source=document.getElementById("source").value;
       let median,low,high;
       if(source==="marche"){
-        median=p50*coef; low=p25*coef; high=p75*coef;
+        median=p50; low=p25; high=p75;
       }else if(source==="fw"){
         median=p50*0.95; low=p25*0.95; high=p75*0.95;
       }else{
-        median=(p50*coef*0.4 + p50*0.95*0.6);
-        low=(p25*coef*0.4 + p25*0.95*0.6);
-        high=(p75*coef*0.4 + p75*0.95*0.6);
+        median=(p50*0.4 + p50*0.95*0.6);
+        low=(p25*0.4 + p25*0.95*0.6);
+        high=(p75*0.4 + p75*0.95*0.6);
       }
 
-      median*=roleCoef; low*=roleCoef; high*=roleCoef;
+      // appliquer region + taille entreprise + rôle
+      median*=coef*roleCoef;
+      low*=coef*roleCoef;
+      high*=coef*roleCoef;
 
       // Affichage
       document.getElementById("median").innerText=Math.round(median)+"€";
@@ -485,7 +492,10 @@
       });
     }
 
-    // Dark/Light corrigé
+    // Dark/Light corrigé dynamique
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
     function toggleDarkMode() {
       const html=document.documentElement;
       if (html.classList.contains('dark')) {
@@ -496,6 +506,7 @@
         localStorage.setItem('theme','dark');
       }
     }
+
     function openModal(){document.getElementById("helpModal").style.display="flex";}
     function closeModal(){document.getElementById("helpModal").style.display="none";}
 
