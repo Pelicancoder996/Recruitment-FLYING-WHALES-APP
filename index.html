@@ -320,8 +320,8 @@
       "Responsable Commercial": { p25:55000, p50:60000, p75:75000 },
       "Directeur Commercial": { p25:75000, p50:85000, p75:110000 }
     };
-    // ===============================
-    // Bloc 7 : Logique principale
+       // ===============================
+    // Bloc 7 : Logique principale corrigée
     // ===============================
 
     const subdomainCoef = {
@@ -329,7 +329,8 @@
       "Matériaux":1.06,"Propulsion":1.12,"Méthodes":0.95,"Production":1.0,
       "Maintenance":0.92,"Qualité":0.93,"Supply Chain":0.94,"Gestion de Projet":1.05,
       "Ingénierie Systèmes":1.08,"Gestion de Programme":1.12,"Support Client":0.96,
-      "Thermique":1.09,"Dynamique de Vol":1.11
+      "Thermique":1.09,"Dynamique de Vol":1.11,
+      "Électrique":1.10,"Test":0.97,"Structure":1.05
     };
 
     const roles = [
@@ -357,6 +358,7 @@
 
       // Liste fonctions transverses
       fonctionSel.innerHTML="";
+      fonctionSel.add(new Option("-- Pas de fonction transverse --","")); // ✅ nouvelle option par défaut
       const allFunctions = {
         ...functionsAchats, ...functionsImmo, ...functionsRH, ...functionsFinance, ...functionsCommerciaux
       };
@@ -381,42 +383,49 @@
       const exp=parseInt(document.getElementById("experience").value);
       let p25=0,p50=0,p75=0;
 
-      // Base école
-      if(origin==="ingenieur"){
+      // === Cas 1 : École seule ===
+      if(origin!=="fonction"){
         const sch=document.getElementById("school").value;
-        if(sch){ const school=schoolsIngenieur[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
-      }
-      if(origin==="commerce"){
-        const sch=document.getElementById("school").value;
-        if(sch){ const school=schoolsCommerce[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
-      }
-      if(origin==="scpo"){
-        const sch=document.getElementById("school").value;
-        if(sch){ const school=schoolsScPo[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
-      }
-      if(origin==="universite"){
-        const sch=document.getElementById("school").value;
-        if(sch){ const school=schoolsUniversite[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
+        if(sch){
+          if(origin==="ingenieur"){ const school=schoolsIngenieur[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
+          if(origin==="commerce"){ const school=schoolsCommerce[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
+          if(origin==="scpo"){ const school=schoolsScPo[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
+          if(origin==="universite"){ const school=schoolsUniversite[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
+        }
       }
 
-      // Fonction transverse
-      const fn=document.getElementById("fonction").value;
-      if(fn){
-        const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux};
-        const f=allFunctions[fn];
-        if(f){
-          // Combinaison école + fonction (moyenne pondérée)
-          if(p25>0){ p25=(p25+f.p25)/2; p50=(p50+f.p50)/2; p75=(p75+f.p75)/2; }
-          else { p25=f.p25; p50=f.p50; p75=f.p75; }
+      // === Cas 2 : Fonction transverse seule ===
+      if(origin==="fonction"){
+        const fn=document.getElementById("fonction").value;
+        if(fn){
+          const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux};
+          const f=allFunctions[fn];
+          if(f){
+            p25=f.p25; p50=f.p50; p75=f.p75;
 
-          // Cas spécial FW calibration
-          if(f.fwBase){
-            const baseExp=f.fwBase.exp;
-            const baseSalary=f.fwBase.salaire;
-            const factor=Math.pow(1.023,exp-baseExp);
-            p25=baseSalary*0.9*factor;
-            p50=baseSalary*factor;
-            p75=baseSalary*1.1*factor;
+            // Cas spécial FW calibration
+            if(f.fwBase){
+              const baseExp=f.fwBase.exp;
+              const baseSalary=f.fwBase.salaire;
+              const factor=Math.pow(1.023,exp-baseExp);
+              p25=baseSalary*0.9*factor;
+              p50=baseSalary*factor;
+              p75=baseSalary*1.1*factor;
+            }
+          }
+        }
+      }
+
+      // === Cas 3 : Hybride (école + fonction transverse volontairement sélectionnés) ===
+      if(origin!=="fonction"){
+        const fn=document.getElementById("fonction").value;
+        if(fn){ // uniquement si utilisateur a choisi une fonction transverse
+          const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux};
+          const f=allFunctions[fn];
+          if(f){
+            p25 = 0.6*p25 + 0.4*f.p25;
+            p50 = 0.6*p50 + 0.4*f.p50;
+            p75 = 0.6*p75 + 0.4*f.p75;
           }
         }
       }
