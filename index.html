@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="fr" class="light">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulateur Salaire - Flying Whales</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Simulateur Salaire - Flying Whales</title>
+
+<!-- ✅ Tailwind avec dark mode activé -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <script>
@@ -26,7 +35,7 @@
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
-  <header class="w-full py-6 bg-[#00AEEF] text-white flex justify-between px-8 items-center">
+  <header class="w-full py-6 bg-[#00AEEF] text-white dark:bg-[#003366] flex justify-between px-8 items-center transition-colors duration-300">
     <h1 class="text-2xl font-bold">✈️ Simulateur Salaire - Flying Whales</h1>
     <div class="flex gap-2">
       <button onclick="toggleDarkMode()" class="px-3 py-1 bg-white text-[#003366] rounded-lg">🌙/☀️</button>
@@ -37,7 +46,8 @@
   <!-- Modal d'aide -->
   <div id="helpModal" class="modal flex">
     <div class="modal-content">
-      <h2 class="text-xl font-bold mb-4">ℹ️ Aide & FAQ</h2>
+      <h2 class="text-xl font-bold text-[#003366] dark:text-[#00AEEF] mb-4 transition-colors duration-300">
+ℹ️ Aide & FAQ</h2>
       <p><b>🌍 Marché :</b> données nationales (écoles, universités, fonctions, +2,3%/an, coefficients).</p>
       <p><b>🏢 Flying Whales :</b> packages internes FW.</p>
       <p><b>⚖️ Croisée :</b> combinaison 60% FW, 40% marché.</p>
@@ -48,7 +58,7 @@
 
   <!-- Formulaire -->
   <main class="max-w-5xl mx-auto p-6">
-    <section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-6">
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-6 transition-colors duration-300">
       <h2 class="text-xl font-bold text-[#003366] dark:text-[#00AEEF] mb-4">📝 Renseigne ton profil</h2>
       
       <label>📚 Origine académique</label>
@@ -320,9 +330,9 @@
       "Responsable Commercial": { p25:55000, p50:60000, p75:75000 },
       "Directeur Commercial": { p25:75000, p50:85000, p75:110000 }
     };
-    // ===============================
-    // Bloc 7 : Logique principale corrigée finale
-    // ===============================
+    <!-- =============================== -->
+    <!-- Bloc 7 : Logique principale corrigée avec alertes debug -->
+    <!-- =============================== -->
 
     const subdomainCoef = {
       "Calculs & Simulation":1.10,"Conception":1.05,"Électronique":1.08,"Avionique":1.07,
@@ -420,10 +430,10 @@
         }
       }
 
-      // === Cas 3 : Hybride (école + fonction transverse volontairement sélectionnés) ===
+      // === Cas 3 : Hybride (école + fonction transverse sélectionnés) ===
       if(origin!=="fonction"){
         const fn=document.getElementById("fonction").value;
-        if(fn){ // uniquement si utilisateur choisit une fonction transverse
+        if(fn){ 
           const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux};
           const f=allFunctions[fn];
           if(f){
@@ -444,7 +454,7 @@
 
       // Coeffs
       const sd=subdomainCoef[document.getElementById("subdomain").value]||1;
-      const regionCoef=document.getElementById("region").value==="hors"?0.86:1.14; // ✅ corrigé
+      const regionCoef=document.getElementById("region").value==="hors"?0.86:1.14; 
       const sizeCoef={startup:0.9,PME:1.0,ETI:1.05,"grand-groupe":1.15}[document.getElementById("companySize").value]||1;
       let coef=sd*regionCoef*sizeCoef;
 
@@ -457,7 +467,7 @@
       if (classification==="RDept") roleCoef=1.25;
       if (classification==="RLot") roleCoef=1.07;
 
-      // Source (appliquer région + taille dans tous les cas)
+      // Source (appliquer region + taille dans tous les cas)
       const source=document.getElementById("source").value;
       let median,low,high;
       if(source==="marche"){
@@ -492,18 +502,20 @@
       });
     }
 
-    // Dark/Light corrigé dynamique
+    // 🌙/☀️ Dark/Light toggle avec alertes debug
     if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark');
     }
     function toggleDarkMode() {
-      const html=document.documentElement;
+      const html = document.documentElement;
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
         localStorage.setItem('theme','light');
+        alert("☀️ Mode clair activé");
       } else {
         html.classList.add('dark');
         localStorage.setItem('theme','dark');
+        alert("🌙 Mode sombre activé");
       }
     }
 
