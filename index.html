@@ -347,23 +347,22 @@ const subdomainCoef = {
   "Calculs & Simulation": 1.10,
   "Conception": 1.05,
   "Électronique": 1.08,
-  "Avionique": 1.07,
-  "Matériaux": 1.06,
-  "Propulsion": 1.12,
-  "Méthodes": 1.02,         // revu à la hausse
-  "Production": 1.00,
-  "Maintenance": 1.00,      // relevé à 1.0
-  "Qualité": 1.05,          // revu à la hausse
-  "Supply Chain": 1.03,     // revu à la hausse
+  "Avionique": 1.08,
+  "Matériaux": 1.05,
+  "Propulsion": 1.08,
+  "Méthodes": 1.03,         // revu à la hausse
+  "Production": 1.01,
+  "Maintenance": 1.04,      // relevé à 1.0
+  "Qualité": 1.06,          // revu à la hausse
+  "Supply Chain": 1.06,     // revu à la hausse
   "Gestion de Projet": 1.05,
   "Ingénierie Systèmes": 1.08,
-  "Gestion de Programme": 1.12,
-  "Support Client": 1.00,   // relevé à 1.0
+  "Gestion de Programme": 1.08,
+  "Support Client": 1.02,   // relevé à 1.0
   "Thermique": 1.09,
-  "Dynamique de Vol": 1.11,
-  "Électrique": 1.10,
-  "Structure": 1.05,
-  "Test": 1.00
+  "Dynamique de Vol": 1.12,
+  "Électrique": 1.12,
+  "Test": 1.05
 };
 
 const roles = [
@@ -464,9 +463,9 @@ function calculateSalary() {
       const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux};
       const f=allFunctions[fn];
       if(f){
-        p25 = 0.6*p25 + 0.4*f.p25;
-        p50 = 0.6*p50 + 0.4*f.p50;
-        p75 = 0.6*p75 + 0.4*f.p75;
+        p25 = 0.5*p25 + 0.5*f.p25;
+        p50 = 0.5*p50 + 0.5*f.p50;
+        p75 = 0.5*p75 + 0.5*f.p75;
       }
     }
   }
@@ -490,7 +489,7 @@ function calculateSalary() {
   if (classification==="M1") roleCoef=1.10;
   if (classification==="M2") roleCoef=1.15;
   if (classification==="M3") roleCoef=1.20; // Leader département
-  if (classification==="RLot") roleCoef=1.07;
+  if (classification==="RLot") roleCoef=1.075;
   if (classification==="DirecteurTechnique") roleCoef=1.25;
 
   // Source (appliquer region + taille dans tous les cas)
