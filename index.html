@@ -340,7 +340,7 @@ const schoolsIngenieur = [
       "Directeur Commercial": { p25:75000, p50:85000, p75:110000 }
     };
 <!-- =============================== -->
-<!-- Bloc 7 : Logique principale corrigée -->
+<!-- Bloc 7 : Logique principale corrigée finale -->
 <!-- =============================== -->
 
 const subdomainCoef = {
@@ -423,15 +423,16 @@ function calculateSalary() {
   const origin=document.getElementById("origin").value;
   const exp=parseInt(document.getElementById("experience").value);
   let p25=0,p50=0,p75=0;
+  let refP25=0,refP50=0,refP75=0; // ✅ sortie école brute
 
   // === Cas 1 : École seule ===
   if(origin!=="fonction"){
     const sch=document.getElementById("school").value;
     if(sch){
-      if(origin==="ingenieur"){ const school=schoolsIngenieur[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
-      if(origin==="commerce"){ const school=schoolsCommerce[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
-      if(origin==="scpo"){ const school=schoolsScPo[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
-      if(origin==="universite"){ const school=schoolsUniversite[sch]; p25=school.p25; p50=school.p50; p75=school.p75; }
+      if(origin==="ingenieur"){ const school=schoolsIngenieur[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+      if(origin==="commerce"){ const school=schoolsCommerce[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+      if(origin==="scpo"){ const school=schoolsScPo[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+      if(origin==="universite"){ const school=schoolsUniversite[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
     }
   }
 
@@ -469,8 +470,14 @@ function calculateSalary() {
     }
   }
 
-  document.getElementById("schoolRange").innerText=Math.round(p25)+"€ – "+Math.round(p75)+"€";
-  document.getElementById("schoolMedian").innerText=Math.round(p50)+"€";
+  // ✅ Affichage référence sortie école brute
+  if(refP50>0){
+    document.getElementById("schoolRange").innerText=Math.round(refP25)+"€ – "+Math.round(refP75)+"€";
+    document.getElementById("schoolMedian").innerText=Math.round(refP50)+"€";
+  } else {
+    document.getElementById("schoolRange").innerText="N/A";
+    document.getElementById("schoolMedian").innerText="N/A";
+  }
 
   // Expérience (+2,3%/an)
   let factor=Math.pow(1.023,exp);
@@ -491,7 +498,7 @@ function calculateSalary() {
   if (classification==="RLot") roleCoef=1.07;
   if (classification==="DirecteurTechnique") roleCoef=1.25;
 
-  // Source (appliquer region + taille dans tous les cas)
+  // Source
   const source=document.getElementById("source").value;
   let median,low,high;
   if(source==="marche"){
@@ -509,7 +516,7 @@ function calculateSalary() {
   low*=coef*roleCoef;
   high*=coef*roleCoef;
 
-  // Planchers FW I1–I4 (avec région + taille appliqués)
+  // Planchers FW I1–I4
   let fwP25=null, fwP50=null, fwP75=null;
   if (classification==="I1") {
     fwP25 = interpolateFW(exp,1,3,38000,44000);
@@ -543,10 +550,12 @@ function calculateSalary() {
     high=Math.max(high,fwP75);
   }
 
+  // ✅ Affichage estimation personnalisée
   document.getElementById("median").innerText=Math.round(median)+"€";
   document.getElementById("range").innerText=Math.round(low)+"€ – "+Math.round(high)+"€";
   document.getElementById("result").classList.remove("hidden");
 
+  // Graphique
   const ctx=document.getElementById("salaryChart").getContext("2d");
   if(chart) chart.destroy();
   const years=[...Array(41).keys()];
