@@ -339,7 +339,7 @@ const schoolsIngenieur = [
       "Responsable Commercial": { p25:55000, p50:60000, p75:75000 },
       "Directeur Commercial": { p25:75000, p50:85000, p75:110000 }
     };
-   <!-- =============================== -->
+<!-- =============================== -->
 <!-- Bloc 7 : Logique principale corrigée -->
 <!-- =============================== -->
 
@@ -350,18 +350,18 @@ const subdomainCoef = {
   "Avionique": 1.08,
   "Matériaux": 1.05,
   "Propulsion": 1.08,
-  "Méthodes": 1.03,         // revu à la hausse
-  "Production": 1.01,
-  "Maintenance": 1.04,      // relevé à 1.0
-  "Qualité": 1.06,          // revu à la hausse
-  "Supply Chain": 1.06,     // revu à la hausse
+  "Méthodes": 1.02,         
+  "Production": 1.02,
+  "Maintenance": 1.05,      
+  "Qualité": 1.06,          
+  "Supply Chain": 1.06,     
   "Gestion de Projet": 1.05,
   "Ingénierie Systèmes": 1.08,
   "Gestion de Programme": 1.08,
-  "Support Client": 1.02,   // relevé à 1.0
+  "Support Client": 1.02,   
   "Thermique": 1.09,
-  "Dynamique de Vol": 1.12,
-  "Électrique": 1.12,
+  "Dynamique de Vol": 1.11,
+  "Électrique": 1.11,
   "Test": 1.05
 };
 
@@ -412,7 +412,6 @@ function populateMenus() {
 
 let chart;
 
-// 🔹 interpolation FW
 function interpolateFW(exp, minExp, maxExp, minVal, maxVal) {
   if (exp <= minExp) return minVal;
   if (exp >= maxExp) return maxVal;
@@ -463,9 +462,9 @@ function calculateSalary() {
       const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux};
       const f=allFunctions[fn];
       if(f){
-        p25 = 0.5*p25 + 0.5*f.p25;
-        p50 = 0.5*p50 + 0.5*f.p50;
-        p75 = 0.5*p75 + 0.5*f.p75;
+        p25 = 0.6*p25 + 0.4*f.p25;
+        p50 = 0.6*p50 + 0.4*f.p50;
+        p75 = 0.6*p75 + 0.4*f.p75;
       }
     }
   }
@@ -489,7 +488,7 @@ function calculateSalary() {
   if (classification==="M1") roleCoef=1.10;
   if (classification==="M2") roleCoef=1.15;
   if (classification==="M3") roleCoef=1.20; // Leader département
-  if (classification==="RLot") roleCoef=1.075;
+  if (classification==="RLot") roleCoef=1.07;
   if (classification==="DirecteurTechnique") roleCoef=1.25;
 
   // Source (appliquer region + taille dans tous les cas)
@@ -510,7 +509,7 @@ function calculateSalary() {
   low*=coef*roleCoef;
   high*=coef*roleCoef;
 
-  // Planchers FW I1–I4
+  // Planchers FW I1–I4 (avec région + taille appliqués)
   let fwP25=null, fwP50=null, fwP75=null;
   if (classification==="I1") {
     fwP25 = interpolateFW(exp,1,3,38000,44000);
@@ -534,7 +533,11 @@ function calculateSalary() {
     fwP50 = base*factorI4;
     fwP75 = base*1.10*factorI4;
   }
+
   if(fwP25&&fwP50&&fwP75){
+    fwP25 *= regionCoef*sizeCoef;
+    fwP50 *= regionCoef*sizeCoef;
+    fwP75 *= regionCoef*sizeCoef;
     low=Math.max(low,fwP25);
     median=Math.max(median,fwP50);
     high=Math.max(high,fwP75);
@@ -555,7 +558,7 @@ function calculateSalary() {
   });
 }
 
-// 🌙/☀️ Dark/Light toggle avec alertes debug
+// 🌙/☀️ Dark/Light toggle
 if (localStorage.getItem('theme') === 'dark') {
   document.documentElement.classList.add('dark');
 }
