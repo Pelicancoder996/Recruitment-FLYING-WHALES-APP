@@ -820,36 +820,35 @@ async function exportPDF() {
     const doc = new jsPDF("p", "mm", "a4");
 
     // =============================
-    // 🎨 En-tête
+    // 🎨 HEADER
     // =============================
-    doc.setFillColor(0, 51, 102); // bleu foncé
-    doc.rect(0, 0, 210, 40, "F");
+    doc.setFillColor(0, 51, 102);
+    doc.rect(0, 0, 210, 30, "F");
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(20);
+    doc.setFontSize(18);
     doc.setTextColor(255, 255, 255);
-    doc.text("Rapport Salaire", 20, 25);
+    doc.text("Rapport Salaire – Flying Whales", 15, 20);
 
-    // =============================
-    // ✅ Récupération infos
-    // =============================
+    // Infos principales
     const schoolSelect = document.getElementById("school");
     const school = schoolSelect.options[schoolSelect.selectedIndex]?.text || "N/A";
 
     const jobSelect = document.getElementById("fonction");
     const job = jobSelect.options[jobSelect.selectedIndex]?.text || "N/A";
 
+    const classificationSelect = document.getElementById("classification");
+    const classification = classificationSelect.options[classificationSelect.selectedIndex]?.text || "Classique";
+
     const experience = document.getElementById("experience").value + " ans";
 
     const sourceVal = document.getElementById("source").value;
-    const sourceText = document.getElementById("source").options[
-      document.getElementById("source").selectedIndex
-    ]?.text || "N/A";
+    const sourceText = document.querySelector("#source option:checked")?.text || "N/A";
 
     const median = document.getElementById("median").innerText || "N/A";
     const range = document.getElementById("range").innerText || "N/A";
 
-    // On va chercher les valeurs brutes de l’école sélectionnée
+    // Valeurs école brutes
     let p25 = "N/A", p50 = "N/A", p75 = "N/A";
     if (schoolSelect.selectedIndex >= 0) {
       const dataset = [
@@ -858,110 +857,94 @@ async function exportPDF() {
       ];
       const data = dataset.find(e => e.Ecole === school);
       if (data) {
-        p25 = data.p25 || "N/A";
-        p50 = data.p50 || "N/A";
-        p75 = data.p75 || "N/A";
+        p25 = data.p25?.toLocaleString() + " €" || "N/A";
+        p50 = data.p50?.toLocaleString() + " €" || "N/A";
+        p75 = data.p75?.toLocaleString() + " €" || "N/A";
       }
     }
 
-    // =============================
-    // 📌 Carte de visite
-    // =============================
-    doc.setFillColor(255, 255, 255);
-    doc.roundedRect(130, 10, 70, 25, 3, 3, "F");
-
-    doc.setFont("helvetica", "bold");
+    // Sous-titre dans header
     doc.setFontSize(11);
-    doc.setTextColor(0, 51, 102);
-    doc.text(job, 135, 18);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(50, 50, 50);
-    doc.text("École : " + school, 135, 25);
-    doc.text("Expérience : " + experience, 135, 32);
-
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`${job} | ${school} | ${classification} | ${experience}`, 15, 27);
 
     // =============================
-    // ✅ Tableau stylé (P25 / Médian / P75)
+    // 📊 TABLEAU
     // =============================
-    let y = 55;
+    let y = 45;
     doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(13);
-    doc.text("Référence École :", 20, y);
+    doc.text("Référence École :", 15, y);
 
     y += 8;
-
-    // Ligne en-tête
-    doc.setFillColor(220, 230, 240);
-    doc.roundedRect(20, y, 170, 10, 3, 3, "F");
+    doc.setFillColor(230, 236, 245);
+    doc.rect(15, y, 180, 10, "F");
     doc.setFontSize(11);
-    doc.setTextColor(0);
-    doc.text("École", 25, y + 7);
-    doc.text("P25", 100, y + 7);
-    doc.text("Médian", 135, y + 7);
-    doc.text("P75", 170, y + 7);
+    doc.setTextColor(0, 0, 0);
+    doc.text("École", 20, y + 7);
+    doc.text("P25 (€)", 100, y + 7);
+    doc.text("Médian (€)", 135, y + 7);
+    doc.text("P75 (€)", 170, y + 7);
 
-    // Ligne valeurs
     y += 12;
-    doc.setFillColor(245, 245, 245);
-    doc.roundedRect(20, y, 170, 10, 2, 2, "F");
+    doc.setFillColor(250, 250, 250);
+    doc.rect(15, y, 180, 10, "F");
     doc.setFont("helvetica", "normal");
-    doc.text(school, 25, y + 7);
-    doc.text(p25.toString(), 100, y + 7);
-    doc.text(p50.toString(), 135, y + 7);
-    doc.text(p75.toString(), 170, y + 7);
+    doc.text(school, 20, y + 7);
+    doc.text(p25.toString(), 100, y + 7, {align:"right"});
+    doc.text(p50.toString(), 150, y + 7, {align:"right"});
+    doc.text(p75.toString(), 190, y + 7, {align:"right"});
 
     // =============================
-    // ✅ KPI
+    // 📌 KPI CARDS
     // =============================
     y += 25;
 
-    // Salaire médian
-    doc.setFillColor(46, 204, 113); // vert
-    doc.roundedRect(20, y, 80, 35, 4, 4, "F");
+    // Carte Médian
+    doc.setFillColor(46, 204, 113); // Vert
+    doc.roundedRect(15, y, 55, 25, 3, 3, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(255, 255, 255);
-    doc.text("Salaire Médian", 25, y + 12);
-    doc.setFontSize(16);
-    doc.text(median, 25, y + 25);
-
-    // Fourchette
-    doc.setFillColor(52, 152, 219); // bleu
-    doc.roundedRect(110, y, 80, 35, 4, 4, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(255, 255, 255);
-    doc.text("Fourchette", 115, y + 12);
-    doc.setFontSize(16);
-    doc.text(range, 115, y + 25);
-
-    // =============================
-    // ✅ Bloc Source
-    // =============================
-    y += 55;
-    doc.setFillColor(250, 250, 250);
-    doc.rect(15, y, 180, 20, "F");
-    doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Source utilisée : " + sourceText, 20, y + 12);
+    doc.setTextColor(255, 255, 255);
+    doc.text("Médian", 20, y + 10);
+    doc.setFontSize(14);
+    doc.text(median, 20, y + 20);
+
+    // Carte Fourchette
+    doc.setFillColor(52, 152, 219); // Bleu
+    doc.roundedRect(80, y, 65, 25, 3, 3, "F");
+    doc.setFontSize(11);
+    doc.text("Fourchette", 85, y + 10);
+    doc.setFontSize(14);
+    doc.text(range, 85, y + 20);
+
+    // Carte Source
+    doc.setFillColor(120, 120, 120); // Gris
+    doc.roundedRect(155, y, 40, 25, 3, 3, "F");
+    doc.setFontSize(10);
+    doc.text("Source", 160, y + 10);
+    doc.setFontSize(11);
+    doc.text(sourceText, 160, y + 20);
 
     // =============================
-    // ✅ Graphique
+    // 📈 GRAPH
     // =============================
-    y += 35;
-    const canvas = document.getElementById("salaryChart");
-    if (canvas) {
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      doc.addImage(imgData, "PNG", 15, y, 180, 90);
+    y += 40;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(0,0,0);
+    doc.text("Projection salariale (40 ans)", 15, y);
+
+    const chartCanvas = document.getElementById("salaryChart");
+    if (chartCanvas) {
+      const imgData = chartCanvas.toDataURL("image/png", 1.0);
+      doc.addImage(imgData, "PNG", 15, y+5, 180, 80);
       y += 100;
     }
 
     // =============================
-    // ✅ Pied de page
+    // 📌 FOOTER
     // =============================
     doc.setFontSize(9);
     doc.setFont("helvetica", "italic");
@@ -978,7 +961,7 @@ async function exportPDF() {
     doc.text("Exporté le " + dateStr, 170, 280);
 
     // =============================
-    // ✅ Téléchargement
+    // 💾 Téléchargement
     // =============================
     doc.save("simulateur_salaire.pdf");
     console.log("✅ PDF généré et téléchargé");
