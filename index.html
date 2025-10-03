@@ -811,77 +811,103 @@
   </script>
 
 
- <script>
-  async function exportPDF() {
-    console.log("👉 Export PDF lancé");
+<script>
+async function exportPDF() {
+  console.log("👉 Export PDF lancé");
 
-    try {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
 
-    
+    // =============================
+    // ✅ Récupération des infos
+    // =============================
+    const school = document.getElementById("school").options[
+      document.getElementById("school").selectedIndex
+    ]?.text || "N/A";
 
-      // ✅ Récupération des infos
-      const school = document.getElementById("school").options[document.getElementById("school").selectedIndex]?.text || "N/A";
-      const experience = document.getElementById("experience").value + " ans";
-      const sourceVal = document.getElementById("source").value;
-      const sourceText = document.getElementById("source").options[document.getElementById("source").selectedIndex]?.text || "N/A";
-      const median = document.getElementById("median").innerText || "N/A";
-      const range = document.getElementById("range").innerText || "N/A";
+    const job = document.getElementById("fonction").options[
+      document.getElementById("fonction").selectedIndex
+    ]?.text || "N/A";
 
-      // ✅ Titre
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("📑 Rapport Salaire - Flying Whales", 60, 20);
+    const experience = document.getElementById("experience").value + " ans";
 
-      // ✅ Texte
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "normal");
-      doc.text("École : " + school, 20, 50);
-      doc.text("Expérience : " + experience, 20, 60);
-      doc.text("Source : " + sourceText, 20, 70);
-      doc.text("Salaire médian : " + median, 20, 80);
-      doc.text("Fourchette : " + range, 20, 90);
+    const sourceVal = document.getElementById("source").value;
+    const sourceText = document.getElementById("source").options[
+      document.getElementById("source").selectedIndex
+    ]?.text || "N/A";
 
-      // ✅ Graphique
-      const canvas = document.getElementById("salaryChart");
-      if (canvas) {
-        const imgData = canvas.toDataURL("image/png", 1.0);
-        doc.addImage(imgData, "PNG", 15, 110, 180, 90);
-      }
+    const median = document.getElementById("median").innerText || "N/A";
+    const range = document.getElementById("range").innerText || "N/A";
 
-      // ✅ Disclaimer
-      let disclaimer = "⚠️ Estimation indicative basée sur le simulateur Flying Whales.";
-      if (sourceVal === "marche") disclaimer = "🌍 Estimation basée sur les données marché (sources externes nationales).";
-      else if (sourceVal === "fw") disclaimer = "🏢 Estimation basée sur les packages internes Flying Whales.";
-      else if (sourceVal === "croisee") disclaimer = "⚖️ Estimation issue d’une combinaison marché (40%) et FW (60%).";
+    // =============================
+    // ✅ Titre
+    // =============================
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("Rapport Salaire - Flying Whales", 105, 20, { align: "center" });
 
-      doc.setFontSize(10);
-      doc.setTextColor(100);
-      doc.text(disclaimer, 20, 210);
+    // =============================
+    // ✅ Informations
+    // =============================
+    let y = 50;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
 
-      // ✅ Date
-      const today = new Date();
-      const dateStr = today.toLocaleDateString("fr-FR");
-      doc.text("📅 Exporté le " + dateStr, 20, 220);
+    doc.text("École : " + school, 20, y); y += 10;
+    doc.text("Poste : " + job, 20, y); y += 10;
+    doc.text("Expérience : " + experience, 20, y); y += 10;
+    doc.text("Source : " + sourceText, 20, y); y += 15;
 
-      // ✅ Téléchargement direct
-      doc.save("simulateur_salaire.pdf");
-      console.log("✅ PDF généré et téléchargé");
+    doc.setFont("helvetica", "bold");
+    doc.text("Salaire médian : " + median, 20, y); y += 10;
+    doc.text("Fourchette : " + range, 20, y); y += 15;
 
-      // ✅ Ouvre dans un nouvel onglet
-      const pdfBlob = doc.output("blob");
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, "_blank");
-
-      console.log("✅ PDF généré et ouvert dans un nouvel onglet");
-
-    } catch (err) {
-      console.error("❌ Erreur export PDF :", err);
-      alert("Erreur lors de l'export PDF !");
+    // =============================
+    // ✅ Graphique
+    // =============================
+    const canvas = document.getElementById("salaryChart");
+    if (canvas) {
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      doc.addImage(imgData, "PNG", 15, y, 180, 90);
+      y += 100;
     }
+
+    // =============================
+    // ✅ Disclaimer
+    // =============================
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100);
+
+    let disclaimer = "Estimation indicative basée sur le simulateur Flying Whales.";
+    if (sourceVal === "marche") disclaimer = "Estimation basée sur les données marché (sources externes nationales).";
+    else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
+    else if (sourceVal === "croisee") disclaimer = "Estimation issue d’une combinaison marché (40%) et FW (60%).";
+
+    doc.text(disclaimer, 20, y); y += 10;
+
+    // =============================
+    // ✅ Date
+    // =============================
+    const today = new Date();
+    const dateStr = today.toLocaleDateString("fr-FR");
+    doc.text("Exporté le " + dateStr, 20, y);
+
+    // =============================
+    // ✅ Téléchargement
+    // =============================
+    doc.save("simulateur_salaire.pdf");
+    console.log("✅ PDF généré et téléchargé");
+
+  } catch (err) {
+    console.error("❌ Erreur export PDF :", err);
+    alert("Erreur lors de l'export PDF !");
   }
-  </script>
+}
+</script>
+
+
 </body>
 </html>
 
