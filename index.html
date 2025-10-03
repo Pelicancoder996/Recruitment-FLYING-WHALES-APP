@@ -865,6 +865,10 @@
       const dateStr = today.toLocaleDateString("fr-FR");
       doc.text("📅 Exporté le " + dateStr, 20, 220);
 
+      // ✅ Téléchargement direct
+      doc.save("simulateur_salaire.pdf");
+      console.log("✅ PDF généré et téléchargé");
+
       // ✅ Ouvre dans un nouvel onglet
       const pdfBlob = doc.output("blob");
       const pdfUrl = URL.createObjectURL(pdfBlob);
