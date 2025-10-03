@@ -830,7 +830,7 @@ async function exportPDF() {
     doc.setTextColor(255, 255, 255);
     doc.text("Rapport Salaire – Flying Whales", 15, 18);
 
-    // Infos principales
+    // ✅ Infos principales
     const schoolSelect = document.getElementById("school");
     const school = schoolSelect.options[schoolSelect.selectedIndex]?.text || "N/A";
 
@@ -884,7 +884,6 @@ async function exportPDF() {
     doc.setFillColor(230, 236, 245);
     doc.rect(15, y, 180, 10, "F");
     doc.setFontSize(11);
-    doc.setTextColor(0, 0, 0);
     doc.text("École", 20, y + 7);
     doc.text("P25 (€)", 100, y + 7);
     doc.text("Médian (€)", 135, y + 7);
@@ -922,12 +921,15 @@ async function exportPDF() {
     doc.setFontSize(14);
     doc.text(range, 90, y + 20);
 
-    // Source
-    doc.setFillColor(120, 120, 120);
-    doc.roundedRect(165, y, 30, 25, 3, 3, "F");
+    // Source dans une bulle orange pastel 🍊
+    doc.setFillColor(255, 235, 210);  
+    doc.roundedRect(165, y, 35, 25, 3, 3, "F");
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
+    doc.setTextColor(153, 76, 0);  
     doc.text("Source", 168, y + 10);
-    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
     doc.text(sourceText, 168, y + 20);
 
     // =============================
@@ -937,7 +939,7 @@ async function exportPDF() {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.setTextColor(0,0,0);
-    doc.text("Projection salariale sur 40 ans", 15, y);
+    doc.text("Projection salariale sur 40 ans (€)", 15, y);
 
     const chartCanvas = document.getElementById("salaryChart");
     if (chartCanvas) {
@@ -947,15 +949,15 @@ async function exportPDF() {
     }
 
     // =============================
-    // 📌 RÉCAP sous le graphique
+    // 📌 RÉCAP
     // =============================
     doc.setFontSize(11);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(80, 80, 80);
 
-    let recap = `Avec un profil ${job}, diplômé de ${school}${subdomain ? " ("+subdomain+")" : ""}, `
-      + `classé ${classification}, et ${experience}, `
-      + `le salaire médian estimé est de ${median}, avec une projection croissante sur 40 ans.`;
+    let recap = `Profil : ${job}, diplômé de ${school}${subdomain ? " ("+subdomain+")" : ""}, `
+      + `classé ${classification}, ${experience}. `
+      + `Salaire médian estimé : ${median}, avec une évolution projetée sur 40 ans.`;
 
     doc.text(doc.splitTextToSize(recap, 180), 15, y + 10);
 
@@ -988,6 +990,7 @@ async function exportPDF() {
   }
 }
 </script>
+
 
 </body>
 </html>
