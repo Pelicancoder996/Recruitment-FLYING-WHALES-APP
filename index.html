@@ -902,9 +902,9 @@ async function exportPDF() {
       ];
       const data = dataset.find(e => e.Ecole === school);
       if (data) {
-        p25 = (data.p25 || 0).toLocaleString("fr-FR") + " €";
-        p50 = (data.p50 || 0).toLocaleString("fr-FR") + " €";
-        p75 = (data.p75 || 0).toLocaleString("fr-FR") + " €";
+        p25 = (data.p25 || 0).toLocaleString() + " €";
+        p50 = (data.p50 || 0).toLocaleString() + " €";
+        p75 = (data.p75 || 0).toLocaleString() + " €";
       }
     }
 
@@ -936,9 +936,9 @@ async function exportPDF() {
     doc.rect(15, y, 180, 10, "F");
     doc.setFont("helvetica", "normal");
     doc.text(school, 20, y + 7);
-    doc.text(p25, 100, y + 7);  // 🔥 réaligné
-    doc.text(p50, 135, y + 7);  // 🔥 réaligné
-    doc.text(p75, 170, y + 7);  // 🔥 réaligné
+    doc.text(p25, 100, y + 7);
+    doc.text(p50, 135, y + 7);
+    doc.text(p75, 170, y + 7);
 
     // =============================
     // 📌 KPI CARDS
@@ -946,7 +946,7 @@ async function exportPDF() {
     y += 25;
 
     // Médian
-    doc.setFillColor(46, 204, 113);
+    doc.setFillColor(46, 204, 113); 
     doc.roundedRect(15, y, 60, 25, 3, 3, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
@@ -958,17 +958,19 @@ async function exportPDF() {
     // Fourchette
     doc.setFillColor(52, 152, 219);
     doc.roundedRect(85, y, 70, 25, 3, 3, "F");
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text("Fourchette", 90, y + 10);
     doc.setFontSize(14);
     doc.text(range, 90, y + 20);
 
-    // Source (même taille que les autres ✅)
-    doc.setFillColor(243, 156, 18); // orange pastel
+    // Source
+    doc.setFillColor(255, 165, 100); // orange pastel
     doc.roundedRect(165, y, 30, 25, 3, 3, "F");
-    doc.setFontSize(12); // 🔥 même taille que Médian & Fourchette
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12); // même taille que Médian et Fourchette
     doc.text("Source", 168, y + 10);
-    doc.setFontSize(14);
+    doc.setFontSize(12);
     doc.text(sourceText, 168, y + 20);
 
     // =============================
@@ -1029,6 +1031,7 @@ async function exportPDF() {
   }
 }
 </script>
+
 
 
 </body>
