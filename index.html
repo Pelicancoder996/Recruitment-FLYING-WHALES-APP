@@ -888,7 +888,11 @@ async function exportPDF() {
     const subdomain = subdomainSelect.options[subdomainSelect.selectedIndex]?.text || "";
 
     const sourceVal = document.getElementById("source").value;
-    const sourceText = document.querySelector("#source option:checked")?.textContent.trim() || "N/A";
+
+    // ✅ Texte clean pour la source (sans emoji)
+    let sourceClean = "Marché";
+    if (sourceVal === "fw") sourceClean = "Flying Whales (interne)";
+    if (sourceVal === "croisee") sourceClean = "Données croisées";
 
     const median = document.getElementById("median").innerText || "N/A";
     const range = document.getElementById("range").innerText || "N/A";
@@ -927,18 +931,18 @@ async function exportPDF() {
     doc.rect(15, y, 180, 10, "F");
     doc.setFontSize(11);
     doc.text("École", 20, y + 7);
-    doc.text("P25 (€)", 100, y + 7);
-    doc.text("Médian (€)", 135, y + 7);
-    doc.text("P75 (€)", 170, y + 7);
+    doc.text("P25 (€)", 95, y + 7);
+    doc.text("Médian (€)", 130, y + 7);
+    doc.text("P75 (€)", 165, y + 7);
 
     y += 12;
     doc.setFillColor(250, 250, 250);
     doc.rect(15, y, 180, 10, "F");
     doc.setFont("helvetica", "normal");
     doc.text(school, 20, y + 7);
-    doc.text(p25, 100, y + 7);
-    doc.text(p50, 135, y + 7);
-    doc.text(p75, 170, y + 7);
+    doc.text(p25, 105, y + 7, { align: "right" });
+    doc.text(p50, 145, y + 7, { align: "right" });
+    doc.text(p75, 185, y + 7, { align: "right" });
 
     // =============================
     // 📌 KPI CARDS
@@ -952,26 +956,24 @@ async function exportPDF() {
     doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
     doc.text("Médian", 20, y + 10);
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.text(median, 20, y + 20);
 
     // Fourchette
     doc.setFillColor(52, 152, 219);
     doc.roundedRect(85, y, 70, 25, 3, 3, "F");
-    doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text("Fourchette", 90, y + 10);
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.text(range, 90, y + 20);
 
-    // Source
+    // Source (💡 corrigée et propre)
     doc.setFillColor(255, 165, 100); // orange pastel
     doc.roundedRect(165, y, 30, 25, 3, 3, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12); // même taille que Médian et Fourchette
-    doc.text("Source", 168, y + 10);
     doc.setFontSize(12);
-    doc.text(sourceText, 168, y + 20);
+    doc.text("Source", 168, y + 10);
+    doc.setFontSize(11);
+    doc.text(doc.splitTextToSize(sourceClean, 28), 168, y + 20);
 
     // =============================
     // 📈 GRAPH
