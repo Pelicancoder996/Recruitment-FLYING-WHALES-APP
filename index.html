@@ -14,11 +14,16 @@
     tailwind.config = { darkMode: 'class' }
   </script>
 
+  <!-- ✅ Librairies -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+  <!-- ✅ Police + PWA -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
 
+  <!-- ✅ Service Worker + DarkMode persisté -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -49,8 +54,19 @@
       max-width:700px; 
     }
     .dark .modal-content { background:#1f2937; color:white; }
+
+    /* Animation clignotante bouton Export PDF */
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .highlight {
+      animation: pulse 1.5s infinite;
+    }
   </style>
 </head>
+
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
   <!-- Header -->
   <header class="w-full py-6 bg-[#00AEEF] text-white dark:bg-[#003366] flex justify-between px-8 items-center transition-colors duration-300">
@@ -140,7 +156,7 @@
       </select>
     </section>
 
-    <!-- Section Résultats -->
+        <!-- Section Résultats -->
     <section id="result" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hidden">
       <h2 class="text-xl font-bold text-[#003366] dark:text-[#00AEEF] mb-4">📊 Résultats</h2>
       <p><b>Référence école :</b> <span id="schoolRange"></span></p>
@@ -150,6 +166,14 @@
       <p>Médian: <span id="median"></span></p>
       <p>Fourchette: <span id="range"></span></p>
       <canvas id="salaryChart" class="mt-6"></canvas>
+      <!-- ✅ Prévisualisation PDF -->
+<iframe id="pdfPreview" style="width:100%; height:500px; border:1px solid #ccc; margin-top:20px;"></iframe>
+
+      <!-- 🚀 Bouton Export PDF avec effet clignotant -->
+      <button onclick="exportPDF()" 
+        class="mt-4 px-4 py-2 bg-green-600 text-white rounded highlight">
+        📑 Exporter en PDF
+      </button>
     </section>
   </main>
   <script>
@@ -668,6 +692,43 @@
         options:{responsive:true,plugins:{legend:{position:"top"}},scales:{y:{beginAtZero:false}}}
       });
     }
+      // ===============================
+  // Export PDF avec jsPDF + chart
+  // ===============================
+
+  // Ajout du script jsPDF + plugin html2canvas pour capturer le graphique
+
+  function exportPDF() {
+    const { jsPDF } = window.jspdf;
+
+    if (!jsPDF) {
+      alert("⚠️ jsPDF n'est pas encore chargé, réessaie dans 2 secondes.");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // Titre
+    doc.setFontSize(18);
+    doc.text("📑 Résultats - Simulateur Salaire Flying Whales", 10, 20);
+
+    // Infos principales
+    doc.setFontSize(12);
+    doc.text("École (référence) : " + document.getElementById("schoolRange").innerText, 10, 40);
+    doc.text("Médian école : " + document.getElementById("schoolMedian").innerText, 10, 50);
+    doc.text("Estimation personnalisée :", 10, 70);
+    doc.text("Médian : " + document.getElementById("median").innerText, 10, 80);
+    doc.text("Fourchette : " + document.getElementById("range").innerText, 10, 90);
+
+    // Ajout du graphique via html2canvas
+    const chartCanvas = document.getElementById("salaryChart");
+    html2canvas(chartCanvas).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      doc.addImage(imgData, "PNG", 10, 110, 180, 80); // x, y, largeur, hauteur
+      doc.save("simulateur_salaire.pdf");
+    });
+  }
+
 
     // 🌙/☀️ Dark/Light toggle
     function toggleDarkMode() {
@@ -747,6 +808,27 @@
       populateMenus();
       setTimeout(runTests, 1000); // laisse le temps au DOM de charger
     }
+</script>
+<script>
+function exportPDF() {
+  console.log("👉 Bouton Export PDF cliqué");
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Exemple simple
+    doc.setFontSize(18);
+    doc.text("📑 Résultats du simulateur Flying Whales", 20, 20);
+    doc.setFontSize(12);
+    doc.text("Hello, ceci est un test PDF généré 🚀", 20, 40);
+
+    // ✅ Ouvrir le PDF dans un nouvel onglet
+    const pdfBlobUrl = doc.output("bloburl");
+    window.open(pdfBlobUrl, "_blank");
+  } catch (err) {
+    console.error("❌ Erreur jsPDF :", err);
+  }
+}
 </script>
 </body>
 </html>
