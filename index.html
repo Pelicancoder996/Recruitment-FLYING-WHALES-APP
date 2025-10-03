@@ -808,25 +808,20 @@
       populateMenus();
       setTimeout(runTests, 1000); // laisse le temps au DOM de charger
     }
-</script>
-<script>
-<script>
-async function exportPDF() {
-  console.log("👉 Export PDF lancé");
+  </script>
 
-  try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
 
-    // ✅ Ajout du logo
-    const logo = new Image();
-    logo.src = "logo.png";
+ <script>
+  async function exportPDF() {
+    console.log("👉 Export PDF lancé");
 
-    logo.onload = () => {
-      doc.addImage(logo, "PNG", 15, 10, 30, 30);
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+    
 
       // ✅ Récupération des infos
-      const username = document.getElementById("username").value || "N/A";
       const school = document.getElementById("school").options[document.getElementById("school").selectedIndex]?.text || "N/A";
       const experience = document.getElementById("experience").value + " ans";
       const sourceVal = document.getElementById("source").value;
@@ -837,52 +832,52 @@ async function exportPDF() {
       // ✅ Titre
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text("📑 Simulateur Salaire - Flying Whales", 60, 20);
+      doc.text("📑 Rapport Salaire - Flying Whales", 60, 20);
 
-      // ✅ Contenu texte
+      // ✅ Texte
       doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
-      doc.text("Nom / Prénom : " + username, 20, 45);
-      doc.text("École : " + school, 20, 55);
-      doc.text("Expérience : " + experience, 20, 65);
-      doc.text("Source : " + sourceText, 20, 75);
-      doc.text("Salaire médian : " + median, 20, 85);
-      doc.text("Fourchette : " + range, 20, 95);
+      doc.text("École : " + school, 20, 50);
+      doc.text("Expérience : " + experience, 20, 60);
+      doc.text("Source : " + sourceText, 20, 70);
+      doc.text("Salaire médian : " + median, 20, 80);
+      doc.text("Fourchette : " + range, 20, 90);
 
       // ✅ Graphique
       const canvas = document.getElementById("salaryChart");
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      doc.addImage(imgData, "PNG", 15, 110, 180, 90);
-
-      // ✅ Disclaimer personnalisé
-      let disclaimer = "⚠️ Estimation indicative basée sur le simulateur Flying Whales.";
-      if (sourceVal === "marche") {
-        disclaimer = "🌍 Estimation basée sur les données marché (sources externes nationales).";
-      } else if (sourceVal === "fw") {
-        disclaimer = "🏢 Estimation basée sur les packages internes Flying Whales.";
-      } else if (sourceVal === "croisee") {
-        disclaimer = "⚖️ Estimation issue d’une combinaison marché (40%) et FW (60%).";
+      if (canvas) {
+        const imgData = canvas.toDataURL("image/png", 1.0);
+        doc.addImage(imgData, "PNG", 15, 110, 180, 90);
       }
+
+      // ✅ Disclaimer
+      let disclaimer = "⚠️ Estimation indicative basée sur le simulateur Flying Whales.";
+      if (sourceVal === "marche") disclaimer = "🌍 Estimation basée sur les données marché (sources externes nationales).";
+      else if (sourceVal === "fw") disclaimer = "🏢 Estimation basée sur les packages internes Flying Whales.";
+      else if (sourceVal === "croisee") disclaimer = "⚖️ Estimation issue d’une combinaison marché (40%) et FW (60%).";
 
       doc.setFontSize(10);
       doc.setTextColor(100);
-      doc.text(disclaimer, 20, 205);
+      doc.text(disclaimer, 20, 210);
 
-      // ✅ Date d’export
+      // ✅ Date
       const today = new Date();
       const dateStr = today.toLocaleDateString("fr-FR");
-      doc.text("📅 Exporté le " + dateStr, 20, 215);
+      doc.text("📅 Exporté le " + dateStr, 20, 220);
 
-      // ✅ Téléchargement
-      doc.save("simulateur_salaire.pdf");
-    };
-  } catch (err) {
-    console.error("❌ Erreur export PDF :", err);
-    alert("Erreur lors de l'export PDF !");
+      // ✅ Ouvre dans un nouvel onglet
+      const pdfBlob = doc.output("blob");
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, "_blank");
+
+      console.log("✅ PDF généré et ouvert dans un nouvel onglet");
+
+    } catch (err) {
+      console.error("❌ Erreur export PDF :", err);
+      alert("Erreur lors de l'export PDF !");
+    }
   }
-}
-</script>
-
-</script>
+  </script>
 </body>
 </html>
+
