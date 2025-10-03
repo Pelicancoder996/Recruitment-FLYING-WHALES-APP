@@ -816,15 +816,14 @@ function exportPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Exemple simple
     doc.setFontSize(18);
     doc.text("📑 Résultats du simulateur Flying Whales", 20, 20);
     doc.setFontSize(12);
     doc.text("Hello, ceci est un test PDF généré 🚀", 20, 40);
 
-    // ✅ Ouvrir le PDF dans un nouvel onglet
+    // ✅ Sur iPhone : on ouvre directement dans la même fenêtre
     const pdfBlobUrl = doc.output("bloburl");
-    window.open(pdfBlobUrl, "_blank");
+    window.location.href = pdfBlobUrl;
   } catch (err) {
     console.error("❌ Erreur jsPDF :", err);
   }
