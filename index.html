@@ -848,24 +848,42 @@ async function exportPDF() {
     doc.text("Rapport Salaire - Flying Whales", 105, 20, { align: "center" });
 
     // =============================
-    // ✅ Informations
+    // ✅ Encadré Profil
     // =============================
-    let y = 50;
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "normal");
-
-    doc.text("École : " + school, 20, y); y += 10;
-    doc.text("Poste : " + job, 20, y); y += 10;
-    doc.text("Expérience : " + experience, 20, y); y += 10;
-    doc.text("Source : " + sourceText, 20, y); y += 15;
-
+    let y = 40;
     doc.setFont("helvetica", "bold");
-    doc.text("Salaire médian : " + median, 20, y); y += 10;
-    doc.text("Fourchette : " + range, 20, y); y += 15;
+    doc.setFontSize(14);
+    doc.text("Profil", 20, y);
+    y += 5;
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.2);
+    doc.rect(15, y, 180, 35); // cadre profil
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.text("École : " + school, 20, y + 10);
+    doc.text("Poste : " + job, 20, y + 18);
+    doc.text("Expérience : " + experience, 20, y + 26);
+    doc.text("Source : " + sourceText, 20, y + 34);
+
+    // =============================
+    // ✅ Encadré Résultats
+    // =============================
+    y += 50;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("Résultats", 20, y);
+    y += 5;
+    doc.rect(15, y, 180, 20); // cadre résultats
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.text("Salaire médian : " + median, 20, y + 10);
+    doc.text("Fourchette : " + range, 100, y + 10);
 
     // =============================
     // ✅ Graphique
     // =============================
+    y += 40;
     const canvas = document.getElementById("salaryChart");
     if (canvas) {
       const imgData = canvas.toDataURL("image/png", 1.0);
@@ -885,14 +903,14 @@ async function exportPDF() {
     else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
     else if (sourceVal === "croisee") disclaimer = "Estimation issue d’une combinaison marché (40%) et FW (60%).";
 
-    doc.text(disclaimer, 20, y); y += 10;
+    doc.text(disclaimer, 20, y + 10);
 
     // =============================
     // ✅ Date
     // =============================
     const today = new Date();
     const dateStr = today.toLocaleDateString("fr-FR");
-    doc.text("Exporté le " + dateStr, 20, y);
+    doc.text("Exporté le " + dateStr, 20, y + 20);
 
     // =============================
     // ✅ Téléchargement
@@ -906,7 +924,6 @@ async function exportPDF() {
   }
 }
 </script>
-
 
 </body>
 </html>
