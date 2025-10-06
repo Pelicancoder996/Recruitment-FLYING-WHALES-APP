@@ -112,6 +112,85 @@
   .dark body {
     background: linear-gradient(180deg, #0f172a, #1e293b);
   }
+  
+  /* =========================
+   ✨ DESIGN PREMIUM
+   ========================= */
+
+/* 🌈 Effets de survol & focus */
+select, input[type="range"], button {
+  transition: all 0.25s ease-in-out;
+}
+
+select:hover, select:focus,
+input:hover, input:focus {
+  border-color: #00AEEF;
+  box-shadow: 0 0 8px rgba(0, 174, 239, 0.25);
+}
+
+/* 🎚️ Slider moderne */
+input[type="range"] {
+  accent-color: #00AEEF;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  background: #00AEEF;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  transition: all 0.2s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* 🌙/☀️ Bouton toggle stylé */
+button[onclick="toggleDarkMode()"] {
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  line-height: 1;
+  background: white;
+  color: #003366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+button[onclick="toggleDarkMode()"]:hover {
+  transform: scale(1.1);
+  background: #00AEEF;
+  color: white;
+}
+
+/* 🧊 Cartes (école / résultat) */
+#schoolInfo, #result {
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  backdrop-filter: blur(6px);
+}
+
+.dark #schoolInfo, .dark #result {
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 12px rgba(255,255,255,0.03);
+}
+
+/* ✍️ Titres mieux hiérarchisés */
+h2 {
+  letter-spacing: 0.3px;
+}
+h3 {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* 🕊️ Transitions globales plus douces */
+* {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
 </style>
 
 </head>
@@ -165,6 +244,8 @@
   <p class="leading-tight"><b>Médian :</b> <span id="schoolLiveMedian">—</span></p>
   <p class="leading-tight"><b>Fourchette :</b> <span id="schoolLiveRange">—</span></p>
 </div>
+
+
 
       <label>💼 Fonction / Métier</label>
       <select id="fonction" class="w-full mb-4 p-2 border rounded"></select>
@@ -224,6 +305,13 @@
       <p>Médian: <span id="median"></span></p>
       <p>Fourchette: <span id="range"></span></p>
       <canvas id="salaryChart" class="mt-6"></canvas>
+      <!-- 🧠 Analyse dynamique -->
+<div id="insightBox" 
+     class="mt-4 p-4 border rounded-lg bg-blue-50 dark:bg-gray-700 hidden transition-all duration-500">
+  <h3 class="font-semibold text-[#003366] dark:text-[#00AEEF] mb-1">💡 Analyse personnalisée</h3>
+  <p id="insightText">Ton profil est en cours d’analyse...</p>
+</div>
+
       <!-- ✅ Prévisualisation PDF -->
 <iframe id="pdfPreview" style="width:100%; height:500px; border:1px solid #ccc; margin-top:20px;"></iframe>
 
@@ -794,6 +882,27 @@
   }
 });
 
+// === 💡 Analyse dynamique ===
+const insightBox = document.getElementById("insightBox");
+const insightText = document.getElementById("insightText");
+
+if (median > 0) {
+  const growth20 = Math.round(median * Math.pow(1.023, 20));
+  const growth40 = Math.round(median * Math.pow(1.023, 40));
+
+  let msg = `Avec un salaire médian actuel de ${Math.round(median).toLocaleString()} €, `;
+  msg += `tu atteindrais environ ${growth20.toLocaleString()} € à 20 ans `;
+  msg += `et ${growth40.toLocaleString()} € à 40 ans d’expérience. `;
+  msg += `Cela représente une croissance totale de +${Math.round(((growth40/median)-1)*100)}% sur ta carrière.`;
+
+  insightText.textContent = msg;
+
+  insightBox.classList.remove("hidden");
+  requestAnimationFrame(() => {
+    insightBox.style.opacity = "1";
+    insightBox.style.transform = "translateY(0)";
+  });
+}
     }
       // ===============================
   // Export PDF avec jsPDF + chart
