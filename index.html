@@ -156,6 +156,15 @@
 
       <label>📚 École</label>
       <select id="school" class="w-full mb-4 p-2 border rounded"></select>
+      <!-- 💡 Résumé dynamique école -->
+<div id="schoolInfo" 
+     class="hidden mt-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-700 transition-all duration-500 opacity-0 translate-y-2">
+  <h3 class="text-lg font-semibold text-[#003366] dark:text-[#00AEEF] mb-1">
+    📘 Sortie d’école
+  </h3>
+  <p><b>Médian :</b> <span id="schoolLiveMedian">—</span></p>
+  <p><b>Fourchette :</b> <span id="schoolLiveRange">—</span></p>
+</div>
 
       <label>💼 Fonction / Métier</label>
       <select id="fonction" class="w-full mb-4 p-2 border rounded"></select>
@@ -560,6 +569,9 @@
       }
       sectorSel.addEventListener("change", ()=>{updateSchoolList(); calculateSalary();});
       updateSchoolList();
+      
+      
+      
 
       // === Fonctions disponibles ===
       fonctionSel.innerHTML="";
@@ -836,6 +848,52 @@
     // ✅ Fix modal
     function openModal(){document.getElementById("helpModal").style.display="flex";}
     function closeModal(){document.getElementById("helpModal").style.display="none";}
+
+// === 🎓 Résumé dynamique école ===
+function updateSchoolInfo() {
+  const sector = document.getElementById("sector").value;
+  const schoolIndex = document.getElementById("school").value;
+  const box = document.getElementById("schoolInfo");
+  const med = document.getElementById("schoolLiveMedian");
+  const range = document.getElementById("schoolLiveRange");
+
+  const datasets = {
+    ingenieur: schoolsIngenieur,
+    commerce: schoolsCommerce,
+    scpo: schoolsScPo,
+    universite: schoolsUniversite,
+    it: schoolsIT,
+    design: schoolsDesign
+  };
+
+  const list = datasets[sector];
+  const data = list ? list[schoolIndex] : null;
+
+  if (data) {
+    med.textContent = `${Math.round(data.p50).toLocaleString()} €`;
+    range.textContent = `${Math.round(data.p25).toLocaleString()} € – ${Math.round(data.p75).toLocaleString()} €`;
+
+    box.classList.remove("hidden");
+    requestAnimationFrame(() => {
+      box.style.opacity = "1";
+      box.style.transform = "translateY(0)";
+    });
+  } else {
+    box.style.opacity = "0";
+    box.style.transform = "translateY(10px)";
+    setTimeout(() => box.classList.add("hidden"), 300);
+  }
+}
+
+// 🔄 Activation auto
+document.addEventListener("DOMContentLoaded", () => {
+  const schoolSel = document.getElementById("school");
+  const sectorSel = document.getElementById("sector");
+  if (schoolSel && sectorSel) {
+    schoolSel.addEventListener("change", updateSchoolInfo);
+    sectorSel.addEventListener("change", updateSchoolInfo);
+  }
+});
 
     window.onload=populateMenus;
     // ===============================
