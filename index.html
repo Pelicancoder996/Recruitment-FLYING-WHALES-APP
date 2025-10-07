@@ -77,6 +77,12 @@
     color: #f9fafb !important; /* gris très clair lisible */
   }
 
+/* 🌙 Exception : texte noir sur fond clair dans la box d'analyse */
+.dark #insightBox,
+.dark #insightBox * {
+  color: #000 !important;
+}
+
   /* ✅ Arrière-plan et bordure sur inputs et sélecteurs */
   .dark select,
   .dark input {
@@ -189,6 +195,34 @@ h3 {
 /* 🕊️ Transitions globales plus douces */
 * {
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* =========================
+   ✨ Effets d'apparition et couleur dynamique de la box d'analyse
+   ========================= */
+
+#insightBox {
+  transition: 
+    background 0.6s ease, 
+    border-left 0.4s ease, 
+    transform 0.4s ease, 
+    opacity 0.4s ease;
+  border-radius: 7px;
+  padding: 16px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  margin-top: 12px;
+}
+
+/* 🌙 Amélioration dark mode */
+.dark #insightBox {
+  color: #f9fafb;
+  box-shadow: 0 3px 6px rgba(255,255,255,0.05);
+  
+ /* 🌙 Correction finale – priorité absolue */
+.dark #insightBox,
+.dark #insightBox * {
+  color: #000 !important; /* texte noir */
+  text-shadow: none !important;
 }
 
 </style>
@@ -901,8 +935,83 @@ if (median > 0) {
   requestAnimationFrame(() => {
     insightBox.style.opacity = "1";
     insightBox.style.transform = "translateY(0)";
+    
   });
+  generateInsight(median, low, high);
 }
+
+function generateInsight(median, low, high) {
+  const sector = document.getElementById("sector").value;
+  const exp = parseInt(document.getElementById("experience").value);
+  const role = document.getElementById("role").value;
+  const classification = document.getElementById("classification").value;
+  const region = document.getElementById("region").value;
+  const size = document.getElementById("companySize").value;
+  const source = document.getElementById("source").value;
+
+  let msg = "";
+
+  // 1️⃣ Contexte général
+  if (source === "fw") msg += "🔷 Données internes Flying Whales : ";
+  else if (source === "marche") msg += "🌍 Données marché : ";
+  else msg += "⚖️ Données croisées (60% FW / 40% marché) : ";
+
+  msg += `salaire médian estimé à ${Math.round(median).toLocaleString()} €. `;
+
+  // 2️⃣ Expérience
+  if (exp < 3) msg += "Tu es en début de carrière — la progression sera rapide les 5 premières années. ";
+  else if (exp < 10) msg += "Tu es dans la phase de consolidation de ton expertise. ";
+  else msg += "Ton profil est expérimenté : la progression salariale dépendra surtout des changements de rôle. ";
+
+  // 3️⃣ Classification & rôle
+  if (classification.startsWith("I")) msg += `Position actuelle : ${classification}, ingénieur technique. `;
+  if (classification.startsWith("M")) msg += `Rôle managérial (${classification}), avec impact fort sur la rémunération. `;
+  if (classification === "RLot" || role.includes("Chef")) msg += "Profil orienté gestion de projet. ";
+  if (role.includes("Directeur")) msg += "Profil direction confirmé, très au-dessus de la médiane marché. ";
+
+  // 4️⃣ Région & taille entreprise
+  if (region === "IDF") msg += "Région : Île-de-France, majoration moyenne de +14%. ";
+  else msg += "Région hors IDF : rémunération ajustée -14% en moyenne. ";
+
+  if (size === "grand-groupe") msg += "Grand groupe : politique salariale stable mais évolutions plus lentes. ";
+  if (size === "startup") msg += "Startup : salaires d’entrée plus bas, mais forte croissance possible avec responsabilités. ";
+
+  // 5️⃣ Analyse comparative simple
+  const growth20 = Math.round(median * Math.pow(1.023, 20));
+  const growth40 = Math.round(median * Math.pow(1.023, 40));
+  const growthPercent = Math.round(((growth40 / median) - 1) * 100);
+
+  msg += `Projection : environ ${growth20.toLocaleString()} € à 20 ans, ${growth40.toLocaleString()} € à 40 ans, soit +${growthPercent}% sur carrière. `;
+
+ // ✨ Rendu
+const insightText = document.getElementById("insightText");
+const insightBox = document.getElementById("insightBox");
+
+// 6️⃣ Insight qualitatif selon niveau de salaire 
+if (median < 40000) msg += "💬 Niveau inférieur à la moyenne nationale, mais améliorable via spécialisation ou mobilité.";
+else if (median < 60000) msg += "💬 Niveau correct et compétitif sur le marché actuel.";
+else if (median < 90000) msg += "💬 Très bon niveau de rémunération, dans le top 20% du marché.";
+else msg += "💬 Excellent positionnement : profil à très forte valeur ajoutée.";
+
+// 🎨 Couleur selon le niveau de salaire (placé APRÈS la déclaration d'insightBox)
+if (median < 40000) {
+  insightBox.style.background = "#fee2e2"; // rouge clair
+  insightBox.style.borderLeft = "6px solid #dc2626"; // rouge vif
+} else if (median < 60000) {
+  insightBox.style.background = "#fef9c3"; // jaune clair
+  insightBox.style.borderLeft = "6px solid #eab308"; // jaune vif
+} else if (median < 90000) {
+  insightBox.style.background = "#dcfce7"; // vert clair
+  insightBox.style.borderLeft = "6px solid #16a34a"; // vert moyen
+} else {
+  insightBox.style.background = "#dbeafe"; // bleu clair
+  insightBox.style.borderLeft = "6px solid #2563eb"; // bleu vif
+}
+
+insightText.textContent = msg;
+insightBox.classList.remove("hidden");
+}
+
     }
       // ===============================
   // Export PDF avec jsPDF + chart
@@ -1112,6 +1221,10 @@ async function exportPDF() {
 
     const median = document.getElementById("median").innerText || "N/A";
     const range = document.getElementById("range").innerText || "N/A";
+    
+    // 🔹 Récupération du résumé de l'analyse
+const insightText = document.getElementById("insightText")?.innerText || "";
+
 
     // Valeurs école brutes
     let p25 = "N/A", p50 = "N/A", p75 = "N/A";
@@ -1206,6 +1319,41 @@ async function exportPDF() {
       doc.addImage(imgData, "PNG", 15, y+5, 180, 80);
       y += 95;
     }
+
+// =============================
+// 💡 ANALYSE PERSONNALISÉE
+// =============================
+const insightBox = document.getElementById("insightBox");
+const insightText = document.getElementById("insightText")?.innerText || "";
+const bgColor = window.getComputedStyle(insightBox).backgroundColor;
+
+// Conversion couleur RGB
+let [r, g, b] = [240, 240, 240]; // valeur par défaut (gris clair)
+const rgbMatch = bgColor.match(/\d+/g);
+if (rgbMatch) [r, g, b] = rgbMatch.map(Number);
+
+// Calcul hauteur du bloc selon la taille du texte
+const docFontSize = 10;
+doc.setFontSize(docFontSize);
+const wrappedText = doc.splitTextToSize(insightText, 170);
+const blockHeight = Math.max(35, wrappedText.length * (docFontSize * 0.5) + 15);
+
+// Encadré fond coloré
+y += 10;
+doc.setFillColor(r, g, b);
+doc.roundedRect(15, y, 180, blockHeight, 3, 3, "F");
+
+// Titre
+doc.setFont("helvetica", "bold");
+doc.setFontSize(12);
+doc.setTextColor(0, 0, 0);
+doc.text("💡 Analyse personnalisée :", 20, y + 10);
+
+// Contenu texte
+doc.setFont("helvetica", "normal");
+doc.setFontSize(10);
+doc.setTextColor(0, 0, 0);
+doc.text(wrappedText, 20, y + 20);
 
     // =============================
     // 📌 RÉCAP sous le graphique
