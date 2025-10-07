@@ -1304,6 +1304,17 @@ const insightText = document.getElementById("insightText")?.innerText || "";
     doc.setFontSize(11);
     doc.text(doc.splitTextToSize(sourceClean, 28), 168, y + 20);
 
+    // 💡 Encadré d'analyse personnalisée
+doc.setFontSize(12);
+doc.setTextColor(0, 0, 0);
+doc.setFillColor(240, 240, 240); // fond gris très clair
+doc.rect(14, y + 10, 180, 35, "F"); // fond du rectangle (ajuste la hauteur selon ton texte)
+doc.text("💡 Analyse personnalisée :", 18, y + 18);
+
+// Texte automatique en plusieurs lignes
+doc.setFontSize(10);
+doc.text(doc.splitTextToSize(insightText, 170), 18, y + 28);
+
     // =============================
     // 📈 GRAPH
     // =============================
@@ -1319,41 +1330,8 @@ const insightText = document.getElementById("insightText")?.innerText || "";
       doc.addImage(imgData, "PNG", 15, y+5, 180, 80);
       y += 95;
     }
-
-// =============================
-// 💡 ANALYSE PERSONNALISÉE
-// =============================
-const insightBox = document.getElementById("insightBox");
-const insightText = document.getElementById("insightText")?.innerText || "";
-const bgColor = window.getComputedStyle(insightBox).backgroundColor;
-
-// Conversion couleur RGB
-let [r, g, b] = [240, 240, 240]; // valeur par défaut (gris clair)
-const rgbMatch = bgColor.match(/\d+/g);
-if (rgbMatch) [r, g, b] = rgbMatch.map(Number);
-
-// Calcul hauteur du bloc selon la taille du texte
-const docFontSize = 10;
-doc.setFontSize(docFontSize);
-const wrappedText = doc.splitTextToSize(insightText, 170);
-const blockHeight = Math.max(35, wrappedText.length * (docFontSize * 0.5) + 15);
-
-// Encadré fond coloré
-y += 10;
-doc.setFillColor(r, g, b);
-doc.roundedRect(15, y, 180, blockHeight, 3, 3, "F");
-
-// Titre
-doc.setFont("helvetica", "bold");
-doc.setFontSize(12);
-doc.setTextColor(0, 0, 0);
-doc.text("💡 Analyse personnalisée :", 20, y + 10);
-
-// Contenu texte
-doc.setFont("helvetica", "normal");
-doc.setFontSize(10);
-doc.setTextColor(0, 0, 0);
-doc.text(wrappedText, 20, y + 20);
+    
+    
 
     // =============================
     // 📌 RÉCAP sous le graphique
