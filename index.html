@@ -15,9 +15,9 @@
   </script>
 
   <!-- ✅ Librairies -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <!-- ✅ Police + PWA -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1020,7 +1020,8 @@ insightBox.classList.remove("hidden");
   // Ajout du script jsPDF + plugin html2canvas pour capturer le graphique
 
   function exportPDF() {
-    const { jsPDF } = window.jspdf;
+    const jsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+
 
     if (!jsPDF) {
       alert("⚠️ jsPDF n'est pas encore chargé, réessaie dans 2 secondes.");
@@ -1185,11 +1186,10 @@ async function exportPDF() {
   try {
     const { jsPDF } = window.jspdf;
 
-    // ✅ Création du document avant d'ajouter la police
+    // ✅ Création du document
     const doc = new jsPDF({ unit: "mm", format: "a4" });
 
-    // ✅ Gestion correcte des accents / caractères spéciaux
-    doc.addFont("helvetica", "helvetica", "normal");
+    // ✅ Configuration police et couleur
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     doc.setTextColor(0, 0, 0);
@@ -1205,61 +1205,37 @@ async function exportPDF() {
     doc.setTextColor(255, 255, 255);
     doc.text("Rapport Salaire - Flying Whales", 15, 18);
 
-    // Infos principales
+    // =============================
+    // 📋 INFOS PRINCIPALES
+    // =============================
     const schoolSelect = document.getElementById("school");
-    const school = schoolSelect.options[schoolSelect.selectedIndex]?.text || "N/A";
-
     const jobSelect = document.getElementById("fonction");
-    const job = jobSelect.options[jobSelect.selectedIndex]?.text || "N/A";
-
     const classificationSelect = document.getElementById("classification");
-    const classification = classificationSelect.options[classificationSelect.selectedIndex]?.text || "Classique";
-
-    const experience = document.getElementById("experience").value + " ans";
-
     const subdomainSelect = document.getElementById("subdomain");
-    const subdomain = subdomainSelect.options[subdomainSelect.selectedIndex]?.text || "";
-
     const sourceVal = document.getElementById("source").value;
 
-    // ✅ Texte clean pour la source (sans emoji)
+    const school = schoolSelect?.options[schoolSelect.selectedIndex]?.text || "N/A";
+    const job = jobSelect?.options[jobSelect.selectedIndex]?.text || "N/A";
+    const classification = classificationSelect?.options[classificationSelect.selectedIndex]?.text || "Classique";
+    const experience = document.getElementById("experience").value + " ans";
+    const subdomain = subdomainSelect?.options[subdomainSelect.selectedIndex]?.text || "";
+
+    const median = document.getElementById("median")?.innerText || "N/A";
+    const range = document.getElementById("range")?.innerText || "N/A";
+    const insightText = document.getElementById("insightText")?.innerText || "";
+
+    // Source lisible
     let sourceClean = "Marché";
     if (sourceVal === "fw") sourceClean = "Flying Whales (interne)";
     if (sourceVal === "croisee") sourceClean = "Données croisées";
 
-    const median = document.getElementById("median").innerText || "N/A";
-    const range = document.getElementById("range").innerText || "N/A";
-    
-    // 🔹 Récupération du résumé de l'analyse
-const insightText = document.getElementById("insightText")?.innerText || "";
-
-
-    // Valeurs école brutes
-    let p25 = "N/A", p50 = "N/A", p75 = "N/A";
-    if (schoolSelect.selectedIndex >= 0) {
-     const dataset = [
-  ...Object.values(schoolsIngenieur),
-  ...Object.values(schoolsCommerce),
-  ...Object.values(schoolsScPo),
-  ...Object.values(schoolsUniversite),
-  ...Object.values(schoolsIT),
-  ...Object.values(schoolsDesign)
-];
-      const data = dataset.find(e => e.Ecole === school);
-      if (data) {
-        p25 = (data.p25 || 0).toLocaleString() + " €";
-        p50 = (data.p50 || 0).toLocaleString() + " €";
-        p75 = (data.p75 || 0).toLocaleString() + " €";
-      }
-    }
-
-    // Sous-titre header
+    // Sous-titre
     doc.setFontSize(11);
     doc.setTextColor(230, 230, 230);
     doc.text(`${job} | ${school} | ${classification} | ${experience}${subdomain ? " | " + subdomain : ""}`, 15, 27);
 
     // =============================
-    // 📊 TABLEAU Référence École
+    // 📊 TABLEAU RÉFÉRENCE ÉCOLE
     // =============================
     let y = 45;
     doc.setFont("helvetica", "bold");
@@ -1267,6 +1243,28 @@ const insightText = document.getElementById("insightText")?.innerText || "";
     doc.setFontSize(13);
     doc.text("Référence école :", 15, y);
 
+    // Données école
+    let p25 = "N/A", p50 = "N/A", p75 = "N/A";
+    try {
+      const dataset = [
+        ...Object.values(schoolsIngenieur || {}),
+        ...Object.values(schoolsCommerce || {}),
+        ...Object.values(schoolsScPo || {}),
+        ...Object.values(schoolsUniversite || {}),
+        ...Object.values(schoolsIT || {}),
+        ...Object.values(schoolsDesign || {})
+      ];
+      const data = dataset.find(e => e.Ecole === school);
+      if (data) {
+        p25 = (data.p25 || 0).toLocaleString() + " €";
+        p50 = (data.p50 || 0).toLocaleString() + " €";
+        p75 = (data.p75 || 0).toLocaleString() + " €";
+      }
+    } catch (err) {
+      console.warn("⚠️ Données école non trouvées :", err);
+    }
+
+    // Tableau
     y += 8;
     doc.setFillColor(230, 236, 245);
     doc.rect(15, y, 180, 10, "F");
@@ -1291,7 +1289,7 @@ const insightText = document.getElementById("insightText")?.innerText || "";
     y += 25;
 
     // Médian
-    doc.setFillColor(46, 204, 113); 
+    doc.setFillColor(46, 204, 113);
     doc.roundedRect(15, y, 60, 25, 3, 3, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
@@ -1308,113 +1306,94 @@ const insightText = document.getElementById("insightText")?.innerText || "";
     doc.setFontSize(13);
     doc.text(range, 90, y + 20);
 
-    // Source (💡 corrigée et propre)
-    doc.setFillColor(255, 165, 100); // orange pastel
+    // Source
+    doc.setFillColor(255, 165, 100);
     doc.roundedRect(165, y, 30, 25, 3, 3, "F");
     doc.setFontSize(12);
     doc.text("Source", 168, y + 10);
     doc.setFontSize(11);
     doc.text(doc.splitTextToSize(sourceClean, 28), 168, y + 20);
 
-    
- // =============================
-// 📈 GRAPH
-// =============================
-y += 45;
-doc.setFont("helvetica", "bold");
-doc.setFontSize(12);
-doc.setTextColor(0, 0, 0);
-doc.text("Projection salariale sur 40 ans", 15, y);
+    // =============================
+    // 📈 GRAPHIQUE
+    // =============================
+    y += 45;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Projection salariale sur 40 ans", 15, y);
 
-const chartCanvas = document.getElementById("salaryChart");
-if (chartCanvas) {
-  const imgData = chartCanvas.toDataURL("image/png", 1.0);
-  doc.addImage(imgData, "PNG", 15, y + 5, 180, 80);
-  y += 95;
-}
+    const chartCanvas = document.getElementById("salaryChart");
+    if (chartCanvas) {
+      const imgData = chartCanvas.toDataURL("image/png", 1.0);
+      doc.addImage(imgData, "PNG", 15, y + 5, 180, 80);
+      y += 95;
+    }
 
-// =============================
-// 💡 ANALYSE PERSONNALISÉE
-// =============================
+    // =============================
+    // 💡 ANALYSE PERSONNALISÉE
+    // =============================
+    const insightBox = document.getElementById("insightBox");
+    const bgColor = window.getComputedStyle(insightBox).backgroundColor;
+    const rgbMatch = bgColor.match(/\d+/g);
+    const [r, g, b] = rgbMatch ? rgbMatch.map(Number) : [240, 240, 240];
 
-// Récupération du contenu de la box
-const insightBox = document.getElementById("insightBox");
-const bgColor = window.getComputedStyle(insightBox).backgroundColor;
+    const safeInsightText = insightText
+      .replace(/💡/g, "Analyse :")
+      .replace(/🔷/g, "Données FW :")
+      .replace(/🌍/g, "Données marché :")
+      .replace(/⚖️/g, "Données croisées :")
+      .replace(/💬/g, "Commentaire :");
 
-// Nettoyage texte (PDF-safe)
-const safeInsightText = insightText
-  .replace(/💡/g, "Analyse :")
-  .replace(/🔷/g, "Données FW :")
-  .replace(/🌍/g, "Données marché :")
-  .replace(/⚖️/g, "Données croisées :")
-  .replace(/💬/g, "Commentaire :");
+    const wrappedInsight = doc.splitTextToSize(safeInsightText, 170);
+    const blockHeight = Math.max(30, wrappedInsight.length * 6 + 15);
 
-// Conversion couleur RGB
-let [r, g, b] = [240, 240, 240];
-const rgbMatch = bgColor.match(/\d+/g);
-if (rgbMatch) [r, g, b] = rgbMatch.map(Number);
+    y += 10;
+    doc.setFillColor(r, g, b);
+    doc.roundedRect(15, y, 180, blockHeight, 3, 3, "F");
+    doc.setDrawColor(Math.max(r - 40, 0), Math.max(g - 40, 0), Math.max(b - 40, 0));
+    doc.setLineWidth(2);
+    doc.line(15, y, 15, y + blockHeight);
 
-// Calcul de la hauteur selon le texte
-doc.setFont("helvetica", "normal");
-doc.setFontSize(10);
-const wrappedInsight = doc.splitTextToSize(safeInsightText, 170);
-const blockHeight = Math.max(30, wrappedInsight.length * 6 + 15);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.text("Analyse personnalisée :", 20, y + 10);
 
-// Ajout du bloc d'analyse juste sous le graphique
-y += 10;
-doc.setFillColor(r, g, b);
-doc.roundedRect(15, y, 180, blockHeight, 3, 3, "F");
-doc.setDrawColor(Math.max(r - 40, 0), Math.max(g - 40, 0), Math.max(b - 40, 0));
-doc.setLineWidth(2);
-doc.line(15, y, 15, y + blockHeight);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(wrappedInsight, 20, y + 20);
+    y += blockHeight + 10;
 
-doc.setFont("helvetica", "bold");
-doc.setTextColor(0, 0, 0);
-doc.setFontSize(12);
-doc.text("Analyse personnalisée :", 20, y + 10);
+    // =============================
+    // 📌 RÉCAP
+    // =============================
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(80, 80, 80);
 
-doc.setFont("helvetica", "normal");
-doc.setFontSize(10);
-doc.text(wrappedInsight, 20, y + 20);
-y += blockHeight + 10;
+    let recap = `Avec un profil ${job}, diplômé de ${school}${subdomain ? " (" + subdomain + ")" : ""}, classé ${classification}, et ${experience}, le salaire médian estimé est de ${median}, avec une projection croissante sur 40 ans.`;
+    doc.text(doc.splitTextToSize(recap, 180), 15, y + 10);
 
-// =============================
-// 📌 RÉCAP sous le graphique
-// =============================
-doc.setFontSize(11);
-doc.setFont("helvetica", "italic");
-doc.setTextColor(80, 80, 80);
+    // =============================
+    // 📌 FOOTER
+    // =============================
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(120);
+    let disclaimer = "Estimation indicative basée sur le simulateur Flying Whales.";
+    if (sourceVal === "marche") disclaimer = "Estimation basée sur les données marché.";
+    else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
+    else if (sourceVal === "croisee") disclaimer = "Estimation issue d'une combinaison marché (40%) et FW (60%).";
+    doc.text(disclaimer, 15, 280);
+    const today = new Date().toLocaleDateString("fr-FR");
+    doc.text("Exporté le " + today, 170, 280);
 
-let recap = `Avec un profil ${job}, diplômé de ${school}${subdomain ? " (" + subdomain + ")" : ""}, `
-  + `classé ${classification}, et ${experience}, `
-  + `le salaire médian estimé est de ${median}, avec une projection croissante sur 40 ans.`;
-
-doc.text(doc.splitTextToSize(recap, 180), 15, y + 10);
-
-// =============================
-// 📌 FOOTER
-// =============================
-doc.setFontSize(9);
-doc.setFont("helvetica", "italic");
-doc.setTextColor(120);
-
-let disclaimer = "Estimation indicative basée sur le simulateur Flying Whales.";
-if (sourceVal === "marche") disclaimer = "Estimation basée sur les données marché.";
-else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
-else if (sourceVal === "croisee") disclaimer = "Estimation issue d'une combinaison marché (40%) et FW (60%).";
-
-doc.text(disclaimer, 15, 280);
-const today = new Date();
-const dateStr = today.toLocaleDateString("fr-FR");
-doc.text("Exporté le " + dateStr, 170, 280);
-
-// =============================
-// 💾 SAVE
-// =============================
-doc.save("simulateur_salaire.pdf");
-console.log("✅ PDF généré et téléchargé");
-
-
+    // =============================
+    // 💾 SAUVEGARDE
+    // =============================
+    doc.save("simulateur_salaire.pdf");
+    console.log("✅ PDF généré et téléchargé");
   } catch (err) {
     console.error("❌ Erreur export PDF :", err);
     alert("Erreur lors de l'export PDF !");
