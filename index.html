@@ -1,140 +1,1301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <meta name="theme-color" content="#00AEEF">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulateur Salaire - Flying Whales</title>
+
+  <!-- ✅ Tailwind avec dark mode activé -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+
+  <!-- ✅ Librairies -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- ✅ Police + PWA -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- ✅ Service Worker + DarkMode persisté -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker enregistré"))
+        .catch(err => console.error("Erreur SW:", err));
+    }
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+
+  <style>
+  body { font-family: 'Poppins', sans-serif; }
+
+  .modal { 
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.6); 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 50; 
+  }
+
+  .modal-content { 
+    background: white; 
+    padding: 2rem; 
+    border-radius: 1rem; 
+    max-width: 700px; 
+  }
+
+  .dark .modal-content { 
+    background: #1f2937; 
+    color: white; 
+  }
+
+  /* ✅ Lisibilité en dark mode */
+  .dark select,
+  .dark input,
+  .dark label,
+  .dark span,
+  .dark p,
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5 {
+    color: #f9fafb !important; /* gris très clair lisible */
+  }
+
+/* 🌙 Exception : texte noir sur fond clair dans la box d'analyse */
+.dark #insightBox,
+.dark #insightBox * {
+  color: #000 !important;
+}
+
+  /* ✅ Arrière-plan et bordure sur inputs et sélecteurs */
+  .dark select,
+  .dark input {
+    background-color: #1f2937 !important; /* gris foncé élégant */
+    border-color: #374151 !important; /* gris moyen */
+  }
+
+  /* ✅ Couleur spécifique aux valeurs de salaires */
+  .dark #median,
+  .dark #range,
+  .dark #schoolMedian,
+  .dark #schoolRange {
+    color: #00AEEF !important;
+  }
+
+  /* ✅ Transition douce clair ↔ sombre */
+  body, select, input, label, span, p, h1, h2, h3, h4, h5 {
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+
+  /* ✅ Animation clignotante bouton Export PDF */
+  @keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .highlight {
+    animation: pulse 1.5s infinite;
+  }
+
+  /* 🌙 Optionnel : fond dégradé en dark mode */
+  .dark body {
+    background: linear-gradient(180deg, #0f172a, #1e293b);
+  }
+  
+  /* =========================
+   ✨ DESIGN PREMIUM
+   ========================= */
+
+/* 🌈 Effets de survol & focus */
+select, input[type="range"], button {
+  transition: all 0.25s ease-in-out;
+}
+
+select:hover, select:focus,
+input:hover, input:focus {
+  border-color: #00AEEF;
+  box-shadow: 0 0 8px rgba(0, 174, 239, 0.25);
+}
+
+/* 🎚️ Slider moderne */
+input[type="range"] {
+  accent-color: #00AEEF;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  background: #00AEEF;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  transition: all 0.2s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* 🌙/☀️ Bouton toggle stylé */
+button[onclick="toggleDarkMode()"] {
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  line-height: 1;
+  background: white;
+  color: #003366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+button[onclick="toggleDarkMode()"]:hover {
+  transform: scale(1.1);
+  background: #00AEEF;
+  color: white;
+}
+
+/* 🧊 Cartes (école / résultat) */
+#schoolInfo, #result {
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  backdrop-filter: blur(6px);
+}
+
+.dark #schoolInfo, .dark #result {
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 12px rgba(255,255,255,0.03);
+}
+
+/* ✍️ Titres mieux hiérarchisés */
+h2 {
+  letter-spacing: 0.3px;
+}
+h3 {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* 🕊️ Transitions globales plus douces */
+* {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* =========================
+   ✨ Effets d'apparition et couleur dynamique de la box d'analyse
+   ========================= */
+
+#insightBox {
+  transition: 
+    background 0.6s ease, 
+    border-left 0.4s ease, 
+    transform 0.4s ease, 
+    opacity 0.4s ease;
+  border-radius: 7px;
+  padding: 16px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  margin-top: 12px;
+}
+
+/* 🌙 Amélioration dark mode */
+.dark #insightBox {
+  color: #f9fafb;
+  box-shadow: 0 3px 6px rgba(255,255,255,0.05);
+  
+ /* 🌙 Correction finale – priorité absolue */
+.dark #insightBox,
+.dark #insightBox * {
+  color: #000 !important; /* texte noir */
+  text-shadow: none !important;
+}
+
+</style>
+
+</head>
+
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <!-- Header -->
+  <header class="w-full py-6 bg-[#00AEEF] text-white dark:bg-[#003366] flex justify-between px-8 items-center transition-colors duration-300">
+    <h1 class="text-2xl font-bold">✈️ Simulateur Salaire - Flying Whales</h1>
+    <div class="flex gap-2">
+      <button onclick="toggleDarkMode()" class="px-3 py-1 bg-white text-[#003366] rounded-lg">🌙/☀️</button>
+      <button onclick="openModal()" class="px-3 py-1 bg-white text-[#003366] rounded-lg">❓ Aide</button>
+    </div>
+  </header>
+
+  <!-- Modal d'aide -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <h2 class="text-xl font-bold text-[#003366] dark:text-[#00AEEF] mb-4 transition-colors duration-300">ℹ️ Aide & FAQ</h2>
+      <p><b>🌍 Marché :</b> données nationales (écoles, universités, IT, design, fonctions transverses, +2,3%/an, coefficients).</p>
+      <p><b>🏢 Flying Whales :</b> packages internes FW.</p>
+      <p><b>⚖️ Croisée :</b> combinaison 60% FW, 40% marché.</p>
+      <p><b>📊 Graphique :</b> évolution projetée sur 40 ans.</p>
+      <button onclick="closeModal()" class="mt-4 px-4 py-2 bg-[#00AEEF] text-white rounded">Fermer</button>
+    </div>
+  </div>
+
+  <!-- Formulaire principal -->
+  <main class="max-w-5xl mx-auto p-6">
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-6 transition-colors duration-300">
+      <h2 class="text-xl font-bold text-[#003366] dark:text-[#00AEEF] mb-4">📝 Renseigne ton profil</h2>
+
+      <label>🏷️ Secteur</label>
+      <select id="sector" class="w-full mb-4 p-2 border rounded">
+        <option value="ingenieur">Ingénierie</option>
+        <option value="commerce">Grande école de commerce</option>
+        <option value="scpo">Sciences Po</option>
+        <option value="universite">Université</option>
+        <option value="it">Informatique / IT</option>
+        <option value="design">Design / UX / UI</option>
+        <option value="fonction">Fonctions transverses</option>
+      </select>
+
+      <label>📚 École</label>
+      <select id="school" class="w-full mb-4 p-2 border rounded"></select>
+      <!-- 💡 Résumé dynamique école -->
+<div id="schoolInfo"
+     class="hidden mt-[-6px] p-0.5 border border-gray-200 rounded-md bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-300 transition-all duration-500 opacity-0 translate-y-0.5">
+  <h3 class="font-semibold text-[#003366] dark:text-[#00AEEF] mb-0.5 text-sm">
+    📘 Sortie d’école
+  </h3>
+  <p class="leading-tight"><b>Médian :</b> <span id="schoolLiveMedian">—</span></p>
+  <p class="leading-tight"><b>Fourchette :</b> <span id="schoolLiveRange">—</span></p>
+</div>
+
+
+
+      <label>💼 Fonction / Métier</label>
+      <select id="fonction" class="w-full mb-4 p-2 border rounded"></select>
+
+      <label>📅 Expérience: <span id="expVal">3</span> ans</label>
+      <input type="range" id="experience" min="0" max="40" value="3" class="w-full mb-4">
+
+      <label>🔬 Sous-domaine (ingénierie uniquement)</label>
+      <select id="subdomain" class="w-full mb-4 p-2 border rounded"></select>
+
+      <label>👔 Rôle / Statut</label>
+      <select id="role" class="w-full mb-4 p-2 border rounded"></select>
+
+      <label>🏷️ Classification interne</label>
+      <select id="classification" class="w-full mb-4 p-2 border rounded">
+        <option value="">-- Optionnelle --</option>
+        <option value="I1">I1 - Ingénieur Débutant</option>
+        <option value="I2">I2 - Ingénieur Confirmé</option>
+        <option value="I3">I3 - Ingénieur Senior</option>
+        <option value="I4">I4 - Ingénieur Expert</option>
+        <option value="M1">M1 - Manager Niveau 1</option>
+        <option value="M2">M2 - Manager Niveau 2</option>
+        <option value="M3">M3 - Leader Département</option>
+        <option value="RLot">Responsable de Lot</option>
+        <option value="DirecteurTechnique">Directeur Technique</option>
+      </select>
+
+      <label>🌍 Région</label>
+      <select id="region" class="w-full mb-4 p-2 border rounded">
+        <option value="IDF">Île-de-France</option>
+        <option value="hors">Hors Île-de-France</option>
+      </select>
+
+      <label>🏢 Taille entreprise</label>
+      <select id="companySize" class="w-full mb-4 p-2 border rounded">
+        <option value="startup">Startup</option>
+        <option value="PME">PME</option>
+        <option value="ETI">ETI</option>
+        <option value="grand-groupe">Grand Groupe</option>
+      </select>
+
+      <label>📊 Source des données</label>
+      <select id="source" class="w-full mb-4 p-2 border rounded">
+        <option value="marche">🌍 Marché</option>
+        <option value="fw">🏢 Flying Whales (interne)</option>
+        <option value="croisee">⚖️ Données croisées</option>
+      </select>
+    </section>
+
+        <!-- Section Résultats -->
+    <section id="result" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hidden">
+      <h2 class="text-xl font-bold text-[#003366] dark:text-[#00AEEF] mb-4">📊 Résultats</h2>
+      <p><b>Référence école :</b> <span id="schoolRange"></span></p>
+      <p><b>Médian école :</b> <span id="schoolMedian"></span></p>
+      <hr class="my-4">
+      <p><b>Estimation personnalisée :</b></p>
+      <p>Médian: <span id="median"></span></p>
+      <p>Fourchette: <span id="range"></span></p>
+      <canvas id="salaryChart" class="mt-6"></canvas>
+      <!-- 🧠 Analyse dynamique -->
+<div id="insightBox" 
+     class="mt-4 p-4 border rounded-lg bg-blue-50 dark:bg-gray-700 hidden transition-all duration-500">
+  <h3 class="font-semibold text-[#003366] dark:text-[#00AEEF] mb-1">💡 Analyse personnalisée</h3>
+  <p id="insightText">Ton profil est en cours d’analyse...</p>
+</div>
+
+      <!-- ✅ Prévisualisation PDF -->
+<iframe id="pdfPreview" style="width:100%; height:500px; border:1px solid #ccc; margin-top:20px;"></iframe>
+
+      <!-- 🚀 Bouton Export PDF avec effet clignotant -->
+      <button onclick="exportPDF()" 
+        class="mt-4 px-4 py-2 bg-green-600 text-white rounded highlight">
+        📑 Exporter en PDF
+      </button>
+    </section>
+  </main>
+  <script>
+    // ===============================
+    // Bloc 3 : Écoles d’ingénieurs (71 + Hors liste)
+    // Données = salaires sortie d’école (brut annuel) avec mini-fourchette
+    // ===============================
+
+    const schoolsIngenieur = [
+      { Ecole:"Polytechnique", p25:54000, p50:57000, p75:60000 },
+      { Ecole:"Mines Paris", p25:44000, p50:45750, p75:47500 },
+      { Ecole:"CentraleSupélec", p25:45000, p50:47000, p75:49000 },
+      { Ecole:"ISAE-Supaéro", p25:42000, p50:43500, p75:45000 },
+      { Ecole:"Télécom Paris", p25:45000, p50:46300, p75:48000 },
+      { Ecole:"ESTP", p25:44000, p50:46000, p75:48000 },
+      { Ecole:"ESTACA", p25:42000, p50:44600, p75:47000 },
+      { Ecole:"Efrei", p25:47000, p50:48700, p75:50500 },
+      { Ecole:"IMT Atlantique", p25:44000, p50:44900, p75:46000 },
+      { Ecole:"Centrale Nantes", p25:39500, p50:41165, p75:43000 },
+      { Ecole:"Centrale Lyon", p25:43000, p50:44500, p75:46000 },
+      { Ecole:"Centrale Marseille", p25:42000, p50:44000, p75:46000 },
+      { Ecole:"Centrale Lille", p25:42000, p50:44000, p75:46000 },
+      { Ecole:"Centrale Paris", p25:45000, p50:47000, p75:49000 },
+      { Ecole:"ENSAM Arts et Métiers", p25:39000, p50:41000, p75:43000 },
+      { Ecole:"Mines Nancy", p25:40000, p50:42000, p75:44000 },
+      { Ecole:"Mines Saint-Étienne", p25:40000, p50:42000, p75:44000 },
+      { Ecole:"Mines Alès", p25:38000, p50:40000, p75:42000 },
+      { Ecole:"Mines Douai", p25:38000, p50:40000, p75:42000 },
+      { Ecole:"ENSTA Paris", p25:43000, p50:45000, p75:47000 },
+      { Ecole:"ENSTA Bretagne", p25:38000, p50:40000, p75:42000 },
+      { Ecole:"Télécom SudParis", p25:39000, p50:41000, p75:43000 },
+      { Ecole:"Télécom Nancy", p25:38000, p50:40000, p75:42000 },
+      { Ecole:"INSA Lyon", p25:38000, p50:40000, p75:42000 },
+      { Ecole:"INSA Toulouse", p25:37000, p50:39000, p75:41000 },
+      { Ecole:"INSA Rennes", p25:37000, p50:39000, p75:41000 },
+      { Ecole:"INSA Strasbourg", p25:37000, p50:39000, p75:41000 },
+      { Ecole:"INSA Rouen", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"UTC Compiègne", p25:37000, p50:39000, p75:41000 },
+      { Ecole:"UTT Troyes", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"UTBM Belfort", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"Polytech Grenoble", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"Polytech Nantes", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"Polytech Orléans", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"Polytech Sorbonne", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"Polytech Nice", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"Polytech Lyon", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"Polytech Lille", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ESILV", p25:45000, p50:46800, p75:48500 },
+      { Ecole:"ESME Sudria", p25:37000, p50:39000, p75:41000 },
+      { Ecole:"EPF", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"ECE Paris", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"ESIEA", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ESIEE Paris", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"ISEN", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"HEI Lille", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"EIGSI La Rochelle", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ENSTA", p25:42000, p50:44000, p75:46000 },
+      { Ecole:"ENSICAEN", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ENSC Rennes", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ENSAM Metz", p25:37000, p50:39000, p75:41000 },
+      { Ecole:"ENSAIA", p25:34000, p50:36000, p75:38000 },
+      { Ecole:"AgroParisTech", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ISA Lille", p25:34000, p50:36000, p75:38000 },
+      { Ecole:"EI Purpan", p25:34000, p50:36000, p75:38000 },
+      { Ecole:"ESA Angers", p25:34000, p50:36000, p75:38000 },
+      { Ecole:"ESIGELEC", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ENSEA", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ESEO Angers", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ENSMA Poitiers", p25:36000, p50:38000, p75:40000 },
+      { Ecole:"ENSI Poitiers", p25:35000, p50:37000, p75:39000 },
+      { Ecole:"ENISE Saint-Étienne", p25:34000, p50:36000, p75:38000 },
+      { Ecole:"SUPAERO Toulouse", p25:42000, p50:43500, p75:45000 },
+      { Ecole:"ENAC Toulouse", p25:40000, p50:42000, p75:44000 },
+      { Ecole:"ENSGTI Pau", p25:34000, p50:36000, p75:38000 },
+      { Ecole:"ENSGSI Nancy", p25:34000, p50:36000, p75:38000 },
+      { Ecole:"ESPCI Paris", p25:43000, p50:45000, p75:47000 },
+      { Ecole:"ENS Cachan", p25:42000, p50:44000, p75:46000 },
+      { Ecole:"ENS Lyon", p25:42000, p50:44000, p75:46000 },
+      { Ecole:"ENS Paris-Saclay", p25:42000, p50:44000, p75:46000 },
+      { Ecole:"ENS Ulm", p25:43000, p50:45000, p75:47000 },
+      { Ecole:"Hors liste", p25:33000, p50:35000, p75:37000 }
+    ];
+    // ===============================
+    // Bloc 4 : Grandes écoles de commerce (30)
+    // ===============================
+
+    const schoolsCommerce = [
+      {Ecole:"HEC Paris", p25:48000, p50:55000, p75:65000},
+      {Ecole:"ESSEC Business School", p25:45000, p50:52000, p75:62000},
+      {Ecole:"ESCP Business School", p25:44000, p50:51000, p75:60000},
+      {Ecole:"EDHEC Business School", p25:42000, p50:49000, p75:58000},
+      {Ecole:"emlyon Business School", p25:43000, p50:50000, p75:59000},
+      {Ecole:"Audencia Business School", p25:40000, p50:47000, p75:56000},
+      {Ecole:"Skema Business School", p25:38000, p50:45000, p75:53000},
+      {Ecole:"NEOMA Business School", p25:37000, p50:44000, p75:52000},
+      {Ecole:"Kedge Business School", p25:35000, p50:42000, p75:50000},
+      {Ecole:"TBS Education", p25:36000, p50:43000, p75:51000},
+      {Ecole:"Grenoble EM", p25:37000, p50:44000, p75:52000},
+      {Ecole:"Montpellier BS", p25:35000, p50:42000, p75:50000},
+      {Ecole:"Rennes SB", p25:34000, p50:41000, p75:49000},
+      {Ecole:"ICN Business School", p25:34000, p50:40000, p75:48000},
+      {Ecole:"EM Strasbourg", p25:34000, p50:40000, p75:48000},
+      {Ecole:"Excelia Business School", p25:33000, p50:39000, p75:47000},
+      {Ecole:"ISC Paris", p25:33000, p50:39000, p75:46000},
+      {Ecole:"INSEEC Grande École", p25:32000, p50:38000, p75:45000},
+      {Ecole:"PSB (Paris School of Business)", p25:32000, p50:38000, p75:45000},
+      {Ecole:"EMLV (École de Management Léonard de Vinci)", p25:31000, p50:37000, p75:44000},
+      {Ecole:"ISG (Institut Supérieur de Gestion)", p25:31000, p50:37000, p75:43000},
+      {Ecole:"ESC Clermont BS", p25:31000, p50:36000, p75:42000},
+      {Ecole:"Burgundy School of Business (BSB Dijon)", p25:31000, p50:36000, p75:42000},
+      {Ecole:"IMT-BS (Institut Mines-Télécom Business School)", p25:30000, p50:36000, p75:42000},
+      {Ecole:"ESC Pau Business School", p25:30000, p50:35000, p75:41000},
+      {Ecole:"SCBS (South Champagne Business School)", p25:30000, p50:35000, p75:40000},
+      {Ecole:"Brest Business School", p25:29000, p50:34000, p75:39000},
+      {Ecole:"ISCID-CO (Boulogne/Calais)", p25:28000, p50:33000, p75:38000},
+      {Ecole:"ICD Business School", p25:28000, p50:33000, p75:38000},
+      {Ecole:"ESLSCA Business School Paris", p25:28000, p50:33000, p75:38000}
+    ];
+        // ===============================
+    // Bloc 5 : Sciences Po (10 IEP)
+    // ===============================
+
+    const schoolsScPo = [
+      {Ecole:"Sciences Po Paris", p25:36000, p50:40000, p75:45000},
+      {Ecole:"Sciences Po Bordeaux", p25:34000, p50:37000, p75:42000},
+      {Ecole:"Sciences Po Grenoble", p25:33500, p50:36500, p75:41000},
+      {Ecole:"Sciences Po Lille", p25:34000, p50:37000, p75:42000},
+      {Ecole:"Sciences Po Lyon", p25:34500, p50:37500, p75:42500},
+      {Ecole:"Sciences Po Rennes", p25:33000, p50:36000, p75:41000},
+      {Ecole:"Sciences Po Strasbourg", p25:33500, p50:36500, p75:41500},
+      {Ecole:"Sciences Po Toulouse", p25:33500, p50:36500, p75:41500},
+      {Ecole:"Sciences Po Saint-Germain-en-Laye", p25:32000, p50:35000, p75:40000},
+      {Ecole:"Sciences Po Aix", p25:33000, p50:36000, p75:41000}
+    ];
+    // ===============================
+    // Bloc 6 : Universités (Top 20)
+    // ===============================
+
+    const schoolsUniversite = [
+      {Ecole:"Sorbonne Université", p25:35000, p50:39000, p75:43000},
+      {Ecole:"Université Paris-Saclay", p25:35000, p50:39000, p75:43000},
+      {Ecole:"Université PSL (Paris Sciences & Lettres)", p25:35000, p50:39500, p75:43500},
+      {Ecole:"Université Paris Cité", p25:34000, p50:38000, p75:42000},
+      {Ecole:"Université de Montpellier", p25:33500, p50:37500, p75:41500},
+      {Ecole:"Université de Strasbourg", p25:33500, p50:37500, p75:41500},
+      {Ecole:"Université Grenoble Alpes", p25:33500, p50:37500, p75:41500},
+      {Ecole:"Aix-Marseille Université", p25:33000, p50:37000, p75:41000},
+      {Ecole:"Université de Bordeaux", p25:33000, p50:37000, p75:41000},
+      {Ecole:"Université de Lyon", p25:33000, p50:37000, p75:41000},
+      {Ecole:"Université de Lille", p25:32500, p50:36500, p75:40500},
+      {Ecole:"Université Toulouse III - Paul Sabatier", p25:32500, p50:36500, p75:40500},
+      {Ecole:"Université de Nantes", p25:32000, p50:36000, p75:40000},
+      {Ecole:"Université de Rennes 1", p25:32000, p50:36000, p75:40000},
+      {Ecole:"Université de Lorraine", p25:32000, p50:36000, p75:40000},
+      {Ecole:"Université Côte d’Azur (Nice)", p25:31500, p50:35500, p75:39500},
+      {Ecole:"Université de Tours", p25:31000, p50:35000, p75:39000},
+      {Ecole:"Université d’Angers", p25:31000, p50:35000, p75:39000},
+      {Ecole:"Université de Clermont Auvergne", p25:31000, p50:35000, p75:39000},
+      {Ecole:"Université de Reims Champagne-Ardenne", p25:30500, p50:34500, p75:38500}
+    ];
+    // ===============================
+    // Bloc 7 : Écoles Informatique / IT (Top 15 + hors liste)
+    // ===============================
+
+    const schoolsIT = [
+      { Ecole: "École 42", p25: 30000, p50: 35000, p75: 42000 },
+      { Ecole: "EPITA", p25: 32000, p50: 37000, p75: 43000 },
+      { Ecole: "Epitech", p25: 31000, p50: 36000, p75: 42000 },
+      { Ecole: "ENSIMAG / Grenoble INP (informatique)", p25: 30000, p50: 35000, p75: 41000 },
+      { Ecole: "Télécom Paris (informatique)", p25: 33000, p50: 38000, p75: 44000 },
+      { Ecole: "Télécom SudParis (informatique)", p25: 31000, p50: 36000, p75: 42000 },
+      { Ecole: "Télécom Nancy (informatique)", p25: 29000, p50: 34000, p75: 39000 },
+      { Ecole: "ENSIIE (informatique)", p25: 28000, p50: 33000, p75: 38000 },
+      { Ecole: "ISIMA (informatique)", p25: 27000, p50: 32000, p75: 37000 },
+      { Ecole: "Polytech Grenoble (informatique)", p25: 27000, p50: 32000, p75: 37000 },
+      { Ecole: "Polytech Lyon (informatique)", p25: 27000, p50: 32000, p75: 37000 },
+      { Ecole: "Université Paris Cité (informatique)", p25: 25000, p50: 30000, p75: 35000 },
+      { Ecole: "Université de Strasbourg (informatique)", p25: 24000, p50: 29000, p75: 34000 },
+      { Ecole: "Université de Bordeaux (informatique)", p25: 24000, p50: 29000, p75: 34000 },
+      { Ecole: "Université de Lille (informatique)", p25: 23000, p50: 28000, p75: 33000 },
+      { Ecole: "Supélec / Centrale (informatique)", p25: 32000, p50: 37000, p75: 43000 },
+      { Ecole: "Hors liste IT", p25: 22000, p50: 27000, p75: 32000 }
+    ];
+
+    // ===============================
+    // Métiers IT
+    // ===============================
+
+    const functionsIT = {
+      "Développeur Front-End": { p25: 30000, p50: 38000, p75: 48000 },
+      "Développeur Back-End": { p25: 32000, p50: 40000, p75: 50000 },
+      "Développeur Full-Stack": { p25: 33000, p50: 42000, p75: 52000 },
+      "Data Engineer": { p25: 35000, p50: 45000, p75: 58000 },
+      "Data Scientist": { p25: 37000, p50: 48000, p75: 62000 },
+      "DevOps / SRE": { p25: 36000, p50: 47000, p75: 60000 },
+      "Infra / Réseau": { p25: 32000, p50: 42000, p75: 54000 },
+      "Cloud Architect": { p25: 45000, p50: 60000, p75: 80000 },
+      "Cybersecurity": { p25: 38000, p50: 50000, p75: 65000 },
+      "Admin Systèmes": { p25: 31000, p50: 40000, p75: 52000 }
+    };
+    // ===============================
+    // Bloc 8 : Écoles Design (Top 8 + hors liste)
+    // ===============================
+
+    const schoolsDesign = [
+      { Ecole: "Strate École de Design", p25: 28000, p50: 33000, p75: 40000 },
+      { Ecole: "ENSAD (Arts Décos)", p25: 26000, p50: 31000, p75: 38000 },
+      { Ecole: "École Estienne", p25: 25000, p50: 30000, p75: 35000 },
+      { Ecole: "École de Design Nantes Atlantique", p25: 26000, p50: 31000, p75: 36000 },
+      { Ecole: "Gobelins", p25: 27000, p50: 32000, p75: 38000 },
+      { Ecole: "ENSCI-Les Ateliers", p25: 25000, p50: 30000, p75: 35000 },
+      { Ecole: "LISAA", p25: 23000, p50: 28000, p75: 33000 },
+      { Ecole: "Université (arts appliqués)", p25: 22000, p50: 27000, p75: 32000 },
+      { Ecole: "Hors liste Design", p25: 20000, p50: 25000, p75: 30000 }
+    ];
+
+    // ===============================
+    // Métiers Design
+    // ===============================
+
+    const functionsDesign = {
+      "UX Designer": { p25: 30000, p50: 38000, p75: 48000 },
+      "UI Designer": { p25: 32000, p50: 40000, p75: 50000 },
+      "Product Designer": { p25: 33000, p50: 42000, p75: 55000 },
+      "Motion Designer": { p25: 28000, p50: 35000, p75: 45000 },
+      "Graphiste / Branding": { p25: 26000, p50: 33000, p75: 42000 },
+      "Interaction Designer": { p25: 30000, p50: 38000, p75: 47000 }
+    };
+    // ===============================
+    // Bloc 9 : Fonctions transverses
+    // ===============================
+
+    // Achats
+    const functionsAchats = {
+      "Acheteur Junior": { p25:38000, p50:42000, p75:47000 },
+      "Acheteur Confirmé": { p25:45000, p50:50000, p75:55000 },
+      "Responsable Achats": { p25:55000, p50:65000, p75:80000 },
+      "Directeur Achats": { p25:80000, p50:95000, p75:120000 }
+    };
+
+    // Immobilier
+    const functionsImmo = {
+      "Chargé de Gestion Immobilière": { p25:32000, p50:38000, p75:45000 },
+      "Property Manager": { p25:40000, p50:52000, p75:65000 },
+      "Responsable Immobilier": { p25:55000, p50:72000, p75:90000 },
+      "Directeur Immobilier": { p25:80000, p50:100000, p75:125000 }
+    };
+
+    // Ressources Humaines
+    const functionsRH = {
+      "Chargé RH": { p25:34000, p50:39000, p75:45000 },
+      "Chargé de Recrutement": { 
+        p25:37000, 
+        p50:42000, 
+        p75:47000,
+        fwBase: { exp: 5, salaire: 46987 } // Donnée FW interne
+      },
+      "Responsable Recrutement": { p25:45000, p50:53000, p75:60000 },
+      "Responsable RH / HRBP": { p25:47000, p50:55250, p75:66000 },
+      "Directeur des Ressources Humaines": { p25:70000, p50:95000, p75:120000 }
+    };
+
+    // Finance
+    const functionsFinance = {
+      "Comptable": { p25:32000, p50:37000, p75:42000 },
+      "Contrôleur de Gestion": { p25:42000, p50:49400, p75:60000 },
+      "Auditeur Interne": { p25:40000, p50:47000, p75:55000 },
+      "Trésorier": { p25:45000, p50:52000, p75:60000 },
+      "Responsable Financier": { p25:55000, p50:65000, p75:80000 },
+      "Directeur Administratif et Financier (DAF)": { p25:80000, p50:110000, p75:140000 }
+    };
+
+    // Commerciaux
+    const functionsCommerciaux = {
+      "Business Developer Junior": { p25:30000, p50:35000, p75:40000 },
+      "Business Developer Confirmé": { p25:38000, p50:42000, p75:48000 },
+      "Ingénieur d’Affaires": { p25:45000, p50:50000, p75:60000 },
+      "Responsable Commercial": { p25:55000, p50:60000, p75:75000 },
+      "Directeur Commercial": { p25:75000, p50:85000, p75:110000 }
+    };
+    // ===============================
+    // Bloc 10 : Coefficients / rôles
+    // ===============================
+
+    const subdomainCoef = {
+      "Calculs & Simulation": 1.10,
+      "Conception": 1.05,
+      "Électronique": 1.08,
+      "Avionique": 1.08,
+      "Matériaux": 1.05,
+      "Propulsion": 1.08,
+      "Méthodes": 1.02,         
+      "Production": 1.02,
+      "Maintenance": 1.05,      
+      "Qualité": 1.06,          
+      "Supply Chain": 1.06,     
+      "Gestion de Projet": 1.05,
+      "Ingénierie Systèmes": 1.08,
+      "Gestion de Programme": 1.08,
+      "Support Client": 1.02,   
+      "Thermique": 1.09,
+      "Dynamique de Vol": 1.11,
+      "Électrique": 1.11,
+      "Test": 1.05
+    };
+
+    const roles = [
+      "Ingénieur Standard",
+      "Expert Technique",
+      "Architecte Système",
+      "Chef de Projet",
+      "Manager d’Équipe",
+      "Directeur de Programme"
+    ];
+    // ===============================
+    // Bloc 11 : Logique principale
+    // ===============================
+
+    function populateMenus() {
+      const sectorSel=document.getElementById("sector");
+      const schoolSel=document.getElementById("school");
+      const fonctionSel=document.getElementById("fonction");
+      const subSel=document.getElementById("subdomain");
+      const roleSel=document.getElementById("role");
+
+      // === Écoles dynamiques selon secteur ===
+      function updateSchoolList() {
+        schoolSel.innerHTML="";
+        if(sectorSel.value==="ingenieur") schoolsIngenieur.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
+        if(sectorSel.value==="commerce") schoolsCommerce.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
+        if(sectorSel.value==="scpo") schoolsScPo.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
+        if(sectorSel.value==="universite") schoolsUniversite.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
+        if(sectorSel.value==="it") schoolsIT.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
+        if(sectorSel.value==="design") schoolsDesign.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
+      }
+      sectorSel.addEventListener("change", ()=>{updateSchoolList(); calculateSalary();});
+      updateSchoolList();
+      
+      
+      
+
+      // === Fonctions disponibles ===
+      fonctionSel.innerHTML="";
+      fonctionSel.add(new Option("-- Pas de fonction transverse --",""));
+      const allFunctions = {
+        ...functionsAchats,
+        ...functionsImmo,
+        ...functionsRH,
+        ...functionsFinance,
+        ...functionsCommerciaux,
+        ...functionsIT,
+        ...functionsDesign
+      };
+      Object.keys(allFunctions).forEach(k=>fonctionSel.add(new Option(k,k)));
+
+      // === Sous-domaines ingénierie ===
+      subSel.innerHTML="";
+      subSel.add(new Option("-- Pas de sous-domaine --",""));
+      Object.keys(subdomainCoef).forEach(k=>subSel.add(new Option(k,k)));
+
+      // === Rôles ===
+      roles.forEach(r=>roleSel.add(new Option(r,r)));
+
+      // === Events ===
+      document.querySelectorAll("#school, #fonction, #subdomain, #role, #classification, #region, #companySize, #source")
+        .forEach(el => el.addEventListener("change", calculateSalary));
+
+      document.getElementById("experience").addEventListener("input", e=>{
+        document.getElementById("expVal").innerText=e.target.value; 
+        calculateSalary();
+      });
+
+      calculateSalary();
+    }
+
+    let chart;
+
+    function interpolateFW(exp, minExp, maxExp, minVal, maxVal) {
+      if (exp <= minExp) return minVal;
+      if (exp >= maxExp) return maxVal;
+      const ratio = (exp - minExp) / (maxExp - minExp);
+      return minVal + ratio * (maxVal - minVal);
+    }
+
+    function calculateSalary() {
+      const sector=document.getElementById("sector").value;
+      const exp=parseInt(document.getElementById("experience").value);
+      let p25=0,p50=0,p75=0;
+      let refP25=0,refP50=0,refP75=0; // ✅ sortie école brute
+
+      // === Cas 1 : École ===
+      const sch=document.getElementById("school").value;
+      if(sch){
+        if(sector==="ingenieur"){ const school=schoolsIngenieur[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+        if(sector==="commerce"){ const school=schoolsCommerce[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+        if(sector==="scpo"){ const school=schoolsScPo[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+        if(sector==="universite"){ const school=schoolsUniversite[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+        if(sector==="it"){ const school=schoolsIT[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+        if(sector==="design"){ const school=schoolsDesign[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+      }
+
+      // === Cas 2 : Fonction transverse ===
+      const fn=document.getElementById("fonction").value;
+      if(fn){
+        const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux,...functionsIT,...functionsDesign};
+        const f=allFunctions[fn];
+        if(f){
+          if(p25>0 && p50>0){ // hybride école + fonction
+            p25 = 0.6*p25 + 0.4*f.p25;
+            p50 = 0.6*p50 + 0.4*f.p50;
+            p75 = 0.6*p75 + 0.4*f.p75;
+          } else { // fonction seule
+            p25=f.p25; p50=f.p50; p75=f.p75;
+            if(f.fwBase){
+              const baseExp=f.fwBase.exp;
+              const baseSalary=f.fwBase.salaire;
+              const factor=Math.pow(1.023,exp-baseExp);
+              p25=baseSalary*0.9*factor;
+              p50=baseSalary*factor;
+              p75=baseSalary*1.1*factor;
+            }
+          }
+        }
+      }
+
+      // ✅ Affichage référence sortie école brute
+      if(refP50>0){
+        document.getElementById("schoolRange").innerText=Math.round(refP25)+"€ – "+Math.round(refP75)+"€";
+        document.getElementById("schoolMedian").innerText=Math.round(refP50)+"€";
+      } else {
+        document.getElementById("schoolRange").innerText="N/A";
+        document.getElementById("schoolMedian").innerText="N/A";
+      }
+
+      // Expérience (+2,3%/an)
+      let factor=Math.pow(1.023,exp);
+      p25*=factor; p50*=factor; p75*=factor;
+
+      // Coeffs région/entreprise
+      const sd=subdomainCoef[document.getElementById("subdomain").value]||1;
+      const regionCoef=document.getElementById("region").value==="hors"?0.86:1.14; 
+      const sizeCoef={startup:0.9,PME:1.0,ETI:1.05,"grand-groupe":1.15}[document.getElementById("companySize").value]||1;
+      let coef=sd*regionCoef*sizeCoef;
+
+      // Rôle / classification
+      const classification=document.getElementById("classification").value;
+      let roleCoef=1;
+      if (classification==="M1") roleCoef=1.10;
+      if (classification==="M2") roleCoef=1.15;
+      if (classification==="M3") roleCoef=1.20; 
+      if (classification==="RLot") roleCoef=1.07;
+      if (classification==="DirecteurTechnique") roleCoef=1.25;
+
+      // Source
+      const source=document.getElementById("source").value;
+      let median,low,high;
+      if(source==="marche"){
+        median=p50; low=p25; high=p75;
+      }else if(source==="fw"){
+        median=p50*0.95; low=p25*0.95; high=p75*0.95;
+      }else{
+        median=(p50*0.4 + p50*0.95*0.6);
+        low=(p25*0.4 + p25*0.95*0.6);
+        high=(p75*0.4 + p75*0.95*0.6);
+      }
+
+      // appliquer region + taille + rôle
+      median*=coef*roleCoef;
+      low*=coef*roleCoef;
+      high*=coef*roleCoef;
+
+      // Planchers FW I1–I4
+      let fwP25=null, fwP50=null, fwP75=null;
+      if (classification==="I1") {
+        fwP25 = interpolateFW(exp,1,3,38000,44000);
+        fwP50 = interpolateFW(exp,1,3,38000,48000);
+        fwP75 = interpolateFW(exp,1,3,40000,50000);
+      }
+      if (classification==="I2") {
+        fwP25 = interpolateFW(exp,3,5,48000,53000);
+        fwP50 = interpolateFW(exp,3,5,48000,59000);
+        fwP75 = interpolateFW(exp,3,5,50000,61000);
+      }
+      if (classification==="I3") {
+        fwP25 = interpolateFW(exp,6,8,59000,68000);
+        fwP50 = interpolateFW(exp,6,8,59000,73330);
+        fwP75 = interpolateFW(exp,6,8,61000,76000);
+      }
+      if (classification==="I4") {
+        const base = 73330*1.02;
+        const factorI4 = Math.pow(1.023,Math.max(0,exp-10));
+        fwP25 = base*0.95*factorI4;
+        fwP50 = base*factorI4;
+        fwP75 = base*1.10*factorI4;
+      }
+
+      if(fwP25&&fwP50&&fwP75){
+        fwP25 *= regionCoef*sizeCoef;
+        fwP50 *= regionCoef*sizeCoef;
+        fwP75 *= regionCoef*sizeCoef;
+        low=Math.max(low,fwP25);
+        median=Math.max(median,fwP50);
+        high=Math.max(high,fwP75);
+      }
+
+      // ✅ Affichage estimation personnalisée
+      document.getElementById("median").innerText=Math.round(median)+"€";
+      document.getElementById("range").innerText=Math.round(low)+"€ – "+Math.round(high)+"€";
+      document.getElementById("result").classList.remove("hidden");
+
+      // Graphique
+      const ctx=document.getElementById("salaryChart").getContext("2d");
+      if(chart) chart.destroy();
+      const years=[...Array(41).keys()];
+      const projection=years.map(y=>median*Math.pow(1.023,y));
+      chart = new Chart(ctx, {
+  type: "line",
+  data: {
+    labels: years,
+    datasets: [{
+      label: "Salaire médian projeté (€)",
+      data: projection,
+      borderColor: "#003366",
+      backgroundColor: "rgba(0, 51, 102, 0.1)",
+      fill: true,
+      tension: 0.3, // courbe lissée
+      pointBackgroundColor: "#003366",
+      pointRadius: 3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: "top",
+        labels: {
+          color: "#003366",
+          font: { size: 9 }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return context.formattedValue + " €";
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        ticks: {
+          callback: function(value) {
+            return value.toLocaleString("fr-FR") + " €";
+          }
+        }
+      }
+    }
+  }
+});
+
+// === 💡 Analyse dynamique ===
+const insightBox = document.getElementById("insightBox");
+const insightText = document.getElementById("insightText");
+
+if (median > 0) {
+  const growth20 = Math.round(median * Math.pow(1.023, 20));
+  const growth40 = Math.round(median * Math.pow(1.023, 40));
+
+  let msg = `Avec un salaire médian actuel de ${Math.round(median).toLocaleString()} €, `;
+  msg += `tu atteindrais environ ${growth20.toLocaleString()} € à 20 ans `;
+  msg += `et ${growth40.toLocaleString()} € à 40 ans d’expérience. `;
+  msg += `Cela représente une croissance totale de +${Math.round(((growth40/median)-1)*100)}% sur ta carrière.`;
+
+  insightText.textContent = msg;
+
+  insightBox.classList.remove("hidden");
+  requestAnimationFrame(() => {
+    insightBox.style.opacity = "1";
+    insightBox.style.transform = "translateY(0)";
+    
+  });
+  generateInsight(median, low, high);
+}
+
+function generateInsight(median, low, high) {
+  const sector = document.getElementById("sector").value;
+  const exp = parseInt(document.getElementById("experience").value);
+  const role = document.getElementById("role").value;
+  const classification = document.getElementById("classification").value;
+  const region = document.getElementById("region").value;
+  const size = document.getElementById("companySize").value;
+  const source = document.getElementById("source").value;
+
+  let msg = "";
+
+  // 1️⃣ Contexte général
+  if (source === "fw") msg += "🔷 Données internes Flying Whales : ";
+  else if (source === "marche") msg += "🌍 Données marché : ";
+  else msg += "⚖️ Données croisées (60% FW / 40% marché) : ";
+
+  msg += `salaire médian estimé à ${Math.round(median).toLocaleString()} €. `;
+
+  // 2️⃣ Expérience
+  if (exp < 3) msg += "Tu es en début de carrière — la progression sera rapide les 5 premières années. ";
+  else if (exp < 10) msg += "Tu es dans la phase de consolidation de ton expertise. ";
+  else msg += "Ton profil est expérimenté : la progression salariale dépendra surtout des changements de rôle. ";
+
+  // 3️⃣ Classification & rôle
+  if (classification.startsWith("I")) msg += `Position actuelle : ${classification}, ingénieur technique. `;
+  if (classification.startsWith("M")) msg += `Rôle managérial (${classification}), avec impact fort sur la rémunération. `;
+  if (classification === "RLot" || role.includes("Chef")) msg += "Profil orienté gestion de projet. ";
+  if (role.includes("Directeur")) msg += "Profil direction confirmé, très au-dessus de la médiane marché. ";
+
+  // 4️⃣ Région & taille entreprise
+  if (region === "IDF") msg += "Région : Île-de-France, majoration moyenne de +14%. ";
+  else msg += "Région hors IDF : rémunération ajustée -14% en moyenne. ";
+
+  if (size === "grand-groupe") msg += "Grand groupe : politique salariale stable mais évolutions plus lentes. ";
+  if (size === "startup") msg += "Startup : salaires d’entrée plus bas, mais forte croissance possible avec responsabilités. ";
+
+  // 5️⃣ Analyse comparative simple
+  const growth20 = Math.round(median * Math.pow(1.023, 20));
+  const growth40 = Math.round(median * Math.pow(1.023, 40));
+  const growthPercent = Math.round(((growth40 / median) - 1) * 100);
+
+  msg += `Projection : environ ${growth20.toLocaleString()} € à 20 ans, ${growth40.toLocaleString()} € à 40 ans, soit +${growthPercent}% sur carrière. `;
+
+ // ✨ Rendu
+const insightText = document.getElementById("insightText");
+const insightBox = document.getElementById("insightBox");
+
+// 6️⃣ Insight qualitatif selon niveau de salaire 
+if (median < 40000) msg += "💬 Niveau inférieur à la moyenne nationale, mais améliorable via spécialisation ou mobilité.";
+else if (median < 60000) msg += "💬 Niveau correct et compétitif sur le marché actuel.";
+else if (median < 90000) msg += "💬 Très bon niveau de rémunération, dans le top 20% du marché.";
+else msg += "💬 Excellent positionnement : profil à très forte valeur ajoutée.";
+
+// 🎨 Couleur selon le niveau de salaire (placé APRÈS la déclaration d'insightBox)
+if (median < 40000) {
+  insightBox.style.background = "#fee2e2"; // rouge clair
+  insightBox.style.borderLeft = "6px solid #dc2626"; // rouge vif
+} else if (median < 60000) {
+  insightBox.style.background = "#fef9c3"; // jaune clair
+  insightBox.style.borderLeft = "6px solid #eab308"; // jaune vif
+} else if (median < 90000) {
+  insightBox.style.background = "#dcfce7"; // vert clair
+  insightBox.style.borderLeft = "6px solid #16a34a"; // vert moyen
+} else {
+  insightBox.style.background = "#dbeafe"; // bleu clair
+  insightBox.style.borderLeft = "6px solid #2563eb"; // bleu vif
+}
+
+insightText.textContent = msg;
+insightBox.classList.remove("hidden");
+}
+
+    }
+      // ===============================
+  // Export PDF avec jsPDF + chart
+  // ===============================
+
+  // Ajout du script jsPDF + plugin html2canvas pour capturer le graphique
+
+  function exportPDF() {
+    const jsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+
+
+    if (!jsPDF) {
+      alert("⚠️ jsPDF n'est pas encore chargé, réessaie dans 2 secondes.");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // Titre
+    doc.setFontSize(18);
+    doc.text("📑 Résultats - Simulateur Salaire Flying Whales", 10, 20);
+
+    // Infos principales
+    doc.setFontSize(12);
+    doc.text("École (référence) : " + document.getElementById("schoolRange").innerText, 10, 40);
+    doc.text("Médian école : " + document.getElementById("schoolMedian").innerText, 10, 50);
+    doc.text("Estimation personnalisée :", 10, 70);
+    doc.text("Médian : " + document.getElementById("median").innerText, 10, 80);
+    doc.text("Fourchette : " + document.getElementById("range").innerText, 10, 90);
+
+    // Ajout du graphique via html2canvas
+    const chartCanvas = document.getElementById("salaryChart");
+    html2canvas(chartCanvas).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      doc.addImage(imgData, "PNG", 10, 110, 180, 80); // x, y, largeur, hauteur
+      doc.save("simulateur_salaire.pdf");
+    });
+  }
+
+
+    // 🌙/☀️ Dark/Light toggle
+    function toggleDarkMode() {
+      const html=document.documentElement;
+      if(html.classList.contains('dark')){
+        html.classList.remove('dark');
+        localStorage.setItem('theme','light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme','dark');
+      }
+    }
+
+    // ✅ Fix modal
+    function openModal(){document.getElementById("helpModal").style.display="flex";}
+    function closeModal(){document.getElementById("helpModal").style.display="none";}
+
+// === 🎓 Résumé dynamique école ===
+function updateSchoolInfo() {
+  const sector = document.getElementById("sector").value;
+  const schoolIndex = document.getElementById("school").value;
+  const box = document.getElementById("schoolInfo");
+  const med = document.getElementById("schoolLiveMedian");
+  const range = document.getElementById("schoolLiveRange");
+
+  const datasets = {
+    ingenieur: schoolsIngenieur,
+    commerce: schoolsCommerce,
+    scpo: schoolsScPo,
+    universite: schoolsUniversite,
+    it: schoolsIT,
+    design: schoolsDesign
+  };
+
+  const list = datasets[sector];
+  const data = list ? list[schoolIndex] : null;
+
+  if (data) {
+    med.textContent = `${Math.round(data.p50).toLocaleString()} €`;
+    range.textContent = `${Math.round(data.p25).toLocaleString()} € – ${Math.round(data.p75).toLocaleString()} €`;
+
+    box.classList.remove("hidden");
+    requestAnimationFrame(() => {
+      box.style.opacity = "1";
+      box.style.transform = "translateY(0)";
+    });
+  } else {
+    box.style.opacity = "0";
+    box.style.transform = "translateY(10px)";
+    setTimeout(() => box.classList.add("hidden"), 300);
+  }
+}
+
+// 🔄 Activation auto
+document.addEventListener("DOMContentLoaded", () => {
+  const schoolSel = document.getElementById("school");
+  const sectorSel = document.getElementById("sector");
+  if (schoolSel && sectorSel) {
+    schoolSel.addEventListener("change", updateSchoolInfo);
+    sectorSel.addEventListener("change", updateSchoolInfo);
+  }
+});
+
+    window.onload=populateMenus;
+    // ===============================
+    // Bloc 12 : Tests rapides
+    // ===============================
+
+    function runTests() {
+      console.log("=== Lancement des tests simulateur ===");
+
+      // 1. Vérification écoles ingénieurs
+      console.assert(schoolsIngenieur.length > 0, "⚠️ Pas d'écoles ingénieurs détectées");
+      console.log("✅ Ingénieurs:", schoolsIngenieur.length);
+
+      // 2. Vérification écoles commerce
+      console.assert(schoolsCommerce.length > 0, "⚠️ Pas d'écoles commerce détectées");
+      console.log("✅ Commerce:", schoolsCommerce.length);
+
+      // 3. Vérification Sciences Po
+      console.assert(schoolsScPo.length === 10, "⚠️ Sciences Po doit avoir 10 entrées");
+      console.log("✅ Sciences Po:", schoolsScPo.length);
+
+      // 4. Vérification universités
+      console.assert(schoolsUniversite.length === 20, "⚠️ Universités doit avoir 20 entrées");
+      console.log("✅ Universités:", schoolsUniversite.length);
+
+      // 5. Vérification IT
+      console.assert(schoolsIT.length > 0, "⚠️ Pas d'écoles IT détectées");
+      console.assert(Object.keys(functionsIT).length > 0, "⚠️ Pas de fonctions IT détectées");
+      console.log("✅ IT Écoles:", schoolsIT.length, "| Métiers IT:", Object.keys(functionsIT).length);
+
+      // 6. Vérification Design
+      console.assert(schoolsDesign.length > 0, "⚠️ Pas d'écoles Design détectées");
+      console.assert(Object.keys(functionsDesign).length > 0, "⚠️ Pas de fonctions Design détectées");
+      console.log("✅ Design Écoles:", schoolsDesign.length, "| Métiers Design:", Object.keys(functionsDesign).length);
+
+      // 7. Vérification Fonctions transverses
+      const totalFunctions = {
+        ...functionsAchats,
+        ...functionsImmo,
+        ...functionsRH,
+        ...functionsFinance,
+        ...functionsCommerciaux,
+        ...functionsIT,
+        ...functionsDesign
+      };
+      console.assert(Object.keys(totalFunctions).length > 0, "⚠️ Aucune fonction détectée");
+      console.log("✅ Fonctions globales:", Object.keys(totalFunctions).length);
+
+      // 8. Test calcul d’un cas simple
+      document.getElementById("sector").value = "ingenieur";
+      document.getElementById("school").value = 0; // Polytechnique
+      document.getElementById("experience").value = 5;
+      calculateSalary();
+      console.log("✅ Test calcul simple effectué (Polytechnique, 5 ans exp)");
+
+      console.log("=== Fin des tests ===");
+    }
+
+    // Lancement auto après chargement
+    window.onload = () => {
+      populateMenus();
+      setTimeout(runTests, 1000); // laisse le temps au DOM de charger
+    }
+  </script>
+
+
 <script>
 async function exportPDF() {
   console.log("👉 Export PDF lancé");
 
   try {
-    const jsPDFLib = window.jspdf || window.jsPDF;
-    const jsPDF = jsPDFLib.jsPDF || jsPDFLib;
-
-    if (!jsPDF) {
-      alert("⚠️ jsPDF n’est pas chargé correctement !");
-      return;
-    }
-
+    const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+    // === POLICE ET STYLE DE BASE ===
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     doc.setTextColor(0, 0, 0);
 
-    // =============================
-    // 🎨 HEADER
-    // =============================
+    // === HEADER ===
     doc.setFillColor(0, 51, 102);
     doc.rect(0, 0, 210, 30, "F");
-
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
     doc.setTextColor(255, 255, 255);
     doc.text("Rapport Salaire - Flying Whales", 15, 18);
 
-    // =============================
-    // 🧾 INFOS PRINCIPALES
-    // =============================
-    const schoolSelect = document.getElementById("school");
-    const school = schoolSelect?.options[schoolSelect.selectedIndex]?.text || "—";
-
-    const jobSelect = document.getElementById("fonction");
-    const job = jobSelect?.options[jobSelect.selectedIndex]?.text || "—";
-
-    const classificationSelect = document.getElementById("classification");
-    const classification = classificationSelect?.options[classificationSelect.selectedIndex]?.text || "—";
-
-    const experience = (document.getElementById("experience").value || "0") + " ans";
-
-    const subdomainSelect = document.getElementById("subdomain");
-    const subdomain = subdomainSelect?.options[subdomainSelect.selectedIndex]?.text || "—";
-
-    const sourceVal = document.getElementById("source").value;
-    const median = document.getElementById("median").innerText || "N/A";
-    const range = document.getElementById("range").innerText || "N/A";
+    // === INFOS PROFIL ===
+    const school = document.querySelector("#school option:checked")?.text || "N/A";
+    const job = document.querySelector("#fonction option:checked")?.text || "N/A";
+    const classification = document.querySelector("#classification option:checked")?.text || "Classique";
+    const experience = (document.querySelector("#experience")?.value || "0") + " ans";
+    const subdomain = document.querySelector("#subdomain option:checked")?.text || "";
+    const sourceVal = document.querySelector("#source")?.value || "marche";
+    const median = document.getElementById("median")?.innerText || "N/A";
+    const range = document.getElementById("range")?.innerText || "N/A";
     const insightText = document.getElementById("insightText")?.innerText || "";
 
+    // === TEXTE SOURCE CLEAN ===
     let sourceClean = "Marché";
     if (sourceVal === "fw") sourceClean = "Flying Whales (interne)";
     if (sourceVal === "croisee") sourceClean = "Données croisées";
 
-    // ✅ Sous-titre du header
-    doc.setFontSize(10);
-    doc.setTextColor(220, 230, 240);
-    doc.text(`${job} | ${school} | ${classification} | ${experience} | ${subdomain}`, 15, 27);
+    // === HEADER SOUS-TITRE ===
+    doc.setFontSize(11);
+    doc.setTextColor(230, 230, 230);
+    doc.text(
+      `${job} | ${school} | ${classification} | ${experience}${subdomain ? " | " + subdomain : ""}`,
+      15,
+      27
+    );
 
-    // =============================
-    // 📊 TABLEAU Référence École
-    // =============================
+    // === TABLEAU ÉCOLE ===
     let y = 45;
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(0, 0, 0);
     doc.setFontSize(13);
+    doc.setTextColor(0, 0, 0);
     doc.text("Référence école :", 15, y);
 
-    // Calcul des P25, P50, P75 dynamiques
-    let p25 = "N/A", p50 = "N/A", p75 = "N/A";
-    if (schoolSelect?.selectedIndex >= 0) {
-      const dataset = [
-        ...schoolsIngenieur,
-        ...schoolsCommerce,
-        ...schoolsScPo,
-        ...schoolsUniversite,
-        ...schoolsIT,
-        ...schoolsDesign
-      ];
-      const data = dataset.find(e => e.Ecole === school);
-      if (data) {
-        p25 = (data.p25 || 0).toLocaleString() + " €";
-        p50 = (data.p50 || 0).toLocaleString() + " €";
-        p75 = (data.p75 || 0).toLocaleString() + " €";
-      }
-    }
-
-    // Table header
     y += 8;
     doc.setFillColor(230, 236, 245);
     doc.rect(15, y, 180, 10, "F");
     doc.setFontSize(11);
-    doc.text("École", 22, y + 7);
-    doc.text("P25 (€)", 100, y + 7);
-    doc.text("Médian (€)", 135, y + 7);
-    doc.text("P75 (€)", 170, y + 7);
+    doc.text("École", 20, y + 7);
+    doc.text("P25 (€)", 95, y + 7);
+    doc.text("Médian (€)", 130, y + 7);
+    doc.text("P75 (€)", 165, y + 7);
 
-    // Table row
+    // === LIGNE ÉCOLE ===
     y += 12;
-    doc.setFillColor(255, 255, 255);
+    const dataset = [
+      ...Object.values(schoolsIngenieur),
+      ...Object.values(schoolsCommerce),
+      ...Object.values(schoolsScPo),
+      ...Object.values(schoolsUniversite),
+      ...Object.values(schoolsIT),
+      ...Object.values(schoolsDesign)
+    ];
+    const data = dataset.find(e => e.Ecole === school);
+    const p25 = data ? `${Math.round(data.p25).toLocaleString("fr-FR")} €` : "N/A";
+    const p50 = data ? `${Math.round(data.p50).toLocaleString("fr-FR")} €` : "N/A";
+    const p75 = data ? `${Math.round(data.p75).toLocaleString("fr-FR")} €` : "N/A";
+
+    doc.setFillColor(250, 250, 250);
     doc.rect(15, y, 180, 10, "F");
     doc.setFont("helvetica", "normal");
-    doc.text(school, 22, y + 7);
-    doc.text(p25, 108, y + 7, { align: "right" });
+    doc.text(school, 20, y + 7);
+    doc.text(p25, 105, y + 7, { align: "right" });
     doc.text(p50, 145, y + 7, { align: "right" });
-    doc.text(p75, 180, y + 7, { align: "right" });
+    doc.text(p75, 185, y + 7, { align: "right" });
 
-    // =============================
-    // 📌 KPI CARDS
-    // =============================
+    // === CARTES KPI ===
     y += 25;
+    const cardY = y;
     const cardHeight = 25;
 
     // Médian
     doc.setFillColor(46, 204, 113);
-    doc.roundedRect(15, y, 58, cardHeight, 3, 3, "F");
-    doc.setFont("helvetica", "bold");
+    doc.roundedRect(15, cardY, 60, cardHeight, 3, 3, "F");
     doc.setTextColor(255, 255, 255);
-    doc.text("Médian", 20, y + 10);
-    doc.text(median, 20, y + 20);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Médian", 20, cardY + 10);
+    doc.setFontSize(13);
+    doc.text(median, 20, cardY + 20);
 
     // Fourchette
     doc.setFillColor(52, 152, 219);
-    doc.roundedRect(78, y, 68, cardHeight, 3, 3, "F");
-    doc.text("Fourchette", 83, y + 10);
-    doc.text(range, 83, y + 20);
+    doc.roundedRect(85, cardY, 70, cardHeight, 3, 3, "F");
+    doc.setFontSize(12);
+    doc.text("Fourchette", 90, cardY + 10);
+    doc.setFontSize(13);
+    doc.text(range, 90, cardY + 20);
 
     // Source
     doc.setFillColor(255, 165, 100);
-    doc.roundedRect(152, y, 43, cardHeight, 3, 3, "F");
-    doc.text("Source", 157, y + 10);
-    doc.text(sourceClean, 157, y + 20);
+    doc.roundedRect(165, cardY, 30, cardHeight, 3, 3, "F");
+    doc.setFontSize(12);
+    doc.text("Source", 168, cardY + 10);
+    doc.setFontSize(10);
+    doc.text(sourceClean, 168, cardY + 20);
 
-    // =============================
-    // 📈 GRAPH
-    // =============================
+    // === GRAPH ===
     y += 45;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
@@ -148,72 +1309,56 @@ async function exportPDF() {
       y += 95;
     }
 
-    // =============================
-    // 💬 ANALYSE PERSONNALISÉE
-    // =============================
+    // === ANALYSE PERSONNALISÉE ===
     const insightBox = document.getElementById("insightBox");
     const bgColor = window.getComputedStyle(insightBox).backgroundColor;
-    const rgb = bgColor.match(/\d+/g)?.map(Number) || [235, 245, 235];
+    const rgbMatch = bgColor.match(/\d+/g);
+    const [r, g, b] = rgbMatch ? rgbMatch.map(Number) : [230, 250, 230];
+    const safeInsightText = insightText.replace(/\s+/g, " ");
 
-    // Nettoyage des emojis
-    const safeInsightText = insightText
-      .replace(/💡/g, "Analyse :")
-      .replace(/🔷/g, "Données FW :")
-      .replace(/🌍/g, "Données marché :")
-      .replace(/⚖️/g, "Données croisées :")
-      .replace(/💬/g, "Commentaire :");
-
-    const wrappedInsight = doc.splitTextToSize(safeInsightText, 170);
-    const blockHeight = Math.max(30, wrappedInsight.length * 6 + 15);
+    const wrappedInsight = doc.splitTextToSize(safeInsightText, 165);
+    const blockHeight = Math.max(30, wrappedInsight.length * 5.5 + 15);
 
     y += 10;
-    doc.setFillColor(...rgb);
+    doc.setFillColor(r, g, b);
     doc.roundedRect(15, y, 180, blockHeight, 3, 3, "F");
-
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     doc.text("Analyse personnalisée :", 20, y + 10);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text(wrappedInsight, 20, y + 20);
+    doc.text(wrappedInsight, 20, y + 18, { maxWidth: 170 });
     y += blockHeight + 10;
 
-    // =============================
-    // 🧾 RÉCAP
-    // =============================
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(80, 80, 80);
-
-    const recap = `Profil ${job}, diplômé de ${school}, ${classification}, ${experience}. Salaire médian estimé : ${median}. Projection sur 40 ans.`;
-    doc.text(doc.splitTextToSize(recap, 180), 15, y);
-
-    // =============================
-    // 📌 FOOTER
-    // =============================
+    // === FOOTER ===
     doc.setFontSize(9);
     doc.setFont("helvetica", "italic");
-    doc.setTextColor(120);
-
+    doc.setTextColor(100);
     let disclaimer = "Estimation indicative basée sur le simulateur Flying Whales.";
     if (sourceVal === "marche") disclaimer = "Estimation basée sur les données marché.";
     else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
     else if (sourceVal === "croisee") disclaimer = "Estimation issue d'une combinaison marché (40%) et FW (60%).";
 
     doc.text(disclaimer, 15, 280);
-    const dateStr = new Date().toLocaleDateString("fr-FR");
-    doc.text("Exporté le " + dateStr, 195, 280, { align: "right" });
+    const today = new Date();
+    const dateStr = today.toLocaleDateString("fr-FR");
+    doc.text("Exporté le " + dateStr, 170, 280, { align: "right" });
 
-    // =============================
-    // 💾 SAVE
-    // =============================
+    // === SAVE ===
     doc.save("simulateur_salaire.pdf");
     console.log("✅ PDF généré et téléchargé");
+
   } catch (err) {
     console.error("❌ Erreur export PDF :", err);
     alert("Erreur lors de l'export PDF !");
   }
 }
 </script>
+
+
+
+
+
+</body>
+</html>
