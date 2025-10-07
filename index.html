@@ -1184,7 +1184,16 @@ async function exportPDF() {
 
   try {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF("p", "mm", "a4");
+       
+    const doc = new jsPDF({unit: "mm",format: "a4"});
+    doc.setFont("helvetica", "normal");
+
+    // ✅ Police et encodage : Helvetica gère bien les accents et chiffres
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+
+  // ✅ Couleur par défaut
+  doc.setTextColor(0, 0, 0);
 
     // =============================
     // 🎨 HEADER
