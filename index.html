@@ -1189,14 +1189,14 @@ async function exportPDF() {
 
     // === POLICE ET STYLE DE BASE ===
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
+    doc.setFontSize(9);
     doc.setTextColor(0, 0, 0);
 
     // === HEADER ===
     doc.setFillColor(0, 51, 102);
     doc.rect(0, 0, 210, 30, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
+    doc.setFontSize(15);
     doc.setTextColor(255, 255, 255);
     doc.text("Rapport Salaire - Flying Whales", 15, 18);
 
@@ -1217,7 +1217,7 @@ async function exportPDF() {
     if (sourceVal === "croisee") sourceClean = "Données croisées";
 
     // === HEADER SOUS-TITRE ===
-    doc.setFontSize(11);
+    doc.setFontSize(9);
     doc.setTextColor(230, 230, 230);
     doc.text(
       `${job} | ${school} | ${classification} | ${experience}${subdomain ? " | " + subdomain : ""}`,
@@ -1228,14 +1228,14 @@ async function exportPDF() {
     // === TABLEAU ÉCOLE ===
     let y = 45;
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(13);
+    doc.setFontSize(11);
     doc.setTextColor(0, 0, 0);
     doc.text("Référence école :", 15, y);
 
     y += 8;
     doc.setFillColor(230, 236, 245);
     doc.rect(15, y, 180, 10, "F");
-    doc.setFontSize(11);
+    doc.setFontSize(9);
     doc.text("École", 20, y + 7);
     doc.text("P25 (€)", 95, y + 7);
     doc.text("Médian (€)", 130, y + 7);
@@ -1252,7 +1252,8 @@ async function exportPDF() {
       ...Object.values(schoolsDesign)
     ];
     const data = dataset.find(e => e.Ecole === school);
-    const formatNumber = n => (n ? n.toLocaleString("fr-FR") + " €" : "N/A");
+    const formatNumber = n => (n ? n.toLocaleString("fr-FR", { useGrouping: true }).replace(/\s/g, " ") + " €" : "N/A");
+
 
     const p25 = data ? formatNumber(data.p25) : "N/A";
     const p50 = data ? formatNumber(data.p50) : "N/A";
@@ -1301,7 +1302,7 @@ async function exportPDF() {
     // === GRAPH ===
     y += 45;
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
     doc.text("Projection salariale sur 40 ans", 15, y);
 
@@ -1319,7 +1320,7 @@ async function exportPDF() {
     const [r, g, b] = rgbMatch ? rgbMatch.map(Number) : [230, 250, 230];
     const cleanInsight = insightText
       .replace(/\s+/g, " ")
-      .replace(/[^\x00-\x7FÀ-ÿ€]/g, "") // supprime caractères bizarres
+      .replace(/[^\p{L}\p{N}\p{P}\p{Z}€]/gu, "") // supprime caractères bizarres
       .trim();
 
     const wrappedInsight = doc.splitTextToSize(cleanInsight, 165);
