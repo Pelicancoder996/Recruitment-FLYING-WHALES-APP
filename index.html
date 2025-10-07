@@ -865,56 +865,58 @@ h3 {
       document.getElementById("result").classList.remove("hidden");
 
       // Graphique
-      const ctx=document.getElementById("salaryChart").getContext("2d");
-      if(chart) chart.destroy();
-      const years=[...Array(41).keys()];
-      const projection=years.map(y=>median*Math.pow(1.023,y));
-      chart = new Chart(ctx, {
+     const ctx = document.getElementById("salaryChart").getContext("2d");
+new Chart(ctx, {
   type: "line",
   data: {
-    labels: years,
+    labels: Array.from({ length: 41 }, (_, i) => i),
     datasets: [{
       label: "Salaire médian projeté (€)",
-      data: projection,
+      data: salaireProjection, // ton tableau de données
       borderColor: "#003366",
-      backgroundColor: "rgba(0, 51, 102, 0.1)",
-      fill: true,
-      tension: 0.3, // courbe lissée
+      backgroundColor: "rgba(0, 51, 102, 0.15)",
+      borderWidth: 3,
+      tension: 0.35, // arrondi des courbes
+      pointRadius: 4,
+      pointHoverRadius: 6,
       pointBackgroundColor: "#003366",
-      pointRadius: 3
+      fill: true,
     }]
   },
   options: {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: true,
         position: "top",
         labels: {
           color: "#003366",
-          font: { size: 9 }
-        }
+          font: { size: 12, weight: "bold" },
+        },
       },
       tooltip: {
-        callbacks: {
-          label: function(context) {
-            return context.formattedValue + " €";
-          }
-        }
+        backgroundColor: "#003366",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        cornerRadius: 6,
+        padding: 10,
       }
     },
     scales: {
+      x: {
+        ticks: { color: "#555", font: { size: 10 } },
+        grid: { color: "#e0e0e0" },
+        title: { display: true, text: "Années", color: "#003366", font: { size: 11 } }
+      },
       y: {
-        beginAtZero: false,
-        ticks: {
-          callback: function(value) {
-            return value.toLocaleString("fr-FR") + " €";
-          }
-        }
+        ticks: { color: "#555", font: { size: 10 }, callback: v => v.toLocaleString("fr-FR") + " €" },
+        grid: { color: "#e0e0e0" },
+        title: { display: true, text: "Salaire (€)", color: "#003366", font: { size: 11 } }
       }
     }
   }
 });
+
 
 // === 💡 Analyse dynamique ===
 const insightBox = document.getElementById("insightBox");
@@ -1361,5 +1363,6 @@ async function exportPDF() {
   }
 }
 </script>
+
 </body>
 </html>
