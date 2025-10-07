@@ -1309,7 +1309,7 @@ async function exportPDF() {
     const chartCanvas = document.getElementById("salaryChart");
     if (chartCanvas) {
       const imgData = chartCanvas.toDataURL("image/png", 1.0);
-      doc.addImage(imgData, "PNG", 13, y + 4, 155, 65);
+      doc.addImage(imgData, "PNG", 13, y + 7, 155, 65);
       y += 95;
     }
 
