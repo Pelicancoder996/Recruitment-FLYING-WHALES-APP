@@ -1184,19 +1184,15 @@ async function exportPDF() {
 
   try {
     const { jsPDF } = window.jspdf;
-       
-     const doc = new jsPDF({unit: "mm",format: "a4"});
-doc.setFont("helvetica", "normal");
 
-// ✅ Police et encodage : Helvetica gère bien les accents et chiffres
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
+    // ✅ Création du document avant d'ajouter la police
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
 
-  // ✅ Couleur par défaut
-  doc.setTextColor(0, 0, 0);
-
-  // ✅ Couleur par défaut
-  doc.setTextColor(0, 0, 0);
+    // ✅ Gestion correcte des accents / caractères spéciaux
+    doc.addFont("helvetica", "helvetica", "normal");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
 
     // =============================
     // 🎨 HEADER
@@ -1207,7 +1203,7 @@ doc.setFont("helvetica", "normal");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
     doc.setTextColor(255, 255, 255);
-    doc.text("Rapport Salaire – Flying Whales", 15, 18);
+    doc.text("Rapport Salaire - Flying Whales", 15, 18);
 
     // Infos principales
     const schoolSelect = document.getElementById("school");
@@ -1241,10 +1237,14 @@ const insightText = document.getElementById("insightText")?.innerText || "";
     // Valeurs école brutes
     let p25 = "N/A", p50 = "N/A", p75 = "N/A";
     if (schoolSelect.selectedIndex >= 0) {
-      const dataset = [
-        ...schoolsIngenieur, ...schoolsCommerce, ...schoolsScPo,
-        ...schoolsUniversite, ...schoolsIT, ...schoolsDesign
-      ];
+     const dataset = [
+  ...Object.values(schoolsIngenieur),
+  ...Object.values(schoolsCommerce),
+  ...Object.values(schoolsScPo),
+  ...Object.values(schoolsUniversite),
+  ...Object.values(schoolsIT),
+  ...Object.values(schoolsDesign)
+];
       const data = dataset.find(e => e.Ecole === school);
       if (data) {
         p25 = (data.p25 || 0).toLocaleString() + " €";
@@ -1316,18 +1316,8 @@ const insightText = document.getElementById("insightText")?.innerText || "";
     doc.setFontSize(11);
     doc.text(doc.splitTextToSize(sourceClean, 28), 168, y + 20);
 
-    // 💡 Encadré d'analyse personnalisée
-doc.setFontSize(12);
-doc.setTextColor(0, 0, 0);
-doc.setFillColor(240, 240, 240); // fond gris très clair
-doc.rect(14, y + 10, 180, 35, "F"); // fond du rectangle (ajuste la hauteur selon ton texte)
-doc.text("💡 Analyse personnalisée :", 18, y + 18);
-
-// Texte automatique en plusieurs lignes
-doc.setFontSize(10);
-doc.text(doc.splitTextToSize(insightText, 170), 18, y + 28);
-
-// =============================
+    
+ // =============================
 // 📈 GRAPH
 // =============================
 y += 45;
@@ -1349,7 +1339,6 @@ if (chartCanvas) {
 
 // Récupération du contenu de la box
 const insightBox = document.getElementById("insightBox");
-const insightText = document.getElementById("insightText")?.innerText || "";
 const bgColor = window.getComputedStyle(insightBox).backgroundColor;
 
 // Nettoyage texte (PDF-safe)
