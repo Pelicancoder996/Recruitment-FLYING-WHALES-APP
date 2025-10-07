@@ -1252,9 +1252,11 @@ async function exportPDF() {
       ...Object.values(schoolsDesign)
     ];
     const data = dataset.find(e => e.Ecole === school);
-    const p25 = data ? `${Math.round(data.p25).toLocaleString("fr-FR")} €` : "N/A";
-    const p50 = data ? `${Math.round(data.p50).toLocaleString("fr-FR")} €` : "N/A";
-    const p75 = data ? `${Math.round(data.p75).toLocaleString("fr-FR")} €` : "N/A";
+    const formatNumber = n => (n ? n.toLocaleString("fr-FR") + " €" : "N/A");
+
+    const p25 = data ? formatNumber(data.p25) : "N/A";
+    const p50 = data ? formatNumber(data.p50) : "N/A";
+    const p75 = data ? formatNumber(data.p75) : "N/A";
 
     doc.setFillColor(250, 250, 250);
     doc.rect(15, y, 180, 10, "F");
@@ -1269,11 +1271,12 @@ async function exportPDF() {
     const cardY = y;
     const cardHeight = 25;
 
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+
     // Médian
     doc.setFillColor(46, 204, 113);
     doc.roundedRect(15, cardY, 60, cardHeight, 3, 3, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text("Médian", 20, cardY + 10);
     doc.setFontSize(13);
@@ -1314,9 +1317,12 @@ async function exportPDF() {
     const bgColor = window.getComputedStyle(insightBox).backgroundColor;
     const rgbMatch = bgColor.match(/\d+/g);
     const [r, g, b] = rgbMatch ? rgbMatch.map(Number) : [230, 250, 230];
-    const safeInsightText = insightText.replace(/\s+/g, " ");
+    const cleanInsight = insightText
+      .replace(/\s+/g, " ")
+      .replace(/[^\x00-\x7FÀ-ÿ€]/g, "") // supprime caractères bizarres
+      .trim();
 
-    const wrappedInsight = doc.splitTextToSize(safeInsightText, 165);
+    const wrappedInsight = doc.splitTextToSize(cleanInsight, 165);
     const blockHeight = Math.max(30, wrappedInsight.length * 5.5 + 15);
 
     y += 10;
@@ -1328,37 +1334,31 @@ async function exportPDF() {
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text(wrappedInsight, 20, y + 18, { maxWidth: 170 });
+    doc.text(wrappedInsight, 20, y + 18, { maxWidth: 165 });
     y += blockHeight + 10;
 
     // === FOOTER ===
-    doc.setFontSize(9);
+    doc.setFontSize(7);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(100);
     let disclaimer = "Estimation indicative basée sur le simulateur Flying Whales.";
-    if (sourceVal === "marche") disclaimer = "Estimation basée sur les données marché.";
-    else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
-    else if (sourceVal === "croisee") disclaimer = "Estimation issue d'une combinaison marché (40%) et FW (60%).";
+    if (sourceVal === "marche") disclaimer = "Basée sur les données marché.";
+    else if (sourceVal === "fw") disclaimer = "Basée sur les packages internes Flying Whales.";
+    else if (sourceVal === "croisee") disclaimer = "Combinaison marché (40%) et FW (60%).";
 
     doc.text(disclaimer, 15, 280);
     const today = new Date();
     const dateStr = today.toLocaleDateString("fr-FR");
-    doc.text("Exporté le " + dateStr, 170, 280, { align: "right" });
+    doc.text("Exporté le " + dateStr, 195, 280, { align: "right" });
 
     // === SAVE ===
     doc.save("simulateur_salaire.pdf");
     console.log("✅ PDF généré et téléchargé");
-
   } catch (err) {
     console.error("❌ Erreur export PDF :", err);
     alert("Erreur lors de l'export PDF !");
   }
 }
 </script>
-
-
-
-
-
 </body>
 </html>
