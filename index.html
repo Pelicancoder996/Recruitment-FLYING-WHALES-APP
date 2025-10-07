@@ -1315,59 +1315,104 @@ doc.text("💡 Analyse personnalisée :", 18, y + 18);
 doc.setFontSize(10);
 doc.text(doc.splitTextToSize(insightText, 170), 18, y + 28);
 
-    // =============================
-    // 📈 GRAPH
-    // =============================
-    y += 45;
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(0,0,0);
-    doc.text("Projection salariale sur 40 ans", 15, y);
+// =============================
+// 📈 GRAPH
+// =============================
+y += 45;
+doc.setFont("helvetica", "bold");
+doc.setFontSize(12);
+doc.setTextColor(0, 0, 0);
+doc.text("Projection salariale sur 40 ans", 15, y);
 
-    const chartCanvas = document.getElementById("salaryChart");
-    if (chartCanvas) {
-      const imgData = chartCanvas.toDataURL("image/png", 1.0);
-      doc.addImage(imgData, "PNG", 15, y+5, 180, 80);
-      y += 95;
-    }
-    
-    
+const chartCanvas = document.getElementById("salaryChart");
+if (chartCanvas) {
+  const imgData = chartCanvas.toDataURL("image/png", 1.0);
+  doc.addImage(imgData, "PNG", 15, y + 5, 180, 80);
+  y += 95;
+}
 
-    // =============================
-    // 📌 RÉCAP sous le graphique
-    // =============================
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(80, 80, 80);
+// =============================
+// 💡 ANALYSE PERSONNALISÉE
+// =============================
 
-    let recap = `Avec un profil ${job}, diplômé de ${school}${subdomain ? " ("+subdomain+")" : ""}, `
-      + `classé ${classification}, et ${experience}, `
-      + `le salaire médian estimé est de ${median}, avec une projection croissante sur 40 ans.`;
+// Récupération du contenu de la box
+const insightBox = document.getElementById("insightBox");
+const insightText = document.getElementById("insightText")?.innerText || "";
+const bgColor = window.getComputedStyle(insightBox).backgroundColor;
 
-    doc.text(doc.splitTextToSize(recap, 180), 15, y + 10);
+// Nettoyage texte (PDF-safe)
+const safeInsightText = insightText
+  .replace(/💡/g, "Analyse :")
+  .replace(/🔷/g, "Données FW :")
+  .replace(/🌍/g, "Données marché :")
+  .replace(/⚖️/g, "Données croisées :")
+  .replace(/💬/g, "Commentaire :");
 
-    // =============================
-    // 📌 FOOTER
-    // =============================
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(120);
+// Conversion couleur RGB
+let [r, g, b] = [240, 240, 240];
+const rgbMatch = bgColor.match(/\d+/g);
+if (rgbMatch) [r, g, b] = rgbMatch.map(Number);
 
-    let disclaimer = "Estimation indicative basée sur le simulateur Flying Whales.";
-    if (sourceVal === "marche") disclaimer = "Estimation basée sur les données marché.";
-    else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
-    else if (sourceVal === "croisee") disclaimer = "Estimation issue d'une combinaison marché (40%) et FW (60%).";
+// Calcul de la hauteur selon le texte
+doc.setFont("helvetica", "normal");
+doc.setFontSize(10);
+const wrappedInsight = doc.splitTextToSize(safeInsightText, 170);
+const blockHeight = Math.max(30, wrappedInsight.length * 6 + 15);
 
-    doc.text(disclaimer, 15, 280);
-    const today = new Date();
-    const dateStr = today.toLocaleDateString("fr-FR");
-    doc.text("Exporté le " + dateStr, 170, 280);
+// Ajout du bloc d'analyse juste sous le graphique
+y += 10;
+doc.setFillColor(r, g, b);
+doc.roundedRect(15, y, 180, blockHeight, 3, 3, "F");
+doc.setDrawColor(Math.max(r - 40, 0), Math.max(g - 40, 0), Math.max(b - 40, 0));
+doc.setLineWidth(2);
+doc.line(15, y, 15, y + blockHeight);
 
-    // =============================
-    // 💾 Save
-    // =============================
-    doc.save("simulateur_salaire.pdf");
-    console.log("✅ PDF généré et téléchargé");
+doc.setFont("helvetica", "bold");
+doc.setTextColor(0, 0, 0);
+doc.setFontSize(12);
+doc.text("Analyse personnalisée :", 20, y + 10);
+
+doc.setFont("helvetica", "normal");
+doc.setFontSize(10);
+doc.text(wrappedInsight, 20, y + 20);
+y += blockHeight + 10;
+
+// =============================
+// 📌 RÉCAP sous le graphique
+// =============================
+doc.setFontSize(11);
+doc.setFont("helvetica", "italic");
+doc.setTextColor(80, 80, 80);
+
+let recap = `Avec un profil ${job}, diplômé de ${school}${subdomain ? " (" + subdomain + ")" : ""}, `
+  + `classé ${classification}, et ${experience}, `
+  + `le salaire médian estimé est de ${median}, avec une projection croissante sur 40 ans.`;
+
+doc.text(doc.splitTextToSize(recap, 180), 15, y + 10);
+
+// =============================
+// 📌 FOOTER
+// =============================
+doc.setFontSize(9);
+doc.setFont("helvetica", "italic");
+doc.setTextColor(120);
+
+let disclaimer = "Estimation indicative basée sur le simulateur Flying Whales.";
+if (sourceVal === "marche") disclaimer = "Estimation basée sur les données marché.";
+else if (sourceVal === "fw") disclaimer = "Estimation basée sur les packages internes Flying Whales.";
+else if (sourceVal === "croisee") disclaimer = "Estimation issue d'une combinaison marché (40%) et FW (60%).";
+
+doc.text(disclaimer, 15, 280);
+const today = new Date();
+const dateStr = today.toLocaleDateString("fr-FR");
+doc.text("Exporté le " + dateStr, 170, 280);
+
+// =============================
+// 💾 SAVE
+// =============================
+doc.save("simulateur_salaire.pdf");
+console.log("✅ PDF généré et téléchargé");
+
 
   } catch (err) {
     console.error("❌ Erreur export PDF :", err);
