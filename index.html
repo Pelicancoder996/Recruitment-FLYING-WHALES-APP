@@ -3,6 +3,7 @@
 <head>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="style-premium.css">
   <meta name="theme-color" content="#00AEEF">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,6 +35,9 @@
       document.documentElement.classList.add('dark');
     }
   </script>
+<!-- 💎 Nouveau style visuel premium -->
+  <link rel="stylesheet" href="style-premium.css">
+</head>
 
   <style>
   body { font-family: 'Poppins', sans-serif; }
@@ -225,6 +229,147 @@ h3 {
   text-shadow: none !important;
 }
 
+/* ==========================================================
+   💎 STYLE PREMIUM — Corporate clair & aérien
+   ========================================================== */
+
+* {
+  transition: all 0.25s ease-in-out;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ======== Base ======== */
+body {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.dark body {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+/* ======== Header ======== */
+header h1 {
+  color: #0f172a;
+}
+.dark header h1 {
+  color: #e2e8f0;
+}
+
+/* ======== Cards ======== */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.dark .card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* ======== Inputs ======== */
+.input {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+  font-size: 15px;
+  color: #1e293b;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #00AEEF;
+  box-shadow: 0 0 6px rgba(0,174,239,0.3);
+}
+
+.dark .input {
+  background: rgba(31,41,55,0.9);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #f9fafb;
+}
+
+/* ======== Sliders ======== */
+.slider {
+  accent-color: #00AEEF;
+}
+
+/* ======== Buttons ======== */
+.btn-primary {
+  background: #00AEEF;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(0,174,239,0.25);
+}
+
+.btn-primary:hover {
+  background: #0094cc;
+  transform: translateY(-2px);
+}
+
+.dark .btn-primary {
+  background: #0284c7;
+  color: white;
+}
+
+/* ======== Titles ======== */
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+}
+.dark .section-title {
+  color: #e2e8f0;
+}
+
+/* ======== Modal ======== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.dark .modal-content {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+/* ======== Animation PDF ======== */
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.highlight {
+  animation: pulse 2s infinite;
+}
+
+
 </style>
 
 </head>
@@ -232,7 +377,7 @@ h3 {
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
   <!-- Header -->
   <header class="w-full py-6 bg-[#00AEEF] text-white dark:bg-[#003366] flex justify-between px-8 items-center transition-colors duration-300">
-    <h1 class="text-2xl font-bold">✈️ Simulateur Salaire - Flying Whales</h1>
+    <h1 class="text-2xl font-bold">✈️ Simulateur de Salaire Avancé</h1>
     <div class="flex gap-2">
       <button onclick="toggleDarkMode()" class="px-3 py-1 bg-white text-[#003366] rounded-lg">🌙/☀️</button>
       <button onclick="openModal()" class="px-3 py-1 bg-white text-[#003366] rounded-lg">❓ Aide</button>
@@ -279,6 +424,65 @@ h3 {
   <p class="leading-tight"><b>Fourchette :</b> <span id="schoolLiveRange">—</span></p>
 </div>
 
+<!-- 🌍 Niveau d’anglais -->
+<label>🌎 Niveau d’anglais</label>
+<select id="englishLevel" class="w-full mb-4 p-2 border rounded">
+  <option value="basic">Basique (A2–B1)</option>
+  <option value="intermediate">Intermédiaire (B2)</option>
+  <option value="advanced">Avancé (C1)</option>
+  <option value="bilingual">Bilingue / International (C2)</option>
+</select>
+
+<!-- 🎓 Niveau d’études -->
+<label>🎓 Niveau d’études</label>
+<select id="educationLevel" class="w-full mb-4 p-2 border rounded">
+  <option value="technicien">Technicien / Bac +2</option>
+  <option value="bac3">Licence / Bac +3</option>
+  <option value="bac5">Master / Ingénieur / Bac +5</option>
+  <option value="doctorat">Doctorat / PhD</option>
+</select>
+
+
+<!-- 📜 Type de contrat -->
+<label>📜 Type de contrat</label>
+<select id="contractType" class="w-full mb-4 p-2 border rounded">
+  <option value="cdi">CDI</option>
+  <option value="cdd">CDD</option>
+  <option value="alternance">Alternance</option>
+  <option value="freelance">Freelance / Indépendant</option>
+  <option value="expatriation">Expatrié / Détaché à l’étranger</option>
+</select>
+
+<!-- 🏭 Secteur industriel -->
+<label>🏭 Secteur industriel</label>
+<select id="industry" class="w-full mb-4 p-2 border rounded">
+  <option value="aero">Aéronautique / Spatial</option>
+  <option value="auto">Automobile / Mobilité</option>
+  <option value="energie">Énergie / Nucléaire</option>
+  <option value="numérique">Numérique / IT</option>
+  <option value="sante">Santé / Biotech</option>
+  <option value="luxe">Luxe / Design</option>
+  <option value="public">Secteur public</option>
+</select>
+
+<!-- 👥 Taille d’équipe -->
+<label>👥 Taille d’équipe encadrée</label>
+<select id="teamSize" class="w-full mb-4 p-2 border rounded">
+  <option value="none">Aucune</option>
+  <option value="small">1 à 5 personnes</option>
+  <option value="medium">6 à 15 personnes</option>
+  <option value="large">16 à 50 personnes</option>
+  <option value="xl">Plus de 50 personnes</option>
+</select>
+
+<!-- 🎁 Package global -->
+<label>🎁 Package global</label>
+<select id="packageLevel" class="w-full mb-4 p-2 border rounded">
+  <option value="standard">Salaire fixe uniquement</option>
+  <option value="bonus">Fixe + bonus (5–10%)</option>
+  <option value="bonusplus">Fixe + variable (15–25%)</option>
+  <option value="actions">Variable + actions / BSPCE</option>
+</select>
 
 
       <label>💼 Fonction / Métier</label>
@@ -289,9 +493,13 @@ h3 {
 
       <label>🔬 Sous-domaine (ingénierie uniquement)</label>
       <select id="subdomain" class="w-full mb-4 p-2 border rounded"></select>
+      
+      
 
-      <label>👔 Rôle / Statut</label>
-      <select id="role" class="w-full mb-4 p-2 border rounded"></select>
+      <select id="role" class="hidden">
+  <option value="default" selected>Valeur par défaut</option>
+</select>
+
 
       <label>🏷️ Classification interne</label>
       <select id="classification" class="w-full mb-4 p-2 border rounded">
@@ -338,6 +546,15 @@ h3 {
       <p><b>Estimation personnalisée :</b></p>
       <p>Médian: <span id="median"></span></p>
       <p>Fourchette: <span id="range"></span></p>
+      <!-- 🌡️ Jauge Profil compétitif -->
+<div id="competitivenessGauge" class="mt-4 hidden">
+  <p class="font-semibold mb-1">🏁 Profil compétitif :</p>
+  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 relative overflow-hidden">
+    <div id="gaugeBar" class="h-4 rounded-full transition-all duration-500"></div>
+  </div>
+  <p id="gaugeLabel" class="text-sm mt-1 text-gray-600 dark:text-gray-300"></p>
+</div>
+
       <canvas id="salaryChart" class="mt-6"></canvas>
       <!-- 🧠 Analyse dynamique -->
 <div id="insightBox" 
@@ -537,6 +754,50 @@ h3 {
       { Ecole: "Supélec / Centrale (informatique)", p25: 32000, p50: 37000, p75: 43000 },
       { Ecole: "Hors liste IT", p25: 22000, p50: 27000, p75: 32000 }
     ];
+    
+    // ===============================
+// Bloc 7.1 : Écoles de Communication (Top 10)
+// ===============================
+
+const schoolsCom = [
+  { Ecole: "CELSA (Sorbonne Université)", p25: 33000, p50: 36000, p75: 40000 },
+  { Ecole: "ISCOM", p25: 30000, p50: 33000, p75: 37000 },
+  { Ecole: "Sup de Pub (INSEEC)", p25: 28000, p50: 31000, p75: 35000 },
+  { Ecole: "EFAP", p25: 28000, p50: 31000, p75: 34000 },
+  { Ecole: "ESP (École Supérieure de Publicité)", p25: 27000, p50: 30000, p75: 33000 },
+  { Ecole: "ISEG", p25: 27000, p50: 30000, p75: 33000 },
+  { Ecole: "ECS (European Communication School)", p25: 26000, p50: 29000, p75: 32000 },
+  { Ecole: "Sup de Com", p25: 27000, p50: 30000, p75: 34000 },
+  { Ecole: "Audencia SciencesCom", p25: 31000, p50: 34000, p75: 38000 },
+  { Ecole: "ISCPA", p25: 26000, p50: 29000, p75: 32000 },
+  { Ecole: "Hors liste Communication", p25: 25000, p50: 28000, p75: 31000 }
+];
+
+
+// ===============================
+// Bloc 7.2 : Écoles RH / Management du Personnel (Top 10)
+// ===============================
+
+const schoolsRH = [
+  { Ecole: "IGS RH (Institut de Gestion Sociale)", p25: 33000, p50: 37000, p75: 43000 },
+  { Ecole: "ESGRH (École Supérieure de Gestion des RH)", p25: 32000, p50: 36000, p75: 42000 },
+  { Ecole: "Sup des RH", p25: 30000, p50: 34000, p75: 40000 },
+  { Ecole: "ISFOGEP (Clermont Auvergne)", p25: 31000, p50: 35000, p75: 40000 },
+  { Ecole: "ICD Business School (RH)", p25: 31000, p50: 35000, p75: 41000 },
+  { Ecole: "ESSCA RH & Management", p25: 32000, p50: 36000, p75: 42000 },
+  { Ecole: "ISCG Paris (RH & Paie)", p25: 30000, p50: 34000, p75: 39000 },
+  { Ecole: "IAE Paris-Sorbonne (Master RH)", p25: 34000, p50: 38000, p75: 45000 },
+  { Ecole: "IAE Lyon (Master GRH)", p25: 33000, p50: 37000, p75: 43000 },
+  { Ecole: "IAE Aix-Marseille (Master Management RH)", p25: 33000, p50: 38000, p75: 44000 },
+  { Ecole: "IAE Grenoble (Master RH & Organisation)", p25: 32000, p50: 36000, p75: 42000 },
+  { Ecole: "IAE Lille (Master RH & Management Social)", p25: 32000, p50: 36000, p75: 42000 },
+  { Ecole: "IAE Nantes (Master Gestion des RH)", p25: 31000, p50: 35000, p75: 41000 },
+  { Ecole: "IAE Nice (Master Management RH)", p25: 32000, p50: 36000, p75: 42000 },
+  { Ecole: "Toulouse School of Management (Master RH)", p25: 32000, p50: 36000, p75: 41000 },
+  { Ecole: "Hors liste RH", p25: 28000, p50: 32000, p75: 37000 }
+];
+
+
 
     // ===============================
     // Métiers IT
@@ -614,6 +875,7 @@ h3 {
       "Responsable Recrutement": { p25:45000, p50:53000, p75:60000 },
       "Responsable RH / HRBP": { p25:47000, p50:55250, p75:66000 },
       "Directeur des Ressources Humaines": { p25:70000, p50:95000, p75:120000 }
+      
     };
 
     // Finance
@@ -634,6 +896,18 @@ h3 {
       "Responsable Commercial": { p25:55000, p50:60000, p75:75000 },
       "Directeur Commercial": { p25:75000, p50:85000, p75:110000 }
     };
+    
+    // ==============================================
+// Métiers Communication (intégré dans Fonctions transverses)
+// ==============================================
+const functionsCommunication = {
+  "Chargé de communication": { p25: 28000, p50: 32000, p75: 37000 },
+  "Responsable de communication": { p25: 40000, p50: 46000, p75: 52000 },
+  "Directeur de la communication": { p25: 65000, p50: 75000, p75: 90000 }
+};
+
+
+    
     // ===============================
     // Bloc 10 : Coefficients / rôles
     // ===============================
@@ -688,6 +962,18 @@ h3 {
         if(sectorSel.value==="universite") schoolsUniversite.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
         if(sectorSel.value==="it") schoolsIT.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
         if(sectorSel.value==="design") schoolsDesign.forEach((s,i)=>schoolSel.add(new Option(s.Ecole,i)));
+        if (sectorSel.value === "fonction" || sectorSel.value === "transverse" || sectorSel.value === "fonctions") {
+  // 🧩 Fusion des deux catégories d’écoles (Com + RH)
+  const allTransverseSchools = [...schoolsCom, ...schoolsRH];
+  schoolSel.innerHTML = ""; // on vide d’abord
+  allTransverseSchools.forEach((s, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = s.Ecole;
+    schoolSel.appendChild(opt);
+  });
+}
+
       }
       sectorSel.addEventListener("change", ()=>{updateSchoolList(); calculateSalary();});
       updateSchoolList();
@@ -696,18 +982,37 @@ h3 {
       
 
       // === Fonctions disponibles ===
-      fonctionSel.innerHTML="";
-      fonctionSel.add(new Option("-- Pas de fonction transverse --",""));
-      const allFunctions = {
-        ...functionsAchats,
-        ...functionsImmo,
-        ...functionsRH,
-        ...functionsFinance,
-        ...functionsCommerciaux,
-        ...functionsIT,
-        ...functionsDesign
-      };
-      Object.keys(allFunctions).forEach(k=>fonctionSel.add(new Option(k,k)));
+fonctionSel.innerHTML = "";
+fonctionSel.add(new Option("-- Sélectionnez une fonction --", ""));
+
+const allFunctions = {
+  ...functionsAchats,
+  ...functionsImmo,
+  ...functionsRH,
+  ...functionsFinance,
+  ...functionsCommerciaux,
+  ...functionsIT,
+  ...functionsDesign,
+  ...functionsCommunication   // 🆕 ajout Communication ici
+};
+
+Object.keys(allFunctions).forEach(k => fonctionSel.add(new Option(k, k)));
+
+// === Ajout des métiers Communication & RH (si secteur = Fonctions transverses)
+const sectorSelValue = document.getElementById("sector").value;
+if (sectorSelValue === "fonction" || sectorSelValue === "transverse" || sectorSelValue === "fonctions") {
+  fonctionSel.innerHTML = ""; // on vide les fonctions standard
+  fonctionSel.add(new Option("-- Sélectionnez un métier --", "")); // on garde une option neutre
+
+  // On ajoute les métiers spécifiques
+  jobsFonction.forEach(job => {
+    const opt = document.createElement("option");
+    opt.value = job.nom;
+    opt.textContent = job.nom;
+    fonctionSel.appendChild(opt);
+  });
+}
+
 
       // === Sous-domaines ingénierie ===
       subSel.innerHTML="";
@@ -718,8 +1023,8 @@ h3 {
       roles.forEach(r=>roleSel.add(new Option(r,r)));
 
       // === Events ===
-      document.querySelectorAll("#school, #fonction, #subdomain, #role, #classification, #region, #companySize, #source")
-        .forEach(el => el.addEventListener("change", calculateSalary));
+      document.querySelectorAll("#school, #fonction, #subdomain, #role, #classification, #region, #companySize, #source, #educationLevel, #englishLevel, #contractType, #industry, #teamSize, #packageLevel")
+  .forEach(el => el.addEventListener("change", calculateSalary));
 
       document.getElementById("experience").addEventListener("input", e=>{
         document.getElementById("expVal").innerText=e.target.value; 
@@ -753,6 +1058,12 @@ h3 {
         if(sector==="universite"){ const school=schoolsUniversite[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
         if(sector==="it"){ const school=schoolsIT[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
         if(sector==="design"){ const school=schoolsDesign[sch]; p25=school.p25; p50=school.p50; p75=school.p75; refP25=school.p25; refP50=school.p50; refP75=school.p75; }
+        if (sector === "fonction" || sector === "transverse" || sector === "fonctions") {
+    const allTransverseSchools = [...schoolsCom, ...schoolsRH];
+    const school = allTransverseSchools[sch];
+    p25 = school.p25; p50 = school.p50; p75 = school.p75;
+    refP25 = school.p25; refP50 = school.p50; refP75 = school.p75;
+  }
       }
 
       // === Cas 2 : Fonction transverse ===
@@ -819,11 +1130,45 @@ h3 {
         low=(p25*0.4 + p25*0.95*0.6);
         high=(p75*0.4 + p75*0.95*0.6);
       }
+      
 
-      // appliquer region + taille + rôle
-      median*=coef*roleCoef;
-      low*=coef*roleCoef;
-      high*=coef*roleCoef;
+// ===============================
+// 🎯 COEFFICIENTS DE RAFFINEMENT (version équilibrée)
+// ===============================
+
+// --- coefficients individuels ---
+const educationCoef = { technicien: 0.85, bac3: 0.93, bac5: 1.00, doctorat: 1.10 }[document.getElementById("educationLevel")?.value] || 1;
+const englishCoef   = { basic: 1.00, intermediate: 1.03, advanced: 1.06, bilingual: 1.10 }[document.getElementById("englishLevel")?.value] || 1;
+const contractCoef  = { cdi: 1.00, cdd: 0.96, alternance: 0.70, freelance: 1.20, expatriation: 1.15 }[document.getElementById("contractType")?.value] || 1;
+const industryCoef  = { aero: 1.05, auto: 1.00, energie: 1.06, numerique: 1.07, sante: 1.05, luxe: 1.08, public: 0.88 }[document.getElementById("industry")?.value] || 1;
+const teamCoef      = { none: 1.00, small: 1.05, medium: 1.10, large: 1.18, xl: 1.25 }[document.getElementById("teamSize")?.value] || 1;
+
+// --- package ---
+const packageMap = {
+  standard: 1.00, bonus: 1.07, bonusplus: 1.18, actions: 1.30
+};
+const packageCoef = packageMap[document.getElementById("packageLevel")?.value] || 1;
+
+// ===============================
+// ⚖️ CALCUL ADAPTATIF
+// ===============================
+
+// → moyenne géométrique des coefficients = effet doux et naturel
+const refinements = [educationCoef, englishCoef, contractCoef, industryCoef, teamCoef];
+const geoMean = Math.pow(refinements.reduce((a, b) => a * b, 1), 1 / refinements.length);
+
+// → limitation globale pour éviter inflation (±25%)
+const refinementCoef = Math.min(Math.max(geoMean, 0.85), 1.25);
+
+// → application
+let medianFixed = median * coef * roleCoef * refinementCoef;
+let lowFixed    = low * coef * roleCoef * refinementCoef;
+let highFixed   = high * coef * roleCoef * refinementCoef;
+
+// → ajout du package
+median = medianFixed * packageCoef;
+low    = lowFixed * packageCoef;
+high   = highFixed * packageCoef;
 
       // Planchers FW I1–I4
       let fwP25=null, fwP50=null, fwP75=null;
@@ -863,6 +1208,32 @@ h3 {
       document.getElementById("median").innerText=Math.round(median)+"€";
       document.getElementById("range").innerText=Math.round(low)+"€ – "+Math.round(high)+"€";
       document.getElementById("result").classList.remove("hidden");
+      
+// 🌡️ Jauge de compétitivité — version sensible
+const gauge = document.getElementById("competitivenessGauge");
+const gaugeBar = document.getElementById("gaugeBar");
+const gaugeLabel = document.getElementById("gaugeLabel");
+
+if (gauge && gaugeBar && gaugeLabel) {
+  if (typeof refinementCoef !== "undefined" && typeof packageCoef !== "undefined") {
+    gauge.classList.remove("hidden");
+
+    // 🔧 sensibilité augmentée (x2)
+    const globalBoost = ((refinementCoef - 1) + (packageCoef - 1)) * 2;
+    const score = Math.min(Math.max(1 + globalBoost, 0.5), 1.5);
+
+    let color, label;
+    if (score < 0.95) { color = "#3B82F6"; label = "🔵 Profil équilibré / Marché médian"; }
+    else if (score < 1.10) { color = "#16A34A"; label = "🟢 Profil compétitif"; }
+    else if (score < 1.25) { color = "#EAB308"; label = "🟡 Profil tendu (haut du marché)"; }
+    else { color = "#DC2626"; label = "🔴 Surévalué (au-delà du marché)"; }
+
+    gaugeBar.style.width = Math.min(score * 100, 100) + "%";
+    gaugeBar.style.background = color;
+    gaugeLabel.textContent = `${label} — Score ${score.toFixed(2)}`;
+  }
+}
+
 
       // Graphique
       const ctx=document.getElementById("salaryChart").getContext("2d");
@@ -1309,7 +1680,7 @@ async function exportPDF() {
     const chartCanvas = document.getElementById("salaryChart");
     if (chartCanvas) {
       const imgData = chartCanvas.toDataURL("image/png", 1.0);
-      doc.addImage(imgData, "PNG", 13, y + 7, 155, 65);
+      doc.addImage(imgData, "PNG", 12, y + 7, 155,65);
       y += 95;
     }
 
