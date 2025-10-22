@@ -479,6 +479,115 @@ header h1 {
   }
 }
 
+/* ==========================================================
+   📱 OPTIMISATION MOBILE (pour écrans ≤ 640px)
+   ========================================================== */
+@media (max-width: 640px) {
+
+  /* ✅ Mise en page générale */
+  body {
+    padding: 0 10px;
+    font-size: 15px;
+  }
+
+  main {
+    padding: 0.5rem !important;
+  }
+
+  section {
+    padding: 1rem !important;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  header button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  /* ✅ Champs et sélecteurs */
+  select, input, label {
+    font-size: 15px;
+    width: 100% !important;
+  }
+
+  select, input[type="range"] {
+    padding: 0.6rem;
+    border-radius: 8px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+  }
+
+  label {
+    margin-top: 0.8rem;
+    font-weight: 500;
+  }
+
+  /* ✅ Cartes (résultats, école, etc.) */
+  #schoolInfo, #salaryDetails, #result {
+    font-size: 14px;
+    padding: 0.8rem;
+  }
+
+  #salaryDetails p {
+    margin: 4px 0;
+  }
+
+  /* ✅ Graphique */
+  #salaryChart {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ✅ Boutons d’action */
+  button, .btn-primary {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+
+  /* ✅ Modal d’aide */
+  .modal-content {
+    width: 90%;
+    padding: 1.5rem;
+    font-size: 14px;
+  }
+
+  /* ✅ Footer ou encarts */
+  footer, .info {
+    font-size: 13px;
+    text-align: center;
+    padding: 0.5rem;
+  }
+
+  /* ✅ Bonus visuel */
+  body::before {
+    content: "📱 Mode mobile";
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    background: #00AEEF;
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    opacity: 0.8;
+    z-index: 9999;
+  }
+}
 
 </style>
 
