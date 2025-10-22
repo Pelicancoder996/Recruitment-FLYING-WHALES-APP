@@ -369,6 +369,116 @@ header h1 {
   animation: pulse 2s infinite;
 }
 
+/* ==========================================================
+   📱 OPTIMISATION MOBILE — UX premium & lisibilité
+   ========================================================== */
+
+/* 🧭 Espacements & marges plus compacts sur petits écrans */
+@media (max-width: 640px) {
+  body {
+    font-size: 15px;
+    padding: 0.75rem;
+  }
+
+  h1, h2, h3 {
+    font-size: 1rem !important;
+    margin-bottom: 0.4rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  label {
+    font-size: 0.95rem;
+  }
+
+  select,
+  input,
+  button {
+    font-size: 15px !important;
+    padding: 0.6rem 0.75rem !important;
+    width: 100% !important;
+  }
+
+  input[type="range"] {
+    width: 100%;
+  }
+
+  /* 🧩 Réduction des marges verticales */
+  .mb-4, .mb-6 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* 📦 Boîtes (résultat, école, etc.) plus compactes */
+  #result, #schoolInfo, #salaryDetails {
+    padding: 0.75rem !important;
+    font-size: 14px;
+  }
+
+  /* 📈 Graphique adaptatif */
+  #salaryChart {
+    height: 240px !important;
+  }
+
+  /* 🎛️ Boutons pleine largeur */
+  .btn-primary,
+  button {
+    width: 100%;
+    font-size: 16px;
+    padding: 0.75rem !important;
+    margin-top: 0.5rem;
+  }
+
+  /* 🌈 Footer résultat visible */
+  #resultFooter {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 12px;
+    background: white;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+    font-size: 14px;
+    color: #003366;
+    z-index: 50;
+  }
+  .dark #resultFooter {
+    background: #1f2937;
+    color: #e2e8f0;
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  /* 🧠 Masquer certaines légendes secondaires pour gagner de la place */
+  #legend, #chartLegend {
+    display: none !important;
+  }
+
+  /* 🎯 Accordéons (si activés plus tard) */
+  .accordion-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 174, 239, 0.1);
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  .accordion-header:hover {
+    background: rgba(0, 174, 239, 0.2);
+  }
+  .accordion-content {
+    display: none;
+    margin-top: 0.4rem;
+  }
+  .accordion-content.active {
+    display: block;
+  }
+}
+
 
 </style>
 
