@@ -157,9 +157,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* 🌙/☀️ Bouton toggle stylé */
 button[onclick="toggleDarkMode()"] {
   border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  font-size: 20px;
+  width: 35px;
+  height: 35px;
+  font-size: 15px;
   line-height: 1;
   background: white;
   color: #003366;
@@ -328,7 +328,7 @@ header h1 {
 
 /* ======== Titles ======== */
 .section-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: #0f172a;
   margin-bottom: 0.75rem;
@@ -369,225 +369,9 @@ header h1 {
   animation: pulse 2s infinite;
 }
 
-/* ==========================================================
-   📱 OPTIMISATION MOBILE — UX premium & lisibilité
-   ========================================================== */
 
-/* 🧭 Espacements & marges plus compacts sur petits écrans */
-@media (max-width: 640px) {
-  body {
-    font-size: 15px;
-    padding: 0.75rem;
-  }
 
-  h1, h2, h3 {
-    font-size: 1rem !important;
-    margin-bottom: 0.4rem;
-  }
 
-  .card {
-    padding: 1rem;
-    border-radius: 12px;
-  }
-
-  label {
-    font-size: 0.95rem;
-  }
-
-  select,
-  input,
-  button {
-    font-size: 15px !important;
-    padding: 0.6rem 0.75rem !important;
-    width: 100% !important;
-  }
-
-  input[type="range"] {
-    width: 100%;
-  }
-
-  /* 🧩 Réduction des marges verticales */
-  .mb-4, .mb-6 {
-    margin-bottom: 0.75rem !important;
-  }
-
-  /* 📦 Boîtes (résultat, école, etc.) plus compactes */
-  #result, #schoolInfo, #salaryDetails {
-    padding: 0.75rem !important;
-    font-size: 14px;
-  }
-
-  /* 📈 Graphique adaptatif */
-  #salaryChart {
-    height: 240px !important;
-  }
-
-  /* 🎛️ Boutons pleine largeur */
-  .btn-primary,
-  button {
-    width: 100%;
-    font-size: 16px;
-    padding: 0.75rem !important;
-    margin-top: 0.5rem;
-  }
-
-  /* 🌈 Footer résultat visible */
-  #resultFooter {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 8px 12px;
-    background: white;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
-    font-size: 14px;
-    color: #003366;
-    z-index: 50;
-  }
-  .dark #resultFooter {
-    background: #1f2937;
-    color: #e2e8f0;
-    border-color: rgba(255,255,255,0.1);
-  }
-
-  /* 🧠 Masquer certaines légendes secondaires pour gagner de la place */
-  #legend, #chartLegend {
-    display: none !important;
-  }
-
-  /* 🎯 Accordéons (si activés plus tard) */
-  .accordion-header {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0, 174, 239, 0.1);
-    padding: 0.6rem 0.9rem;
-    border-radius: 8px;
-    font-weight: 600;
-    margin-top: 0.5rem;
-  }
-  .accordion-header:hover {
-    background: rgba(0, 174, 239, 0.2);
-  }
-  .accordion-content {
-    display: none;
-    margin-top: 0.4rem;
-  }
-  .accordion-content.active {
-    display: block;
-  }
-}
-
-/* ==========================================================
-   📱 OPTIMISATION MOBILE (pour écrans ≤ 640px)
-   ========================================================== */
-@media (max-width: 640px) {
-
-  /* ✅ Mise en page générale */
-  body {
-    padding: 0 10px;
-    font-size: 15px;
-  }
-
-  main {
-    padding: 0.5rem !important;
-  }
-
-  section {
-    padding: 1rem !important;
-  }
-
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    padding: 1rem;
-  }
-
-  header h1 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  header button {
-    font-size: 14px;
-    padding: 6px 10px;
-  }
-
-  /* ✅ Champs et sélecteurs */
-  select, input, label {
-    font-size: 15px;
-    width: 100% !important;
-  }
-
-  select, input[type="range"] {
-    padding: 0.6rem;
-    border-radius: 8px;
-  }
-
-  input[type="range"] {
-    width: 100%;
-  }
-
-  label {
-    margin-top: 0.8rem;
-    font-weight: 500;
-  }
-
-  /* ✅ Cartes (résultats, école, etc.) */
-  #schoolInfo, #salaryDetails, #result {
-    font-size: 14px;
-    padding: 0.8rem;
-  }
-
-  #salaryDetails p {
-    margin: 4px 0;
-  }
-
-  /* ✅ Graphique */
-  #salaryChart {
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* ✅ Boutons d’action */
-  button, .btn-primary {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    border-radius: 10px;
-    font-size: 16px;
-  }
-
-  /* ✅ Modal d’aide */
-  .modal-content {
-    width: 90%;
-    padding: 1.5rem;
-    font-size: 14px;
-  }
-
-  /* ✅ Footer ou encarts */
-  footer, .info {
-    font-size: 13px;
-    text-align: center;
-    padding: 0.5rem;
-  }
-
-  /* ✅ Bonus visuel */
-  body::before {
-    content: "📱 Mode mobile";
-    position: fixed;
-    bottom: 8px;
-    right: 8px;
-    background: #00AEEF;
-    color: white;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 8px;
-    opacity: 0.8;
-    z-index: 9999;
-  }
-}
 
 </style>
 
@@ -607,11 +391,14 @@ header h1 {
   <div id="helpModal" class="modal">
     <div class="modal-content">
       <h2 class="text-xl font-bold text-[#003366] dark:text-[#00AEEF] mb-4 transition-colors duration-300">ℹ️ Aide & FAQ</h2>
-      <p><b>🌍 Marché :</b> données nationales (écoles, universités, IT, design, fonctions transverses, +2,3%/an, coefficients).</p>
+      <p><b>🌍 Marché :</b> données nationales (écoles, universités, IT, Aéronautique, Industrie, Design, Fonctions transverses, +2,3%/an, coefficients).</p>
       <p><b>🏢 Flying Whales :</b> packages internes FW.</p>
-      <p><b>⚖️ Croisée :</b> combinaison 60% FW, 40% marché.</p>
+      <p><b>⚖️ Croisée :</b> combinaison 50% FW, 50% marché.</p>
       <p><b>📊 Graphique :</b> évolution projetée sur 40 ans.</p>
-      <button onclick="closeModal()" class="mt-4 px-4 py-2 bg-[#00AEEF] text-white rounded">Fermer</button>
+      <p><b>⁂ Sous-domaine :</b> Coéfficient en fonction de la spécialité.</p>
+      <p><b>Classification interne</b> Pondération en fonction du niveau de responsabilité en interne (seulement pour Flying Whales) </p>
+      <p><b> Profil compétitif</b> La jauge de compétitivité détermine à la fois le niveau de rémunération & de rareté du profil.</p>
+      <button onclick="closeModal()" class="mt-2 px-2 py-1 bg-[#00AEEF] text-white rounded">Fermer</button>
     </div>
   </div>
 
@@ -799,157 +586,159 @@ header h1 {
     // ===============================
 
     const schoolsIngenieur = [
-      { Ecole:"Polytechnique", p25:54000, p50:57000, p75:60000 },
-      { Ecole:"Mines Paris", p25:44000, p50:45750, p75:47500 },
-      { Ecole:"CentraleSupélec", p25:45000, p50:47000, p75:49000 },
-      { Ecole:"ISAE-Supaéro", p25:42000, p50:43500, p75:45000 },
-      { Ecole:"Télécom Paris", p25:45000, p50:46300, p75:48000 },
-      { Ecole:"ESTP", p25:44000, p50:46000, p75:48000 },
-      { Ecole:"ESTACA", p25:42000, p50:44600, p75:47000 },
-      { Ecole:"Efrei", p25:47000, p50:48700, p75:50500 },
-      { Ecole:"IMT Atlantique", p25:44000, p50:44900, p75:46000 },
-      { Ecole:"Centrale Nantes", p25:39500, p50:41165, p75:43000 },
-      { Ecole:"Centrale Lyon", p25:43000, p50:44500, p75:46000 },
-      { Ecole:"Centrale Marseille", p25:42000, p50:44000, p75:46000 },
-      { Ecole:"Centrale Lille", p25:42000, p50:44000, p75:46000 },
-      { Ecole:"Centrale Paris", p25:45000, p50:47000, p75:49000 },
-      { Ecole:"ENSAM Arts et Métiers", p25:39000, p50:41000, p75:43000 },
-      { Ecole:"Mines Nancy", p25:40000, p50:42000, p75:44000 },
-      { Ecole:"Mines Saint-Étienne", p25:40000, p50:42000, p75:44000 },
-      { Ecole:"Mines Alès", p25:38000, p50:40000, p75:42000 },
-      { Ecole:"Mines Douai", p25:38000, p50:40000, p75:42000 },
-      { Ecole:"ENSTA Paris", p25:43000, p50:45000, p75:47000 },
-      { Ecole:"ENSTA Bretagne", p25:38000, p50:40000, p75:42000 },
-      { Ecole:"Télécom SudParis", p25:39000, p50:41000, p75:43000 },
-      { Ecole:"Télécom Nancy", p25:38000, p50:40000, p75:42000 },
-      { Ecole:"INSA Lyon", p25:38000, p50:40000, p75:42000 },
-      { Ecole:"INSA Toulouse", p25:37000, p50:39000, p75:41000 },
-      { Ecole:"INSA Rennes", p25:37000, p50:39000, p75:41000 },
-      { Ecole:"INSA Strasbourg", p25:37000, p50:39000, p75:41000 },
-      { Ecole:"INSA Rouen", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"UTC Compiègne", p25:37000, p50:39000, p75:41000 },
-      { Ecole:"UTT Troyes", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"UTBM Belfort", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"Polytech Grenoble", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"Polytech Nantes", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"Polytech Orléans", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"Polytech Sorbonne", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"Polytech Nice", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"Polytech Lyon", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"Polytech Lille", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ESILV", p25:45000, p50:46800, p75:48500 },
-      { Ecole:"ESME Sudria", p25:37000, p50:39000, p75:41000 },
-      { Ecole:"EPF", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"ECE Paris", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"ESIEA", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ESIEE Paris", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"ISEN", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"HEI Lille", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"EIGSI La Rochelle", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ENSTA", p25:42000, p50:44000, p75:46000 },
-      { Ecole:"ENSICAEN", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ENSC Rennes", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ENSAM Metz", p25:37000, p50:39000, p75:41000 },
-      { Ecole:"ENSAIA", p25:34000, p50:36000, p75:38000 },
-      { Ecole:"AgroParisTech", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ISA Lille", p25:34000, p50:36000, p75:38000 },
-      { Ecole:"EI Purpan", p25:34000, p50:36000, p75:38000 },
-      { Ecole:"ESA Angers", p25:34000, p50:36000, p75:38000 },
-      { Ecole:"ESIGELEC", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ENSEA", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ESEO Angers", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ENSMA Poitiers", p25:36000, p50:38000, p75:40000 },
-      { Ecole:"ENSI Poitiers", p25:35000, p50:37000, p75:39000 },
-      { Ecole:"ENISE Saint-Étienne", p25:34000, p50:36000, p75:38000 },
-      { Ecole:"SUPAERO Toulouse", p25:42000, p50:43500, p75:45000 },
-      { Ecole:"ENAC Toulouse", p25:40000, p50:42000, p75:44000 },
-      { Ecole:"ENSGTI Pau", p25:34000, p50:36000, p75:38000 },
-      { Ecole:"ENSGSI Nancy", p25:34000, p50:36000, p75:38000 },
-      { Ecole:"ESPCI Paris", p25:43000, p50:45000, p75:47000 },
-      { Ecole:"ENS Cachan", p25:42000, p50:44000, p75:46000 },
-      { Ecole:"ENS Lyon", p25:42000, p50:44000, p75:46000 },
-      { Ecole:"ENS Paris-Saclay", p25:42000, p50:44000, p75:46000 },
-      { Ecole:"ENS Ulm", p25:43000, p50:45000, p75:47000 },
-      { Ecole:"Hors liste", p25:33000, p50:35000, p75:37000 }
-    ];
+       { Ecole:"Polytechnique", p25:51300, p50:54150, p75:57000 },
+  { Ecole:"Mines Paris", p25:41800, p50:43460, p75:45100 },
+  { Ecole:"CentraleSupélec", p25:42750, p50:44650, p75:46550 },
+  { Ecole:"ISAE-Supaéro", p25:39900, p50:41325, p75:42750 },
+  { Ecole:"Télécom Paris", p25:42750, p50:43985, p75:45600 },
+  { Ecole:"ESTP", p25:41800, p50:43700, p75:45600 },
+  { Ecole:"ESTACA", p25:39900, p50:42370, p75:44650 },
+  { Ecole:"Efrei", p25:44650, p50:46265, p75:47975 },
+  { Ecole:"IMT Atlantique", p25:41800, p50:42655, p75:43700 },
+  { Ecole:"Centrale Nantes", p25:37525, p50:39100, p75:40850 },
+  { Ecole:"Centrale Lyon", p25:40850, p50:42275, p75:43700 },
+  { Ecole:"Centrale Marseille", p25:39900, p50:41800, p75:43700 },
+  { Ecole:"Centrale Lille", p25:39900, p50:41800, p75:43700 },
+  { Ecole:"Centrale Paris", p25:42750, p50:44650, p75:46550 },
+  { Ecole:"ENSAM Arts et Métiers", p25:37050, p50:38950, p75:40850 },
+  { Ecole:"Mines Nancy", p25:38000, p50:39900, p75:41800 },
+  { Ecole:"Mines Saint-Étienne", p25:38000, p50:39900, p75:41800 },
+  { Ecole:"Mines Alès", p25:36100, p50:38000, p75:39900 },
+  { Ecole:"Mines Douai", p25:36100, p50:38000, p75:39900 },
+  { Ecole:"ENSTA Paris", p25:40850, p50:42750, p75:44650 },
+  { Ecole:"ENSTA Bretagne", p25:36100, p50:38000, p75:39900 },
+  { Ecole:"Télécom SudParis", p25:37050, p50:38950, p75:40850 },
+  { Ecole:"Télécom Nancy", p25:36100, p50:38000, p75:39900 },
+  { Ecole:"INSA Lyon", p25:36100, p50:38000, p75:39900 },
+  { Ecole:"INSA Toulouse", p25:35150, p50:37050, p75:38950 },
+  { Ecole:"INSA Rennes", p25:35150, p50:37050, p75:38950 },
+  { Ecole:"INSA Strasbourg", p25:35150, p50:37050, p75:38950 },
+  { Ecole:"INSA Rouen", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"UTC Compiègne", p25:35150, p50:37050, p75:38950 },
+  { Ecole:"UTT Troyes", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"UTBM Belfort", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"Polytech Grenoble", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"Polytech Nantes", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"Polytech Orléans", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"Polytech Sorbonne", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"Polytech Nice", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"Polytech Lyon", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"Polytech Lille", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ESILV", p25:42750, p50:44460, p75:46075 },
+  { Ecole:"ESME Sudria", p25:35150, p50:37050, p75:38950 },
+  { Ecole:"EPF", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"ECE Paris", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"ESIEA", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ESIEE Paris", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"ISEN", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"HEI Lille", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"EIGSI La Rochelle", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ENSTA", p25:39900, p50:41800, p75:43700 },
+  { Ecole:"ENSICAEN", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ENSC Rennes", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ENSAM Metz", p25:35150, p50:37050, p75:38950 },
+  { Ecole:"ENSAIA", p25:32300, p50:34200, p75:36100 },
+  { Ecole:"AgroParisTech", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ISA Lille", p25:32300, p50:34200, p75:36100 },
+  { Ecole:"EI Purpan", p25:32300, p50:34200, p75:36100 },
+  { Ecole:"ESA Angers", p25:32300, p50:34200, p75:36100 },
+  { Ecole:"ESIGELEC", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ENSEA", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ESEO Angers", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ENSMA Poitiers", p25:34200, p50:36100, p75:38000 },
+  { Ecole:"ENSI Poitiers", p25:33250, p50:35150, p75:37050 },
+  { Ecole:"ENISE Saint-Étienne", p25:32300, p50:34200, p75:36100 },
+  { Ecole:"SUPAERO Toulouse", p25:39900, p50:41325, p75:42750 },
+  { Ecole:"ENAC Toulouse", p25:38000, p50:39900, p75:41800 },
+  { Ecole:"ENSGTI Pau", p25:32300, p50:34200, p75:36100 },
+  { Ecole:"ENSGSI Nancy", p25:32300, p50:34200, p75:36100 },
+  { Ecole:"ESPCI Paris", p25:40850, p50:42750, p75:44650 },
+  { Ecole:"ENS Cachan", p25:39900, p50:41800, p75:43700 },
+  { Ecole:"ENS Lyon", p25:39900, p50:41800, p75:43700 },
+  { Ecole:"ENS Paris-Saclay", p25:39900, p50:41800, p75:43700 },
+  { Ecole:"ENS Ulm", p25:40850, p50:42750, p75:44650 },
+  { Ecole:"Hors liste", p25:33000, p50:35000, p75:37000 }
+];
     // ===============================
     // Bloc 4 : Grandes écoles de commerce (30)
     // ===============================
 
     const schoolsCommerce = [
-      {Ecole:"HEC Paris", p25:48000, p50:55000, p75:65000},
-      {Ecole:"ESSEC Business School", p25:45000, p50:52000, p75:62000},
-      {Ecole:"ESCP Business School", p25:44000, p50:51000, p75:60000},
-      {Ecole:"EDHEC Business School", p25:42000, p50:49000, p75:58000},
-      {Ecole:"emlyon Business School", p25:43000, p50:50000, p75:59000},
-      {Ecole:"Audencia Business School", p25:40000, p50:47000, p75:56000},
-      {Ecole:"Skema Business School", p25:38000, p50:45000, p75:53000},
-      {Ecole:"NEOMA Business School", p25:37000, p50:44000, p75:52000},
-      {Ecole:"Kedge Business School", p25:35000, p50:42000, p75:50000},
-      {Ecole:"TBS Education", p25:36000, p50:43000, p75:51000},
-      {Ecole:"Grenoble EM", p25:37000, p50:44000, p75:52000},
-      {Ecole:"Montpellier BS", p25:35000, p50:42000, p75:50000},
-      {Ecole:"Rennes SB", p25:34000, p50:41000, p75:49000},
-      {Ecole:"ICN Business School", p25:34000, p50:40000, p75:48000},
-      {Ecole:"EM Strasbourg", p25:34000, p50:40000, p75:48000},
-      {Ecole:"Excelia Business School", p25:33000, p50:39000, p75:47000},
-      {Ecole:"ISC Paris", p25:33000, p50:39000, p75:46000},
-      {Ecole:"INSEEC Grande École", p25:32000, p50:38000, p75:45000},
-      {Ecole:"PSB (Paris School of Business)", p25:32000, p50:38000, p75:45000},
-      {Ecole:"EMLV (École de Management Léonard de Vinci)", p25:31000, p50:37000, p75:44000},
-      {Ecole:"ISG (Institut Supérieur de Gestion)", p25:31000, p50:37000, p75:43000},
-      {Ecole:"ESC Clermont BS", p25:31000, p50:36000, p75:42000},
-      {Ecole:"Burgundy School of Business (BSB Dijon)", p25:31000, p50:36000, p75:42000},
-      {Ecole:"IMT-BS (Institut Mines-Télécom Business School)", p25:30000, p50:36000, p75:42000},
-      {Ecole:"ESC Pau Business School", p25:30000, p50:35000, p75:41000},
-      {Ecole:"SCBS (South Champagne Business School)", p25:30000, p50:35000, p75:40000},
-      {Ecole:"Brest Business School", p25:29000, p50:34000, p75:39000},
-      {Ecole:"ISCID-CO (Boulogne/Calais)", p25:28000, p50:33000, p75:38000},
-      {Ecole:"ICD Business School", p25:28000, p50:33000, p75:38000},
-      {Ecole:"ESLSCA Business School Paris", p25:28000, p50:33000, p75:38000}
-    ];
+  {Ecole:"HEC Paris", p25:45600, p50:52250, p75:61750},
+  {Ecole:"ESSEC Business School", p25:42750, p50:49400, p75:58900},
+  {Ecole:"ESCP Business School", p25:41800, p50:48450, p75:57000},
+  {Ecole:"EDHEC Business School", p25:39900, p50:46600, p75:55100},
+  {Ecole:"emlyon Business School", p25:40850, p50:47500, p75:56050},
+  {Ecole:"Audencia Business School", p25:38000, p50:44650, p75:53200},
+  {Ecole:"Skema Business School", p25:36100, p50:42750, p75:50350},
+  {Ecole:"NEOMA Business School", p25:35150, p50:41800, p75:49400},
+  {Ecole:"Kedge Business School", p25:33250, p50:39900, p75:47500},
+  {Ecole:"TBS Education", p25:34200, p50:40850, p75:48450},
+  {Ecole:"Grenoble EM", p25:35150, p50:41800, p75:49400},
+  {Ecole:"Montpellier BS", p25:33250, p50:39900, p75:47500},
+  {Ecole:"Rennes SB", p25:32300, p50:38950, p75:46550},
+  {Ecole:"ICN Business School", p25:32300, p50:38000, p75:45600},
+  {Ecole:"EM Strasbourg", p25:32300, p50:38000, p75:45600},
+  {Ecole:"Excelia Business School", p25:31350, p50:37050, p75:44650},
+  {Ecole:"ISC Paris", p25:31350, p50:37050, p75:43700},
+  {Ecole:"INSEEC Grande École", p25:30400, p50:36100, p75:42750},
+  {Ecole:"PSB (Paris School of Business)", p25:30400, p50:36100, p75:42750},
+  {Ecole:"EMLV (École de Management Léonard de Vinci)", p25:29450, p50:35150, p75:41800},
+  {Ecole:"ISG (Institut Supérieur de Gestion)", p25:29450, p50:35150, p75:40850},
+  {Ecole:"ESC Clermont BS", p25:29450, p50:34200, p75:39900},
+  {Ecole:"Burgundy School of Business (BSB Dijon)", p25:29450, p50:34200, p75:39900},
+  {Ecole:"IMT-BS (Institut Mines-Télécom Business School)", p25:28500, p50:34200, p75:39900},
+  {Ecole:"ESC Pau Business School", p25:28500, p50:33300, p75:38950},
+  {Ecole:"SCBS (South Champagne Business School)", p25:28500, p50:33300, p75:38000},
+  {Ecole:"Brest Business School", p25:27550, p50:32300, p75:37050},
+  {Ecole:"ISCID-CO (Boulogne/Calais)", p25:26600, p50:31350, p75:36100},
+  {Ecole:"ICD Business School", p25:26600, p50:31350, p75:36100},
+  {Ecole:"ESLSCA Business School Paris", p25:26600, p50:31350, p75:36100}
+];
         // ===============================
     // Bloc 5 : Sciences Po (10 IEP)
     // ===============================
 
     const schoolsScPo = [
-      {Ecole:"Sciences Po Paris", p25:36000, p50:40000, p75:45000},
-      {Ecole:"Sciences Po Bordeaux", p25:34000, p50:37000, p75:42000},
-      {Ecole:"Sciences Po Grenoble", p25:33500, p50:36500, p75:41000},
-      {Ecole:"Sciences Po Lille", p25:34000, p50:37000, p75:42000},
-      {Ecole:"Sciences Po Lyon", p25:34500, p50:37500, p75:42500},
-      {Ecole:"Sciences Po Rennes", p25:33000, p50:36000, p75:41000},
-      {Ecole:"Sciences Po Strasbourg", p25:33500, p50:36500, p75:41500},
-      {Ecole:"Sciences Po Toulouse", p25:33500, p50:36500, p75:41500},
-      {Ecole:"Sciences Po Saint-Germain-en-Laye", p25:32000, p50:35000, p75:40000},
-      {Ecole:"Sciences Po Aix", p25:33000, p50:36000, p75:41000}
-    ];
+  {Ecole:"Sciences Po Paris", p25:34200, p50:38000, p75:42750},
+  {Ecole:"Sciences Po Bordeaux", p25:32300, p50:35150, p75:39900},
+  {Ecole:"Sciences Po Grenoble", p25:31825, p50:34675, p75:38950},
+  {Ecole:"Sciences Po Lille", p25:32300, p50:35150, p75:39900},
+  {Ecole:"Sciences Po Lyon", p25:32775, p50:35625, p75:40375},
+  {Ecole:"Sciences Po Rennes", p25:31350, p50:34200, p75:38950},
+  {Ecole:"Sciences Po Strasbourg", p25:31825, p50:34675, p75:39425},
+  {Ecole:"Sciences Po Toulouse", p25:31825, p50:34675, p75:39425},
+  {Ecole:"Sciences Po Saint-Germain-en-Laye", p25:30400, p50:33250, p75:38000},
+  {Ecole:"Sciences Po Aix", p25:31350, p50:34200, p75:38950}
+];
     // ===============================
     // Bloc 6 : Universités (Top 20)
     // ===============================
 
     const schoolsUniversite = [
-      {Ecole:"Sorbonne Université", p25:35000, p50:39000, p75:43000},
-      {Ecole:"Université Paris-Saclay", p25:35000, p50:39000, p75:43000},
-      {Ecole:"Université PSL (Paris Sciences & Lettres)", p25:35000, p50:39500, p75:43500},
-      {Ecole:"Université Paris Cité", p25:34000, p50:38000, p75:42000},
-      {Ecole:"Université de Montpellier", p25:33500, p50:37500, p75:41500},
-      {Ecole:"Université de Strasbourg", p25:33500, p50:37500, p75:41500},
-      {Ecole:"Université Grenoble Alpes", p25:33500, p50:37500, p75:41500},
-      {Ecole:"Aix-Marseille Université", p25:33000, p50:37000, p75:41000},
-      {Ecole:"Université de Bordeaux", p25:33000, p50:37000, p75:41000},
-      {Ecole:"Université de Lyon", p25:33000, p50:37000, p75:41000},
-      {Ecole:"Université de Lille", p25:32500, p50:36500, p75:40500},
-      {Ecole:"Université Toulouse III - Paul Sabatier", p25:32500, p50:36500, p75:40500},
-      {Ecole:"Université de Nantes", p25:32000, p50:36000, p75:40000},
-      {Ecole:"Université de Rennes 1", p25:32000, p50:36000, p75:40000},
-      {Ecole:"Université de Lorraine", p25:32000, p50:36000, p75:40000},
-      {Ecole:"Université Côte d’Azur (Nice)", p25:31500, p50:35500, p75:39500},
-      {Ecole:"Université de Tours", p25:31000, p50:35000, p75:39000},
-      {Ecole:"Université d’Angers", p25:31000, p50:35000, p75:39000},
-      {Ecole:"Université de Clermont Auvergne", p25:31000, p50:35000, p75:39000},
-      {Ecole:"Université de Reims Champagne-Ardenne", p25:30500, p50:34500, p75:38500}
-    ];
+    
+  {Ecole:"Sorbonne Université", p25:33250, p50:37000, p75:40850},
+  {Ecole:"Université Paris-Saclay", p25:33250, p50:37000, p75:40850},
+  {Ecole:"Université PSL (Paris Sciences & Lettres)", p25:33250, p50:37500, p75:41350},
+  {Ecole:"Université Paris Cité", p25:32300, p50:36100, p75:39900},
+  {Ecole:"Université de Montpellier", p25:31800, p50:35600, p75:39400},
+  {Ecole:"Université de Strasbourg", p25:31800, p50:35600, p75:39400},
+  {Ecole:"Université Grenoble Alpes", p25:31800, p50:35600, p75:39400},
+  {Ecole:"Aix-Marseille Université", p25:31300, p50:35100, p75:38900},
+  {Ecole:"Université de Bordeaux", p25:31300, p50:35100, p75:38900},
+  {Ecole:"Université de Lyon", p25:31300, p50:35100, p75:38900},
+  {Ecole:"Université de Lille", p25:30800, p50:34600, p75:38400},
+  {Ecole:"Université Toulouse III - Paul Sabatier", p25:30800, p50:34600, p75:38400},
+  {Ecole:"Université de Nantes", p25:30400, p50:34200, p75:38000},
+  {Ecole:"Université de Rennes 1", p25:30400, p50:34200, p75:38000},
+  {Ecole:"Université de Lorraine", p25:30400, p50:34200, p75:38000},
+  {Ecole:"Université Côte d’Azur (Nice)", p25:29900, p50:33800, p75:37600},
+  {Ecole:"Université de Tours", p25:29500, p50:33300, p75:37100},
+  {Ecole:"Université d’Angers", p25:29500, p50:33300, p75:37100},
+  {Ecole:"Université de Clermont Auvergne", p25:29500, p50:33300, p75:37100},
+  {Ecole:"Université de Reims Champagne-Ardenne", p25:29000, p50:32800, p75:36600}
+];
+
     // ===============================
     // Bloc 7 : Écoles Informatique / IT (Top 15 + hors liste)
     // ===============================
@@ -998,22 +787,22 @@ const schoolsCom = [
 // ===============================
 
 const schoolsRH = [
-  { Ecole: "IGS RH (Institut de Gestion Sociale)", p25: 33000, p50: 37000, p75: 43000 },
-  { Ecole: "ESGRH (École Supérieure de Gestion des RH)", p25: 32000, p50: 36000, p75: 42000 },
-  { Ecole: "Sup des RH", p25: 30000, p50: 34000, p75: 40000 },
-  { Ecole: "ISFOGEP (Clermont Auvergne)", p25: 31000, p50: 35000, p75: 40000 },
-  { Ecole: "ICD Business School (RH)", p25: 31000, p50: 35000, p75: 41000 },
-  { Ecole: "ESSCA RH & Management", p25: 32000, p50: 36000, p75: 42000 },
-  { Ecole: "ISCG Paris (RH & Paie)", p25: 30000, p50: 34000, p75: 39000 },
-  { Ecole: "IAE Paris-Sorbonne (Master RH)", p25: 34000, p50: 38000, p75: 45000 },
-  { Ecole: "IAE Lyon (Master GRH)", p25: 33000, p50: 37000, p75: 43000 },
-  { Ecole: "IAE Aix-Marseille (Master Management RH)", p25: 33000, p50: 38000, p75: 44000 },
-  { Ecole: "IAE Grenoble (Master RH & Organisation)", p25: 32000, p50: 36000, p75: 42000 },
-  { Ecole: "IAE Lille (Master RH & Management Social)", p25: 32000, p50: 36000, p75: 42000 },
-  { Ecole: "IAE Nantes (Master Gestion des RH)", p25: 31000, p50: 35000, p75: 41000 },
-  { Ecole: "IAE Nice (Master Management RH)", p25: 32000, p50: 36000, p75: 42000 },
-  { Ecole: "Toulouse School of Management (Master RH)", p25: 32000, p50: 36000, p75: 41000 },
-  { Ecole: "Hors liste RH", p25: 28000, p50: 32000, p75: 37000 }
+  { Ecole: "IGS RH (Institut de Gestion Sociale)", p25: 31350, p50: 35150, p75: 40850 },
+  { Ecole: "ESGRH (École Supérieure de Gestion des RH)", p25: 30400, p50: 34200, p75: 39900 },
+  { Ecole: "Sup des RH", p25: 28500, p50: 32300, p75: 38000 },
+  { Ecole: "ISFOGEP (Clermont Auvergne)", p25: 29450, p50: 33250, p75: 38000 },
+  { Ecole: "ICD Business School (RH)", p25: 29450, p50: 33250, p75: 38950 },
+  { Ecole: "ESSCA RH & Management", p25: 30400, p50: 34200, p75: 39900 },
+  { Ecole: "ISCG Paris (RH & Paie)", p25: 28500, p50: 32300, p75: 37050 },
+  { Ecole: "IAE Paris-Sorbonne (Master RH)", p25: 32300, p50: 36100, p75: 42750 },
+  { Ecole: "IAE Lyon (Master GRH)", p25: 31350, p50: 35150, p75: 40850 },
+  { Ecole: "IAE Aix-Marseille (Master Management RH)", p25: 31350, p50: 36100, p75: 41800 },
+  { Ecole: "IAE Grenoble (Master RH & Organisation)", p25: 30400, p50: 34200, p75: 39900 },
+  { Ecole: "IAE Lille (Master RH & Management Social)", p25: 30400, p50: 34200, p75: 39900 },
+  { Ecole: "IAE Nantes (Master Gestion des RH)", p25: 29450, p50: 33250, p75: 38950 },
+  { Ecole: "IAE Nice (Master Management RH)", p25: 30400, p50: 34200, p75: 39900 },
+  { Ecole: "Toulouse School of Management (Master RH)", p25: 30400, p50: 34200, p75: 38950 },
+  { Ecole: "Hors liste RH", p25: 26600, p50: 30400, p75: 35150 }
 ];
 
 
@@ -1023,8 +812,8 @@ const schoolsRH = [
     // ===============================
 
     const functionsIT = {
-      "Développeur Front-End": { p25: 30000, p50: 38000, p75: 48000 },
-      "Développeur Back-End": { p25: 32000, p50: 40000, p75: 50000 },
+      "Développeur Front-End": { p25: 30000, p50: 38000, p75: 46000 },
+      "Développeur Back-End": { p25: 32000, p50: 40000, p75: 48000 },
       "Développeur Full-Stack": { p25: 33000, p50: 42000, p75: 52000 },
       "Data Engineer": { p25: 35000, p50: 45000, p75: 58000 },
       "Data Scientist": { p25: 37000, p50: 48000, p75: 62000 },
