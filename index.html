@@ -914,6 +914,33 @@ const functionsCommunication = {
   "Directeur de la communication": { p25: 65000, p50: 75000, p75: 90000 }
 };
 
+// ===============================
+// Bloc : Ingénieurs Ops (Opérations & Missions)
+// Ajusté -10.5% (package + anglais B2)
+// ===============================
+
+const functionsOps = {
+  "Ingénieur Opération": {
+    p25: 35500,
+    p50: 38500,  // sortie école ~38.5k€
+    p75: 44000
+  },
+  "Ingénieur Opération Senior": {
+    p25: 62000,
+    p50: 68900,  // médian 2025
+    p75: 78000
+  },
+  "Ingénieur Mission": {
+    p25: 38500,
+    p50: 42000,
+    p75: 47000
+  },
+  "Ingénieur Mission Senior": {
+    p25: 68000,
+    p50: 73950,  // médian 2025
+    p75: 83000
+  }
+};
 
     
     // ===============================
@@ -1001,7 +1028,8 @@ const allFunctions = {
   ...functionsCommerciaux,
   ...functionsIT,
   ...functionsDesign,
-  ...functionsCommunication   // 🆕 ajout Communication ici
+  ...functionsCommunication,   // 🆕 ajout Communication ici
+  ...functionsOps
 };
 
 Object.keys(allFunctions).forEach(k => fonctionSel.add(new Option(k, k)));
@@ -1077,7 +1105,7 @@ if (sectorSelValue === "fonction" || sectorSelValue === "transverse" || sectorSe
       // === Cas 2 : Fonction transverse ===
       const fn=document.getElementById("fonction").value;
       if(fn){
-        const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux,...functionsIT,...functionsDesign};
+        const allFunctions={...functionsAchats,...functionsImmo,...functionsRH,...functionsFinance,...functionsCommerciaux,...functionsIT,...functionsDesign,...functionsOps};
         const f=allFunctions[fn];
         if(f){
           if(p25>0 && p50>0){ // hybride école + fonction
@@ -1145,7 +1173,16 @@ if (sectorSelValue === "fonction" || sectorSelValue === "transverse" || sectorSe
 // ===============================
 
 // --- coefficients individuels ---
-const educationCoef = { technicien: 0.85, bac3: 0.93, bac5: 1.00, doctorat: 1.10 }[document.getElementById("educationLevel")?.value] || 1;
+const educationCoef = {
+  technicien: 0.80,
+  bac3: 0.89,
+  bac5: 1.00,
+  doctorat: 1.15
+}[document.getElementById("educationLevel")?.value] || 1;
+
+console.log("⚙️ Coefficient éducation appliqué :", educationCoef);
+
+
 const englishCoef   = { basic: 1.00, intermediate: 1.03, advanced: 1.06, bilingual: 1.10 }[document.getElementById("englishLevel")?.value] || 1;
 const contractCoef  = { cdi: 1.00, cdd: 0.96, alternance: 0.70, freelance: 1.20, expatriation: 1.15 }[document.getElementById("contractType")?.value] || 1;
 const industryCoef  = { aero: 1.05, auto: 1.00, energie: 1.06, numerique: 1.07, sante: 1.05, luxe: 1.08, public: 0.88 }[document.getElementById("industry")?.value] || 1;
@@ -1168,10 +1205,19 @@ const geoMean = Math.pow(refinements.reduce((a, b) => a * b, 1), 1 / refinements
 // → limitation globale pour éviter inflation (±25%)
 const refinementCoef = Math.min(Math.max(geoMean, 0.85), 1.25);
 
-// → application
-let medianFixed = median * coef * roleCoef * refinementCoef;
-let lowFixed    = low * coef * roleCoef * refinementCoef;
-let highFixed   = high * coef * roleCoef * refinementCoef;
+// 🎓 Ajustement final selon niveau d'études (comme IDF vs hors IDF)
+let educationAdjust = 1.00; // valeur par défaut (Bac+5)
+
+const eduLevel = document.getElementById("educationLevel")?.value;
+if (eduLevel === "technicien") educationAdjust = 0.80; // -20%
+else if (eduLevel === "bac3")  educationAdjust = 0.89; // -11%
+else if (eduLevel === "doctorat") educationAdjust = 1.05; // +5%
+
+// Application du correctif après le refinement global
+let medianFixed = median * coef * roleCoef * refinementCoef * educationAdjust;
+let lowFixed    = low    * coef * roleCoef * refinementCoef * educationAdjust;
+let highFixed   = high   * coef * roleCoef * refinementCoef * educationAdjust;
+
 
 // → ajout du package
 median = medianFixed * packageCoef;
@@ -1545,7 +1591,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ...functionsFinance,
         ...functionsCommerciaux,
         ...functionsIT,
-        ...functionsDesign
+        ...functionsDesign,
+        ...functionsOps
+        
       };
       console.assert(Object.keys(totalFunctions).length > 0, "⚠️ Aucune fonction détectée");
       console.log("✅ Fonctions globales:", Object.keys(totalFunctions).length);
