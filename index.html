@@ -514,6 +514,33 @@
             <option value="croisee">⚖️ Données croisées</option>
           </select>
         </div>
+        <!-- Sous-domaine technique -->
+        <div>
+          <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">🔬 Sous-domaine technique</label>
+          <select id="subdomain" class="w-full p-2 border rounded-lg">
+            <option value="">-- Aucun --</option>
+            <option value="Calculs & Simulation">Calculs & Simulation (+5%)</option>
+            <option value="Conception">Conception (+2%)</option>
+            <option value="Électronique">Électronique (+4%)</option>
+            <option value="Avionique">Avionique (+4%)</option>
+            <option value="Matériaux">Matériaux (+2%)</option>
+            <option value="Propulsion">Propulsion (+4%)</option>
+            <option value="Méthodes">Méthodes (neutre)</option>
+            <option value="Production">Production (neutre)</option>
+            <option value="Maintenance">Maintenance (-2%)</option>
+            <option value="Qualité">Qualité (+2%)</option>
+            <option value="Supply Chain">Supply Chain (+2%)</option>
+            <option value="Gestion de Projet">Gestion de Projet (+3%)</option>
+            <option value="Ingénierie Systèmes">Ingénierie Systèmes (+4%)</option>
+            <option value="Gestion de Programme">Gestion de Programme (+4%)</option>
+            <option value="Support Client">Support Client (-4%)</option>
+            <option value="Thermique">Thermique (+6%)</option>
+            <option value="Dynamique de Vol">Dynamique de Vol (+6%)</option>
+            <option value="Électrique">Électrique (+6%)</option>
+            <option value="Test">Test (+1%)</option>
+          </select>
+        </div>
+        
       </div>
     </div>
 
@@ -536,6 +563,48 @@
         </div>
       </div>
       
+      <!-- Synthèse d'analyse détaillée -->
+      <div id="detailedAnalysis" class="mb-6 space-y-4">
+        
+        <!-- Positionnement marché -->
+        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border-l-4 border-blue-500">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">📊 Positionnement sur le marché</h3>
+          <p id="analysis-market" class="text-sm text-gray-700 dark:text-gray-300">—</p>
+        </div>
+
+        <!-- Facteurs valorisants -->
+        <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border-l-4 border-green-500">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">✅ Facteurs valorisants</h3>
+          <ul id="analysis-positive" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
+            <li>En cours d'analyse...</li>
+          </ul>
+        </div>
+
+        <!-- Points d'attention -->
+        <div class="p-4 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl border-l-4 border-orange-500">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">⚠️ Points d'attention</h3>
+          <ul id="analysis-attention" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
+            <li>En cours d'analyse...</li>
+          </ul>
+        </div>
+
+        <!-- Projection carrière -->
+        <div class="p-4 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border-l-4 border-purple-500">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">🚀 Projection de carrière</h3>
+          <div id="analysis-projection" class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+            <p>—</p>
+          </div>
+        </div>
+
+        <!-- Recommandations -->
+        <div class="p-4 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-xl border-l-4 border-yellow-500">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">💡 Recommandations</h3>
+          <ul id="analysis-recommendations" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
+            <li>En cours d'analyse...</li>
+          </ul>
+        </div>
+
+      </div>
       <canvas id="salaryChart" class="mt-4 sm:mt-6"></canvas>
 
       <!-- Bouton Export PDF -->
@@ -1178,6 +1247,29 @@
       design: schoolsDesign,
       fonction: [...schoolsCom, ...schoolsRH]
     };
+    
+    // Coefficients sous-domaines techniques
+    const subdomainCoef = {
+      "Calculs & Simulation": 1.05,
+      "Conception": 1.02,
+      "Électronique": 1.04,
+      "Avionique": 1.04,
+      "Matériaux": 1.02,
+      "Propulsion": 1.04,
+      "Méthodes": 1.00,
+      "Production": 1.00,
+      "Maintenance": 0.98,
+      "Qualité": 1.02,
+      "Supply Chain": 1.02,
+      "Gestion de Projet": 1.03,
+      "Ingénierie Systèmes": 1.04,
+      "Gestion de Programme": 1.04,
+      "Support Client": 0.96,
+      "Thermique": 1.06,
+      "Dynamique de Vol": 1.06,
+      "Électrique": 1.06,
+      "Test": 1.01
+    };
 
     // ===== GESTION DES TABS =====
     let currentTab = 'simulator';
@@ -1322,6 +1414,9 @@
       const sizeCoef = {
         'startup': 0.95, 'PME': 0.96, 'ETI': 1.00, 'grand-groupe': 1.06
       }[profile.companySize] || 1;
+      
+      // Sous-domaine technique
+      const subdomainCoefValue = subdomainCoef[profile.subdomain] || 1;
 
       // Classification
       let classCoef = 1;
@@ -1343,9 +1438,9 @@
       if (profile.source === 'fw') sourceCoef = 0.95;
       if (profile.source === 'croisee') sourceCoef = 0.97;
 
-      const median = p50 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef;
-      const low = p25 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef;
-      const high = p75 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef;
+      const median = p50 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+      const low = p25 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+      const high = p75 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
 
       return { median, low, high };
     }
@@ -1430,6 +1525,7 @@
         industry: document.getElementById('industry').value,
         teamSize: document.getElementById('teamSize').value,
         packageLevel: document.getElementById('packageLevel').value,
+        subdomain: document.getElementById('subdomain').value,
         source: document.getElementById('source').value
       };
 
@@ -1505,8 +1601,161 @@
       });
 
       adjustChartHeight();
+      
+     // ===== GÉNÉRER L'ANALYSE DÉTAILLÉE =====
+      generateDetailedAnalysis(profile, result);
     }
 
+// ===== ANALYSE DÉTAILLÉE DU PROFIL =====
+    function generateDetailedAnalysis(profile, result) {
+      const schools = allSchools[profile.sector] || [];
+      const school = schools[profile.school];
+
+      // 1. POSITIONNEMENT MARCHÉ
+      let marketAnalysis = '';
+      if (result.median < 35000) {
+        marketAnalysis = `Avec un salaire médian de ${Math.round(result.median).toLocaleString()} €, ton profil se situe dans la tranche basse du marché. Cela correspond généralement à un début de carrière ou à un secteur moins rémunérateur.`;
+      } else if (result.median < 45000) {
+        marketAnalysis = `Ton salaire médian de ${Math.round(result.median).toLocaleString()} € correspond à un profil junior à intermédiaire. Tu es dans la moyenne du marché français pour ton niveau.`;
+      } else if (result.median < 60000) {
+        marketAnalysis = `Avec ${Math.round(result.median).toLocaleString()} € de salaire médian, tu te situes au-dessus de la moyenne nationale. C'est un bon positionnement qui reflète une expertise ou un secteur valorisant.`;
+      } else if (result.median < 80000) {
+        marketAnalysis = `Excellent positionnement ! Ton salaire médian de ${Math.round(result.median).toLocaleString()} € te place dans le top 20% du marché français. Cela témoigne d'une forte valeur ajoutée.`;
+      } else {
+        marketAnalysis = `Profil exceptionnel ! Avec ${Math.round(result.median).toLocaleString()} € de salaire médian, tu fais partie des profils les mieux rémunérés en France (top 5%). Cela correspond généralement à des postes de direction ou d'expertise rare.`;
+      }
+      document.getElementById('analysis-market').textContent = marketAnalysis;
+
+      // 2. FACTEURS VALORISANTS
+      const positiveFactors = [];
+      
+      if (school && school.p50 > 45000) {
+        positiveFactors.push(`École prestigieuse (${school.Ecole}) avec un salaire de sortie élevé (${Math.round(school.p50).toLocaleString()} €)`);
+      }
+      
+      if (profile.experience > 10) {
+        positiveFactors.push(`Expérience significative (${profile.experience} ans) qui valorise fortement ton profil`);
+      }
+      
+      if (profile.region === 'IDF') {
+        positiveFactors.push('Localisation Île-de-France (+14% de prime régionale)');
+      }
+      
+      if (profile.englishLevel === 'bilingual' || profile.englishLevel === 'advanced') {
+        positiveFactors.push(`Niveau d'anglais ${profile.englishLevel === 'bilingual' ? 'bilingue' : 'avancé'} (fort atout international)`);
+      }
+      
+      if (profile.classification && profile.classification.startsWith('M')) {
+        positiveFactors.push(`Poste managérial (${profile.classification}) avec responsabilités d'équipe`);
+      }
+      
+      if (profile.teamSize === 'large' || profile.teamSize === 'xl') {
+        positiveFactors.push(`Management d'une grande équipe (${profile.teamSize === 'xl' ? '50+' : '16-50'} personnes)`);
+      }
+      
+      if (profile.packageLevel === 'actions' || profile.packageLevel === 'bonusplus') {
+        positiveFactors.push(`Package rémunération avantageux (${profile.packageLevel === 'actions' ? 'actions/BSPCE' : 'variable 15-25%'})`);
+      }
+      
+      if (profile.subdomain && subdomainCoef[profile.subdomain] > 1.03) {
+        positiveFactors.push(`Spécialisation technique valorisée : ${profile.subdomain} (+${Math.round((subdomainCoef[profile.subdomain] - 1) * 100)}%)`);
+      }
+      
+      if (profile.companySize === 'grand-groupe') {
+        positiveFactors.push('Grand groupe (+6% de stabilité et avantages sociaux)');
+      }
+
+      const positiveHTML = positiveFactors.length > 0 
+        ? positiveFactors.map(f => `<li>${f}</li>`).join('') 
+        : '<li>Profil standard sans facteurs exceptionnels identifiés</li>';
+      document.getElementById('analysis-positive').innerHTML = positiveHTML;
+
+      // 3. POINTS D'ATTENTION
+      const attentionPoints = [];
+      
+      if (profile.experience < 3) {
+        attentionPoints.push('Début de carrière : la progression salariale sera rapide dans les 5 prochaines années');
+      }
+      
+      if (profile.region === 'hors') {
+        attentionPoints.push('Localisation hors IDF : salaire ajusté au coût de la vie local (-14% vs Paris)');
+      }
+      
+      if (profile.englishLevel === 'basic') {
+        attentionPoints.push('Niveau d\'anglais basique : investir dans la formation linguistique pourrait augmenter ton potentiel (+10%)');
+      }
+      
+      if (profile.companySize === 'startup') {
+        attentionPoints.push('Startup : salaire d\'entrée inférieur mais potentiel de croissance rapide (actions, promotions)');
+      }
+      
+      if (profile.contractType === 'cdd') {
+        attentionPoints.push('CDD : salaire légèrement inférieur au CDI (-4%), viser une stabilisation en CDI');
+      }
+      
+      if (profile.subdomain && subdomainCoef[profile.subdomain] < 1.00) {
+        attentionPoints.push(`Spécialisation moins valorisée : ${profile.subdomain} (${Math.round((subdomainCoef[profile.subdomain] - 1) * 100)}%)`);
+      }
+      
+      if (profile.teamSize === 'none' && profile.experience > 5) {
+        attentionPoints.push('Pas de management d\'équipe : envisager d\'évoluer vers des responsabilités managériales pour booster ton salaire');
+      }
+
+      if (attentionPoints.length === 0) {
+        attentionPoints.push('Profil bien équilibré sans points bloquants majeurs identifiés');
+      }
+
+      const attentionHTML = attentionPoints.map(p => `<li>${p}</li>`).join('');
+      document.getElementById('analysis-attention').innerHTML = attentionHTML;
+
+      // 4. PROJECTION CARRIÈRE
+      const salary5y = Math.round(result.median * Math.pow(1.023, 5));
+      const salary10y = Math.round(result.median * Math.pow(1.023, 10));
+      const salary20y = Math.round(result.median * Math.pow(1.023, 20));
+      
+      const projectionHTML = `
+        <p><strong>Dans 5 ans :</strong> ${salary5y.toLocaleString()} € (progression +${Math.round(((salary5y/result.median)-1)*100)}%)</p>
+        <p><strong>Dans 10 ans :</strong> ${salary10y.toLocaleString()} € (progression +${Math.round(((salary10y/result.median)-1)*100)}%)</p>
+        <p><strong>Dans 20 ans :</strong> ${salary20y.toLocaleString()} € (progression +${Math.round(((salary20y/result.median)-1)*100)}%)</p>
+        <p class="mt-2 text-xs italic">Projection basée sur une augmentation annuelle moyenne de 2,3% (hors promotions et changements de poste)</p>
+      `;
+      document.getElementById('analysis-projection').innerHTML = projectionHTML;
+
+      // 5. RECOMMANDATIONS
+      const recommendations = [];
+      
+      if (profile.experience < 5 && profile.englishLevel !== 'bilingual') {
+        recommendations.push('Investir dans la certification anglais (TOEIC 900+ ou équivalent) pour débloquer +10% de potentiel');
+      }
+      
+      if (!profile.classification || profile.classification === '') {
+        recommendations.push('Viser une classification interne (I3/M1) pour structurer ton évolution salariale');
+      }
+      
+      if (profile.companySize === 'startup' && profile.experience > 5) {
+        recommendations.push('Avec ton expérience, envisager un passage en ETI/Grand Groupe pour sécuriser et augmenter ton salaire (+10-15%)');
+      }
+      
+      if (profile.region === 'hors' && result.median > 50000) {
+        recommendations.push('Ton profil pourrait prétendre à +14% en IDF si tu es mobile géographiquement');
+      }
+      
+      if (profile.teamSize === 'none' && profile.experience > 3) {
+        recommendations.push('Évoluer vers un poste avec management d\'équipe (même petite) pour accélérer ta progression (+10-20%)');
+      }
+      
+      if (profile.packageLevel === 'standard') {
+        recommendations.push('Négocier un variable ou des actions lors de ta prochaine évolution (+7 à +30% de package total)');
+      }
+      
+      if (recommendations.length === 0) {
+        recommendations.push('Continue sur ta lancée ! Ton profil est bien optimisé. Vise des certifications techniques ou un élargissement de périmètre pour la prochaine étape.');
+      }
+
+      const recommendationsHTML = recommendations.map(r => `<li>${r}</li>`).join('');
+      document.getElementById('analysis-recommendations').innerHTML = recommendationsHTML;
+    }
+    
     // ===== CALCUL COMPARATEUR + ANALYSE PEAUFINÉE =====
     function calculateComparison() {
       const profileA = {
@@ -1678,97 +1927,476 @@ const ratio = resultA.median / resultB.median;
       document.getElementById('insight-professional').textContent = professionalInsight || 'Contexte professionnel similaire.';
     }
 
-  // ===== EXPORT PDF SIMULATEUR (optimisé mobile) =====
+// ===== EXPORT PDF SIMULATEUR PROFESSIONNEL =====
     function exportSimulatorPDF() {
-      // Feedback visuel
       const btn = event.target;
-      btn.textContent = '⏳ Génération...';
+      btn.textContent = '⏳ Génération en cours...';
       btn.disabled = true;
 
       setTimeout(() => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('p', 'mm', 'a4');
+          let yPos = 20;
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(16);
-        doc.text("Résultats Simulateur", 20, 20);
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.text("Médian: " + document.getElementById('median').textContent, 20, 40);
-        doc.text("Bas: " + document.getElementById('low').textContent, 20, 50);
-        doc.text("Haut: " + document.getElementById('high').textContent, 20, 60);
-
-        const canvas = document.getElementById('salaryChart');
-        html2canvas(canvas, { scale: isMobile() ? 1 : 2 }).then(canvasImg => {
-          const imgData = canvasImg.toDataURL('image/png');
-          doc.addImage(imgData, 'PNG', 20, 75, 170, 80);
-          doc.save('simulateur_salaire.pdf');
+          // ===== HEADER =====
+          doc.setFillColor(0, 174, 239);
+          doc.rect(0, 0, 210, 35, 'F');
           
-          // Reset bouton
-          btn.textContent = '📄 Exporter en PDF';
-          btn.disabled = false;
-        }).catch(() => {
-          btn.textContent = '❌ Erreur';
-          setTimeout(() => {
+          doc.setTextColor(255, 255, 255);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(22);
+          doc.text("✈️ Analyse Salariale Complète", 105, 15, { align: 'center' });
+          
+          doc.setFontSize(11);
+          doc.setFont("helvetica", "normal");
+          const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+          doc.text(`Généré le ${today}`, 105, 25, { align: 'center' });
+
+          yPos = 45;
+
+          // ===== RÉSUMÉ PROFIL =====
+          doc.setTextColor(0, 0, 0);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(14);
+          doc.text("📋 Votre profil", 15, yPos);
+          
+          yPos += 8;
+          doc.setFontSize(10);
+          doc.setFont("helvetica", "normal");
+          
+          const profile = {
+            sector: document.getElementById('sector').value,
+            school: document.querySelector('#school option:checked')?.text || 'N/A',
+            experience: document.getElementById('experience').value,
+            region: document.getElementById('region').value === 'IDF' ? 'Île-de-France' : 'Hors IDF',
+            company: document.querySelector('#companySize option:checked')?.text || 'N/A',
+            classification: document.querySelector('#classification option:checked')?.text || 'Standard',
+            source: document.querySelector('#source option:checked')?.text || 'Marché'
+          };
+
+          doc.text(`Secteur : ${profile.sector}`, 15, yPos);
+          yPos += 6;
+          doc.text(`École : ${profile.school}`, 15, yPos);
+          yPos += 6;
+          doc.text(`Expérience : ${profile.experience} ans`, 15, yPos);
+          yPos += 6;
+          doc.text(`Localisation : ${profile.region}`, 15, yPos);
+          yPos += 6;
+          doc.text(`Entreprise : ${profile.company}`, 15, yPos);
+          yPos += 6;
+          doc.text(`Classification : ${profile.classification}`, 15, yPos);
+          yPos += 6;
+          doc.text(`Source données : ${profile.source}`, 15, yPos);
+
+          yPos += 12;
+
+          // ===== RÉSULTATS SALARIAUX =====
+          doc.setFillColor(240, 248, 255);
+          doc.rect(15, yPos, 180, 35, 'F');
+          
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(14);
+          doc.setTextColor(0, 51, 102);
+          doc.text("💰 Estimation salariale", 20, yPos + 8);
+          
+          doc.setFontSize(11);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(0, 0, 0);
+          
+          const median = document.getElementById('median').textContent;
+          const low = document.getElementById('low').textContent;
+          const high = document.getElementById('high').textContent;
+          
+          doc.text(`Salaire médian :`, 20, yPos + 18);
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(0, 123, 255);
+          doc.setFontSize(16);
+          doc.text(median, 70, yPos + 18);
+          
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(0, 0, 0);
+          doc.setFontSize(10);
+          doc.text(`Fourchette basse : ${low}`, 20, yPos + 27);
+          doc.text(`Fourchette haute : ${high}`, 20, yPos + 32);
+
+          yPos += 45;
+
+          // ===== POSITIONNEMENT MARCHÉ =====
+          if (yPos > 250) { doc.addPage(); yPos = 20; }
+          
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(13);
+          doc.setTextColor(0, 51, 102);
+          doc.text("📊 Positionnement sur le marché", 15, yPos);
+          
+          yPos += 7;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+          
+          const marketText = document.getElementById('analysis-market').textContent;
+          const marketLines = doc.splitTextToSize(marketText, 180);
+          doc.text(marketLines, 15, yPos);
+          yPos += marketLines.length * 5 + 8;
+
+          // ===== FACTEURS VALORISANTS =====
+          if (yPos > 240) { doc.addPage(); yPos = 20; }
+          
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(13);
+          doc.setTextColor(34, 139, 34);
+          doc.text("✅ Facteurs valorisants", 15, yPos);
+          
+          yPos += 7;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+          
+          const positiveItems = Array.from(document.querySelectorAll('#analysis-positive li'));
+          positiveItems.forEach(item => {
+            if (yPos > 270) { doc.addPage(); yPos = 20; }
+            const text = doc.splitTextToSize(`• ${item.textContent}`, 175);
+            doc.text(text, 18, yPos);
+            yPos += text.length * 5 + 2;
+          });
+
+          yPos += 5;
+
+          // ===== POINTS D'ATTENTION =====
+          if (yPos > 240) { doc.addPage(); yPos = 20; }
+          
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(13);
+          doc.setTextColor(255, 140, 0);
+          doc.text("⚠️ Points d'attention", 15, yPos);
+          
+          yPos += 7;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+          
+          const attentionItems = Array.from(document.querySelectorAll('#analysis-attention li'));
+          attentionItems.forEach(item => {
+            if (yPos > 270) { doc.addPage(); yPos = 20; }
+            const text = doc.splitTextToSize(`• ${item.textContent}`, 175);
+            doc.text(text, 18, yPos);
+            yPos += text.length * 5 + 2;
+          });
+
+          yPos += 5;
+
+          // ===== PROJECTION CARRIÈRE =====
+          if (yPos > 230) { doc.addPage(); yPos = 20; }
+          
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(13);
+          doc.setTextColor(138, 43, 226);
+          doc.text("🚀 Projection de carrière", 15, yPos);
+          
+          yPos += 7;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+          
+          const projectionText = document.getElementById('analysis-projection').innerText;
+          const projectionLines = doc.splitTextToSize(projectionText, 180);
+          doc.text(projectionLines, 15, yPos);
+          yPos += projectionLines.length * 5 + 8;
+
+          // ===== RECOMMANDATIONS =====
+          if (yPos > 230) { doc.addPage(); yPos = 20; }
+          
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(13);
+          doc.setTextColor(255, 193, 7);
+          doc.text("💡 Recommandations personnalisées", 15, yPos);
+          
+          yPos += 7;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+          
+          const recommendationItems = Array.from(document.querySelectorAll('#analysis-recommendations li'));
+          recommendationItems.forEach(item => {
+            if (yPos > 270) { doc.addPage(); yPos = 20; }
+            const text = doc.splitTextToSize(`• ${item.textContent}`, 175);
+            doc.text(text, 18, yPos);
+            yPos += text.length * 5 + 2;
+          });
+
+          // ===== GRAPHIQUE =====
+          doc.addPage();
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(14);
+          doc.setTextColor(0, 51, 102);
+          doc.text("📈 Évolution salariale projetée sur 40 ans", 105, 20, { align: 'center' });
+
+          const canvas = document.getElementById('salaryChart');
+          html2canvas(canvas, { scale: 2 }).then(canvasImg => {
+            const imgData = canvasImg.toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', 15, 30, 180, 90);
+
+            // ===== FOOTER =====
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              doc.setPage(i);
+              doc.setFontSize(8);
+              doc.setTextColor(150, 150, 150);
+              doc.text(`Page ${i} / ${pageCount}`, 105, 290, { align: 'center' });
+              doc.text('Simulateur Flying Whales - Document confidentiel', 105, 285, { align: 'center' });
+            }
+
+            doc.save('analyse_salariale_complete.pdf');
             btn.textContent = '📄 Exporter en PDF';
             btn.disabled = false;
-          }, 2000);
-        });
+          }).catch(() => {
+            alert('Erreur lors de la génération du PDF');
+            btn.textContent = '📄 Exporter en PDF';
+            btn.disabled = false;
+          });
+
+        } catch (error) {
+          console.error('Erreur PDF:', error);
+          alert('Erreur lors de la génération du PDF');
+          btn.textContent = '📄 Exporter en PDF';
+          btn.disabled = false;
+        }
       }, 100);
     }
 
-    // ===== EXPORT PDF COMPARAISON (optimisé mobile) =====
+    // ===== EXPORT PDF COMPARAISON PROFESSIONNEL =====
     function exportComparisonPDF() {
-      // Feedback visuel
       const btn = event.target;
-      btn.textContent = '⏳ Génération...';
+      btn.textContent = '⏳ Génération en cours...';
       btn.disabled = true;
 
       setTimeout(() => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('p', 'mm', 'a4');
+          let yPos = 20;
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(16);
-        doc.text("Comparaison Salaires", 20, 20);
+          // ===== HEADER =====
+          doc.setFillColor(138, 43, 226);
+          doc.rect(0, 0, 210, 35, 'F');
+          
+          doc.setTextColor(255, 255, 255);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(22);
+          doc.text("👥 Comparaison de Profils", 105, 15, { align: 'center' });
+          
+          doc.setFontSize(11);
+          doc.setFont("helvetica", "normal");
+          const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+          doc.text(`Généré le ${today}`, 105, 25, { align: 'center' });
 
-        doc.setFontSize(12);
-        doc.setTextColor(59, 130, 246);
-        doc.text("Profil A", 20, 35);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Salaire: " + document.getElementById('resultA-median').textContent, 20, 43);
-        doc.text("Fourchette: " + document.getElementById('resultA-range').textContent, 20, 50);
+          yPos = 50;
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
-        doc.setTextColor(34, 197, 94);
-        doc.text("Profil B", 20, 63);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Salaire: " + document.getElementById('resultB-median').textContent, 20, 71);
-        doc.text("Fourchette: " + document.getElementById('resultB-range').textContent, 20, 78);
+          // ===== VUE D'ENSEMBLE =====
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(14);
+          doc.setTextColor(0, 51, 102);
+          doc.text("📊 Vue d'ensemble", 15, yPos);
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
-        doc.text("Analyse", 20, 93);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text("Différence: " + document.getElementById('diff-absolute').textContent, 20, 101);
-        doc.text("Écart: " + document.getElementById('diff-percent').textContent, 20, 108);
+          yPos += 10;
 
-        const insight = document.getElementById('insight-main').textContent;
-        const lines = doc.splitTextToSize(insight, 170);
-        doc.text(lines, 20, 120);
+          // Cadre Profil A
+          doc.setFillColor(59, 130, 246);
+          doc.rect(15, yPos, 85, 8, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(12);
+          doc.text("Profil A", 20, yPos + 6);
 
-        doc.save('comparaison_salaires.pdf');
-        
-        // Reset bouton
-        btn.textContent = '📄 Exporter la comparaison en PDF';
-        btn.disabled = false;
+          yPos += 12;
+          doc.setTextColor(0, 0, 0);
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          
+          const schoolA = document.querySelector('#schoolA option:checked')?.text || 'N/A';
+          const expA = document.getElementById('experienceA').value;
+          const regionA = document.getElementById('regionA').value === 'IDF' ? 'IDF' : 'Province';
+          const salaryA = document.getElementById('resultA-median').textContent;
+          const rangeA = document.getElementById('resultA-range').textContent;
+
+          doc.text(`École : ${schoolA}`, 20, yPos);
+          yPos += 5;
+          doc.text(`Expérience : ${expA} ans`, 20, yPos);
+          yPos += 5;
+          doc.text(`Région : ${regionA}`, 20, yPos);
+          yPos += 8;
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(59, 130, 246);
+          doc.setFontSize(14);
+          doc.text(`Salaire : ${salaryA}`, 20, yPos);
+          yPos += 5;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`Fourchette : ${rangeA}`, 20, yPos);
+
+          // Cadre Profil B
+          yPos = 60;
+          doc.setFillColor(34, 197, 94);
+          doc.rect(110, yPos, 85, 8, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(12);
+          doc.text("Profil B", 115, yPos + 6);
+
+          yPos += 12;
+          doc.setTextColor(0, 0, 0);
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          
+          const schoolB = document.querySelector('#schoolB option:checked')?.text || 'N/A';
+          const expB = document.getElementById('experienceB').value;
+          const regionB = document.getElementById('regionB').value === 'IDF' ? 'IDF' : 'Province';
+          const salaryB = document.getElementById('resultB-median').textContent;
+          const rangeB = document.getElementById('resultB-range').textContent;
+
+          doc.text(`École : ${schoolB}`, 115, yPos);
+          yPos += 5;
+          doc.text(`Expérience : ${expB} ans`, 115, yPos);
+          yPos += 5;
+          doc.text(`Région : ${regionB}`, 115, yPos);
+          yPos += 8;
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(34, 197, 94);
+          doc.setFontSize(14);
+          doc.text(`Salaire : ${salaryB}`, 115, yPos);
+          yPos += 5;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`Fourchette : ${rangeB}`, 115, yPos);
+
+          yPos += 20;
+
+          // ===== ANALYSE COMPARATIVE =====
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(14);
+          doc.setTextColor(0, 51, 102);
+          doc.text("⚖️ Analyse comparative", 15, yPos);
+
+          yPos += 10;
+          doc.setFillColor(245, 245, 245);
+          doc.rect(15, yPos, 180, 30, 'F');
+
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(11);
+          doc.setTextColor(0, 0, 0);
+
+          const diff = document.getElementById('diff-absolute').textContent;
+          const percent = document.getElementById('diff-percent').textContent;
+          const ratio = document.getElementById('diff-ratio').textContent;
+
+          doc.text(`Différence salariale : ${diff}`, 20, yPos + 8);
+          doc.text(`Écart relatif : ${percent}`, 20, yPos + 15);
+          doc.text(`Ratio A/B : ${ratio}`, 20, yPos + 22);
+
+          yPos += 40;
+
+          // ===== SYNTHÈSE =====
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(13);
+          doc.setTextColor(138, 43, 226);
+          doc.text("💡 Synthèse", 15, yPos);
+
+          yPos += 7;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+
+          const mainInsight = document.getElementById('insight-main').textContent;
+          const mainLines = doc.splitTextToSize(mainInsight, 180);
+          doc.text(mainLines, 15, yPos);
+          yPos += mainLines.length * 5 + 10;
+
+          // ===== FACTEURS ACADÉMIQUES =====
+          if (yPos > 240) { doc.addPage(); yPos = 20; }
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(12);
+          doc.setTextColor(59, 130, 246);
+          doc.text("🎓 Facteurs académiques", 15, yPos);
+
+          yPos += 6;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+
+          const academicText = document.getElementById('insight-academic').textContent;
+          const academicLines = doc.splitTextToSize(academicText, 180);
+          doc.text(academicLines, 15, yPos);
+          yPos += academicLines.length * 5 + 8;
+
+          // ===== FACTEURS PROFESSIONNELS =====
+          if (yPos > 240) { doc.addPage(); yPos = 20; }
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(12);
+          doc.setTextColor(34, 197, 94);
+          doc.text("💼 Facteurs professionnels", 15, yPos);
+
+          yPos += 6;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 0, 0);
+
+          const professionalText = document.getElementById('insight-professional').textContent;
+          const professionalLines = doc.splitTextToSize(professionalText, 180);
+          doc.text(professionalLines, 15, yPos);
+          yPos += professionalLines.length * 5 + 10;
+
+          // ===== CONCLUSION =====
+          if (yPos > 230) { doc.addPage(); yPos = 20; }
+
+          doc.setFillColor(255, 249, 196);
+          doc.rect(15, yPos, 180, 35, 'F');
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(12);
+          doc.setTextColor(0, 0, 0);
+          doc.text("📌 Conclusion", 20, yPos + 8);
+
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+
+          let conclusion = '';
+          const diffNum = parseInt(diff.replace(/[^\d-]/g, ''));
+          if (Math.abs(diffNum) < 2000) {
+            conclusion = 'Les deux profils sont équivalents sur le marché. Le choix dépendra d\'autres critères (projet, équipe, localisation).';
+          } else if (diffNum > 0) {
+            conclusion = `Le Profil A présente un avantage salarial significatif. Cet écart s'explique principalement par les différences de formation, d'expérience et de contexte professionnel.`;
+          } else {
+            conclusion = `Le Profil B est mieux positionné financièrement. Les facteurs clés sont visibles dans l'analyse académique et professionnelle ci-dessus.`;
+          }
+
+          const conclusionLines = doc.splitTextToSize(conclusion, 170);
+          doc.text(conclusionLines, 20, yPos + 17);
+
+          // ===== FOOTER =====
+          const pageCount = doc.internal.getNumberOfPages();
+          for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text(`Page ${i} / ${pageCount}`, 105, 290, { align: 'center' });
+            doc.text('Simulateur Flying Whales - Comparaison confidentielle', 105, 285, { align: 'center' });
+          }
+
+          doc.save('comparaison_profils_complete.pdf');
+          btn.textContent = '📄 Exporter la comparaison en PDF';
+          btn.disabled = false;
+
+        } catch (error) {
+          console.error('Erreur PDF:', error);
+          alert('Erreur lors de la génération du PDF');
+          btn.textContent = '📄 Exporter la comparaison en PDF';
+          btn.disabled = false;
+        }
       }, 100);
     }
 
@@ -1793,7 +2421,7 @@ const ratio = resultA.median / resultB.median;
       });
       
       ['region', 'companySize', 'classification', 'educationLevel', 'englishLevel', 
-       'contractType', 'industry', 'teamSize', 'packageLevel', 'source'].forEach(id => {
+       'contractType', 'industry', 'teamSize', 'packageLevel', 'subdomain', 'source'].forEach(id => {
         document.getElementById(id).addEventListener('change', calculateSimulator);
       });
 
