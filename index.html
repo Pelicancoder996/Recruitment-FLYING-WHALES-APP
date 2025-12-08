@@ -441,7 +441,7 @@
 
         <!-- Taille d'équipe -->
         <div>
-          <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">👥 Taille d'équipe encadrée</label>
+          <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">👥 Taille d'équipe encadrée (Manager)</label>
           <select id="teamSize" class="w-full p-2 border rounded-lg">
             <option value="none">Aucune</option>
             <option value="small">1 à 5 personnes</option>
@@ -455,10 +455,10 @@
         <div>
           <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">🎁 Package global</label>
           <select id="packageLevel" class="w-full p-2 border rounded-lg">
-            <option value="standard">Salaire fixe + variable (Package)</option>
-            <option value="bonus">Package + bonus (5–10%)</option>
-            <option value="bonusplus">Package + variable (15–25%)</option>
-            <option value="actions">Package + actions / BSPCE</option>
+            <option value="standard">Salaire fixe</option>
+            <option value="bonus">Fixe + bonus (5–10%)</option>
+            <option value="bonusplus">Fixe + bonus (15–25%)</option>
+            <option value="actions">(Fixe + bonus)Package + actions / BSPCE</option>
           </select>
         </div>
 
@@ -539,6 +539,85 @@
             <option value="Électrique">Électrique (+6%)</option>
             <option value="Test">Test (+1%)</option>
           </select>
+        </div>
+        
+        <!-- Métier / Fonction -->
+        <div>
+          <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">💼 Métier / Fonction</label>
+          <select id="jobFunction" class="w-full p-2 border rounded-lg">
+            <option value="">-- Aucun --</option>
+            <optgroup label="💻 IT / Tech">
+              <option value="Développeur Front-End">Développeur Front-End</option>
+              <option value="Développeur Back-End">Développeur Back-End</option>
+              <option value="Développeur Full-Stack">Développeur Full-Stack</option>
+              <option value="Data Engineer">Data Engineer</option>
+              <option value="Data Scientist">Data Scientist</option>
+              <option value="DevOps / SRE">DevOps / SRE</option>
+              <option value="Infra / Réseau">Infra / Réseau</option>
+              <option value="Cloud Architect">Cloud Architect</option>
+              <option value="Cybersecurity Engineer">Cybersecurity Engineer</option>
+              <option value="Admin Systèmes">Admin Systèmes</option>
+              <option value="Product Owner">Product Owner</option>
+              <option value="Product Manager">Product Manager</option>
+            </optgroup>
+            <optgroup label="🎨 Design / UX">
+              <option value="UX Designer">UX Designer</option>
+              <option value="UI Designer">UI Designer</option>
+              <option value="UX/UI Designer">UX/UI Designer</option>
+              <option value="Product Designer">Product Designer</option>
+              <option value="Motion Designer">Motion Designer</option>
+              <option value="Graphiste / Branding">Graphiste / Branding</option>
+              <option value="Interaction Designer">Interaction Designer</option>
+            </optgroup>
+            <optgroup label="🛒 Achats">
+              <option value="Acheteur Junior">Acheteur Junior</option>
+              <option value="Acheteur Confirmé">Acheteur Confirmé</option>
+              <option value="Responsable Achats">Responsable Achats</option>
+              <option value="Directeur Achats">Directeur Achats</option>
+            </optgroup>
+            <optgroup label="🏢 Immobilier">
+              <option value="Chargé de Gestion Immobilière">Chargé de Gestion Immobilière</option>
+              <option value="Property Manager">Property Manager</option>
+              <option value="Responsable Immobilier">Responsable Immobilier</option>
+              <option value="Directeur Immobilier">Directeur Immobilier</option>
+            </optgroup>
+            <optgroup label="👥 Ressources Humaines">
+              <option value="Chargé RH">Chargé RH</option>
+              <option value="Talent Acquisition">Talent Acquisition</option>
+              <option value="Senior Talent Acquisition">Senior Talent Acquisition</option>
+              <option value="Talent Acquisition Manager">Talent Acquisition Manager</option>
+              <option value="Responsable RH / HRBP">Responsable RH / HRBP</option>
+              <option value="Directeur des Ressources Humaines">Directeur des Ressources Humaines</option>
+            </optgroup>
+            <optgroup label="💰 Finance / Gestion">
+              <option value="Comptable">Comptable</option>
+              <option value="Contrôleur de Gestion">Contrôleur de Gestion</option>
+              <option value="Auditeur Interne">Auditeur Interne</option>
+              <option value="Trésorier">Trésorier</option>
+              <option value="Responsable Financier">Responsable Financier</option>
+              <option value="Directeur Administratif et Financier (DAF)">Directeur Administratif et Financier (DAF)</option>
+            </optgroup>
+            <optgroup label="📈 Commercial / Business">
+              <option value="Business Developer Junior">Business Developer Junior</option>
+              <option value="Business Developer Confirmé">Business Developer Confirmé</option>
+              <option value="Ingénieur d'Affaires">Ingénieur d'Affaires</option>
+              <option value="Responsable Commercial">Responsable Commercial</option>
+              <option value="Directeur Commercial">Directeur Commercial</option>
+            </optgroup>
+            <optgroup label="📢 Communication">
+              <option value="Chargé de communication">Chargé de communication</option>
+              <option value="Responsable de communication">Responsable de communication</option>
+              <option value="Directeur de la communication">Directeur de la communication</option>
+            </optgroup>
+            <optgroup label="✈️ Ingénieurs Ops">
+              <option value="Ingénieur Opération">Ingénieur Opération</option>
+              <option value="Ingénieur Opération Senior">Ingénieur Opération Senior</option>
+              <option value="Ingénieur Mission">Ingénieur Mission</option>
+              <option value="Ingénieur Mission Senior">Ingénieur Mission Senior</option>
+            </optgroup>
+          </select>
+          
+          
         </div>
         
       </div>
@@ -1270,6 +1349,110 @@
       "Électrique": 1.06,
       "Test": 1.01
     };
+    
+    // ===============================
+    // MÉTIERS PAR SECTEUR
+    // ===============================
+
+    // Métiers IT
+    const functionsIT = {
+      "Développeur Front-End": { p25: 30000, p50: 38000, p75: 46000 },
+      "Développeur Back-End": { p25: 32000, p50: 40000, p75: 48000 },
+      "Développeur Full-Stack": { p25: 33000, p50: 42000, p75: 52000 },
+      "Data Engineer": { p25: 35000, p50: 45000, p75: 58000 },
+      "Data Scientist": { p25: 37000, p50: 48000, p75: 62000 },
+      "DevOps / SRE": { p25: 36000, p50: 47000, p75: 60000 },
+      "Infra / Réseau": { p25: 32000, p50: 42000, p75: 54000 },
+      "Cloud Architect": { p25: 45000, p50: 60000, p75: 80000 },
+      "Cybersecurity Engineer": { p25: 38000, p50: 42000, p75: 46000 },
+      "Admin Systèmes": { p25: 31000, p50: 40000, p75: 52000 },
+      "Product Owner": { p25: 42000, p50: 49000, p75: 58000 },
+      "Product Manager": { p25: 50000, p50: 60000, p75: 75000 }
+    };
+
+    // Métiers Design
+    const functionsDesign = {
+      "UX Designer": { p25: 30000, p50: 38000, p75: 48000 },
+      "UI Designer": { p25: 32000, p50: 40000, p75: 50000 },
+      "UX/UI Designer": { p25: 35000, p50: 42000, p75: 50000 },
+      "Product Designer": { p25: 33000, p50: 42000, p75: 55000 },
+      "Motion Designer": { p25: 28000, p50: 35000, p75: 45000 },
+      "Graphiste / Branding": { p25: 26000, p50: 33000, p75: 42000 },
+      "Interaction Designer": { p25: 30000, p50: 38000, p75: 47000 }
+    };
+
+    // Achats
+    const functionsAchats = {
+      "Acheteur Junior": { p25: 38000, p50: 42000, p75: 47000 },
+      "Acheteur Confirmé": { p25: 45000, p50: 50000, p75: 55000 },
+      "Responsable Achats": { p25: 55000, p50: 65000, p75: 80000 },
+      "Directeur Achats": { p25: 80000, p50: 95000, p75: 120000 }
+    };
+
+    // Immobilier
+    const functionsImmo = {
+      "Chargé de Gestion Immobilière": { p25: 32000, p50: 38000, p75: 45000 },
+      "Property Manager": { p25: 40000, p50: 52000, p75: 65000 },
+      "Responsable Immobilier": { p25: 55000, p50: 72000, p75: 90000 },
+      "Directeur Immobilier": { p25: 80000, p50: 100000, p75: 125000 }
+    };
+
+    // Ressources Humaines
+    const functionsRH = {
+      "Chargé RH": { p25: 34000, p50: 39000, p75: 45000 },
+      "Talent Acquisition": { p25: 33000, p50: 37000, p75: 42000 },
+      "Senior Talent Acquisition": { p25: 42000, p50: 48000, p75: 54000 },
+      "Talent Acquisition Manager": { p25: 50000, p50: 58000, p75: 66000 },
+      "Responsable RH / HRBP": { p25: 47000, p50: 55250, p75: 66000 },
+      "Directeur des Ressources Humaines": { p25: 70000, p50: 95000, p75: 120000 }
+    };
+
+    // Finance
+    const functionsFinance = {
+      "Comptable": { p25: 32000, p50: 37000, p75: 42000 },
+      "Contrôleur de Gestion": { p25: 42000, p50: 49400, p75: 60000 },
+      "Auditeur Interne": { p25: 40000, p50: 47000, p75: 55000 },
+      "Trésorier": { p25: 45000, p50: 52000, p75: 60000 },
+      "Responsable Financier": { p25: 55000, p50: 65000, p75: 80000 },
+      "Directeur Administratif et Financier (DAF)": { p25: 80000, p50: 110000, p75: 140000 }
+    };
+
+    // Commerciaux
+    const functionsCommerciaux = {
+      "Business Developer Junior": { p25: 30000, p50: 35000, p75: 40000 },
+      "Business Developer Confirmé": { p25: 38000, p50: 42000, p75: 48000 },
+      "Ingénieur d'Affaires": { p25: 45000, p50: 50000, p75: 60000 },
+      "Responsable Commercial": { p25: 55000, p50: 60000, p75: 75000 },
+      "Directeur Commercial": { p25: 75000, p50: 85000, p75: 110000 }
+    };
+
+    // Communication
+    const functionsCommunication = {
+      "Chargé de communication": { p25: 28000, p50: 32000, p75: 37000 },
+      "Responsable de communication": { p25: 40000, p50: 46000, p75: 52000 },
+      "Directeur de la communication": { p25: 65000, p50: 75000, p75: 90000 }
+    };
+
+    // Ingénieurs Ops
+    const functionsOps = {
+      "Ingénieur Opération": { p25: 35500, p50: 38500, p75: 44000 },
+      "Ingénieur Opération Senior": { p25: 62000, p50: 68900, p75: 78000 },
+      "Ingénieur Mission": { p25: 38500, p50: 42000, p75: 47000 },
+      "Ingénieur Mission Senior": { p25: 68000, p50: 73950, p75: 83000 }
+    };
+
+    // Regroupement de toutes les fonctions
+    const allFunctions = {
+      ...functionsIT,
+      ...functionsDesign,
+      ...functionsAchats,
+      ...functionsImmo,
+      ...functionsRH,
+      ...functionsFinance,
+      ...functionsCommerciaux,
+      ...functionsCommunication,
+      ...functionsOps
+    };
 
     // ===== GESTION DES TABS =====
     let currentTab = 'simulator';
@@ -1377,6 +1560,15 @@
       if (!school) return null;
 
       let { p25, p50, p75 } = school;
+      
+      // ===== INTÉGRATION MÉTIER (si sélectionné) =====
+      if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+        const jobData = allFunctions[profile.jobFunction];
+        // Pondération : 50% école + 50% métier
+        p25 = (p25 * 0.5) + (jobData.p25 * 0.5);
+        p50 = (p50 * 0.5) + (jobData.p50 * 0.5);
+        p75 = (p75 * 0.5) + (jobData.p75 * 0.5);
+      }
 
       // Expérience (+2.3%/an)
       const expFactor = Math.pow(1.023, profile.experience);
@@ -1526,7 +1718,10 @@
         teamSize: document.getElementById('teamSize').value,
         packageLevel: document.getElementById('packageLevel').value,
         subdomain: document.getElementById('subdomain').value,
+        jobFunction: document.getElementById('jobFunction').value,
         source: document.getElementById('source').value
+      
+        
       };
 
       const result = calculateSalaryForProfile(profile);
@@ -1633,6 +1828,14 @@
         positiveFactors.push(`École prestigieuse (${school.Ecole}) avec un salaire de sortie élevé (${Math.round(school.p50).toLocaleString()} €)`);
       }
       
+      // ===== AJOUT MÉTIER =====
+      if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+        const jobData = allFunctions[profile.jobFunction];
+        if (jobData.p50 > 45000) {
+          positiveFactors.push(`Métier valorisé : ${profile.jobFunction} (médian marché ${Math.round(jobData.p50).toLocaleString()} €)`);
+        }
+      } 
+      
       if (profile.experience > 10) {
         positiveFactors.push(`Expérience significative (${profile.experience} ans) qui valorise fortement ton profil`);
       }
@@ -1675,6 +1878,14 @@
       
       if (profile.experience < 3) {
         attentionPoints.push('Début de carrière : la progression salariale sera rapide dans les 5 prochaines années');
+      }
+      
+      // ===== AJOUT MÉTIER =====
+      if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+        const jobData = allFunctions[profile.jobFunction];
+        if (jobData.p50 < 35000) {
+          attentionPoints.push(`Métier ${profile.jobFunction} : salaire d'entrée modeste (médian ${Math.round(jobData.p50).toLocaleString()} €), mais évolution possible avec l'expérience`);
+        }
       }
       
       if (profile.region === 'hors') {
@@ -1728,9 +1939,16 @@
         recommendations.push('Investir dans la certification anglais (TOEIC 900+ ou équivalent) pour débloquer +10% de potentiel');
       }
       
-      if (!profile.classification || profile.classification === '') {
-        recommendations.push('Viser une classification interne (I3/M1) pour structurer ton évolution salariale');
+       // ===== AJOUT MÉTIER =====
+      if (!profile.jobFunction) {
+        recommendations.push('Spécialise-toi dans un métier précis pour mieux te positionner sur le marché et négocier ton salaire');
+      } else if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+        const jobData = allFunctions[profile.jobFunction];
+        if (jobData.p50 < 40000 && profile.experience > 3) {
+          recommendations.push(`Avec ${profile.experience} ans d'expérience en ${profile.jobFunction}, envisage une évolution vers un poste de management ou de spécialisation pour augmenter ton salaire`);
+        }
       }
+      
       
       if (profile.companySize === 'startup' && profile.experience > 5) {
         recommendations.push('Avec ton expérience, envisager un passage en ETI/Grand Groupe pour sécuriser et augmenter ton salaire (+10-15%)');
@@ -2421,7 +2639,7 @@ const ratio = resultA.median / resultB.median;
       });
       
       ['region', 'companySize', 'classification', 'educationLevel', 'englishLevel', 
-       'contractType', 'industry', 'teamSize', 'packageLevel', 'subdomain', 'source'].forEach(id => {
+       'contractType', 'industry', 'teamSize', 'packageLevel', 'subdomain', 'jobFunction', 'source'].forEach(id => {
         document.getElementById(id).addEventListener('change', calculateSimulator);
       });
 
