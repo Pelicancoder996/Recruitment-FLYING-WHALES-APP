@@ -2173,10 +2173,6 @@ document.getElementById('resultB-median').textContent = Math.round(resultB.media
 document.getElementById('resultB-range').textContent = 
   Math.round(resultB.low).toLocaleString() + ' € – ' + Math.round(resultB.high).toLocaleString() + ' €';
 
-// Scroll automatique vers résultats sur mobile
-setTimeout(() => {
-  scrollToResult('comparison-results');
-}, 300);
 
 // Calcul différences
 const diff = resultA.median - resultB.median;
