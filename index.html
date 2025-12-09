@@ -2345,7 +2345,7 @@ function exportSimulatorPDF() {
       doc.text('VOTRE PROFIL', 18, yPos + 5);
       yPos += 10;
       
-      // Récupération données profil - EXACTEMENT comme l'ancien code
+      // Récupération données profil
       const profile = {
         sector: document.getElementById('sector').value,
         school: document.querySelector('#school option:checked')?.text || 'N/A',
@@ -2353,7 +2353,7 @@ function exportSimulatorPDF() {
         region: document.getElementById('region').value === 'IDF' ? 'Ile-de-France' : 'Hors IDF',
         company: document.querySelector('#companySize option:checked')?.text || 'N/A',
         classification: document.querySelector('#classification option:checked')?.text || 'Standard',
-        source: document.querySelector('#source option:checked')?.text || 'Marche'
+        source: 'Marche'  // Fixé pour éviter problème encodage
       };
       
       doc.setDrawColor(200, 200, 200);
@@ -2399,9 +2399,10 @@ function exportSimulatorPDF() {
       doc.setFont('helvetica', 'bold');
       doc.text('ESTIMATION SALARIALE', 105, yPos + 5, { align: 'center' });
       
-      const median = document.getElementById('median').textContent;
-      const low = document.getElementById('low').textContent;
-      const high = document.getElementById('high').textContent;
+      // Correction format salaire : remplacer / par espace
+      const median = document.getElementById('median').textContent.replace(/\//g, ' ');
+      const low = document.getElementById('low').textContent.replace(/\//g, ' ');
+      const high = document.getElementById('high').textContent.replace(/\//g, ' ');
       
       doc.setFontSize(18);
       doc.setTextColor(0, 123, 255);
@@ -2414,13 +2415,37 @@ function exportSimulatorPDF() {
       
       yPos += 25;
       
-      // Positionnement marché
+      // Positionnement marché - CORRECTION ESPACEMENT
       const marketText = document.getElementById('analysis-market').textContent;
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(8);
-      const splitPos = doc.splitTextToSize(marketText + ' Cette estimation prend en compte votre profil complet (ecole, experience, localisation, type entreprise) et reflete les pratiques actuelles du marche francais. Les fourchettes indiquent la variance observee selon les negociations et benefices complementaires.', 174);
-      doc.text(splitPos, 18, yPos);
-      yPos += splitPos.length * 4 + 5;
+      doc.setFont('helvetica', 'normal');
+      const fullText = marketText + ' Cette estimation prend en compte votre profil complet (ecole, experience, localisation, type entreprise) et reflete les pratiques actuelles du marche francais. Les fourchettes indiquent la variance observee selon les negociations et benefices complementaires.';
+      
+      // Découpage manuel en lignes sans justification
+      const words = fullText.split(' ');
+      let currentLine = '';
+      let lineStartY = yPos;
+      
+      words.forEach((word, index) => {
+        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+        const lineWidth = doc.getTextWidth(testLine);
+        
+        if (lineWidth > 174 && currentLine) {
+          doc.text(currentLine, 18, lineStartY);
+          currentLine = word;
+          lineStartY += 4;
+        } else {
+          currentLine = testLine;
+        }
+        
+        if (index === words.length - 1 && currentLine) {
+          doc.text(currentLine, 18, lineStartY);
+          lineStartY += 4;
+        }
+      });
+      
+      yPos = lineStartY + 5;
       
       // === SECTION 3: ANALYSE EN 2 COLONNES ===
       doc.setFillColor(34, 139, 34);
@@ -2438,7 +2463,7 @@ function exportSimulatorPDF() {
       
       const startY = yPos;
       
-      // Colonne gauche: Facteurs positifs
+      // Colonne gauche
       const positiveItems = Array.from(document.querySelectorAll('#analysis-positive li'));
       let leftY = startY;
       doc.setTextColor(0, 0, 0);
@@ -2454,7 +2479,7 @@ function exportSimulatorPDF() {
         leftY += text.length * 3.5 + 2;
       });
       
-      // Colonne droite: Points d'attention
+      // Colonne droite
       const attentionItems = Array.from(document.querySelectorAll('#analysis-attention li'));
       let rightY = startY;
       attentionItems.forEach((item, index) => {
@@ -2494,7 +2519,7 @@ function exportSimulatorPDF() {
       
       yPos += 3;
       
-      // === SECTION 5: PROJECTION ===
+      // === SECTION 5: PROJECTION - CORRECTION ESPACEMENT ===
       doc.setFillColor(138, 43, 226);
       doc.rect(15, yPos, 180, 6, 'F');
       doc.setTextColor(255, 255, 255);
@@ -2508,11 +2533,31 @@ function exportSimulatorPDF() {
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(7);
       doc.setFont('helvetica', 'normal');
+      
+      // Découpage manuel pour éviter justification
       projectionLines.forEach(line => {
-        const text = doc.splitTextToSize(line, 174);
-        doc.text(text, 18, yPos);
-        yPos += text.length * 3.5 + 1.5;
+        const words = line.split(' ');
+        let currentLine = '';
+        
+        words.forEach((word, index) => {
+          const testLine = currentLine + (currentLine ? ' ' : '') + word;
+          const lineWidth = doc.getTextWidth(testLine);
+          
+          if (lineWidth > 174 && currentLine) {
+            doc.text(currentLine, 18, yPos);
+            currentLine = word;
+            yPos += 3.5;
+          } else {
+            currentLine = testLine;
+          }
+          
+          if (index === words.length - 1 && currentLine) {
+            doc.text(currentLine, 18, yPos);
+            yPos += 3.5;
+          }
+        });
       });
+      
       yPos += 3;
       
       // === SECTION 6: GRAPHIQUE ===
