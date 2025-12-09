@@ -2292,243 +2292,384 @@ const ratio = resultA.median / resultB.median;
       document.getElementById('insight-professional').textContent = professionalInsight || 'Contexte professionnel similaire.';
     }
 
-// ===== EXPORT PDF SIMULATEUR PROFESSIONNEL =====
-    function exportSimulatorPDF() {
-      const btn = event.target;
-      btn.textContent = '⏳ Génération en cours...';
-      btn.disabled = true;
+function exportSimulatorPDF() {
+  const btn = event.target;
+  btn.textContent = 'Generation en cours...';
+  btn.disabled = true;
 
-      setTimeout(() => {
-        try {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF('p', 'mm', 'a4');
-          let yPos = 20;
+  setTimeout(() => {
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+      let yPos = 20;
 
-          // ===== HEADER =====
-          doc.setFillColor(0, 174, 239);
-          doc.rect(0, 0, 210, 35, 'F');
+      // ========================================
+      // PAGE DE COUVERTURE ELEGANTE
+      // ========================================
+      
+      // Fond degrade (simulation avec rectangles)
+      doc.setFillColor(0, 51, 102);
+      doc.rect(0, 0, 210, 297, 'F');
+      
+      // Logo/Titre principal
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(32);
+      doc.text("ANALYSE SALARIALE", 105, 80, { align: 'center' });
+      
+      doc.setFontSize(28);
+      doc.text("DETAILLEE", 105, 95, { align: 'center' });
+      
+      // Ligne decorative
+      doc.setDrawColor(0, 174, 239);
+      doc.setLineWidth(1);
+      doc.line(55, 105, 155, 105);
+      
+      // Date
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+      doc.text(today, 105, 120, { align: 'center' });
+      
+      // Encadre info en bas
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(40, 230, 130, 40, 3, 3, 'F');
+      
+      doc.setTextColor(0, 51, 102);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.text("DOCUMENT CONFIDENTIEL", 105, 240, { align: 'center' });
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.text("Simulateur Flying Whales", 105, 248, { align: 'center' });
+      doc.text("Analyse personnalisee basee sur vos criteres", 105, 255, { align: 'center' });
+
+      // ========================================
+      // PAGE 2 : PROFIL
+      // ========================================
+      doc.addPage();
+      yPos = 25;
+      
+      // Titre de section
+      doc.setFillColor(0, 51, 102);
+      doc.rect(15, yPos - 5, 180, 12, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("VOTRE PROFIL", 20, yPos + 3);
+      
+      yPos += 20;
+      
+      // Encadre profil
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(15, yPos, 180, 60, 2, 2, 'S');
+      
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      
+      const profile = {
+        sector: document.getElementById('sector').value,
+        school: document.querySelector('#school option:checked')?.text || 'N/A',
+        experience: document.getElementById('experience').value,
+        region: document.getElementById('region').value === 'IDF' ? 'Ile-de-France' : 'Hors IDF',
+        company: document.querySelector('#companySize option:checked')?.text || 'N/A',
+        classification: document.querySelector('#classification option:checked')?.text || 'Standard',
+        source: document.querySelector('#source option:checked')?.text || 'Marche'
+      };
+      
+      yPos += 8;
+      doc.setFont("helvetica", "bold");
+      doc.text("Secteur :", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(profile.sector, 50, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "bold");
+      doc.text("Ecole :", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(profile.school, 50, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "bold");
+      doc.text("Experience :", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${profile.experience} ans`, 50, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "bold");
+      doc.text("Localisation :", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(profile.region, 50, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "bold");
+      doc.text("Entreprise :", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(profile.company, 50, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "bold");
+      doc.text("Classification :", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(profile.classification, 50, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "bold");
+      doc.text("Source donnees :", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(profile.source, 50, yPos);
+      
+      yPos += 25;
+
+      // ========================================
+      // ESTIMATION SALARIALE - Mise en valeur
+      // ========================================
+      
+      doc.setFillColor(240, 248, 255);
+      doc.roundedRect(15, yPos, 180, 55, 3, 3, 'F');
+      
+      doc.setDrawColor(0, 123, 255);
+      doc.setLineWidth(0.8);
+      doc.roundedRect(15, yPos, 180, 55, 3, 3, 'S');
+      
+      yPos += 10;
+      doc.setTextColor(0, 51, 102);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("ESTIMATION SALARIALE", 105, yPos, { align: 'center' });
+      
+      const median = document.getElementById('median').textContent;
+      const low = document.getElementById('low').textContent;
+      const high = document.getElementById('high').textContent;
+      
+      yPos += 12;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(80, 80, 80);
+      doc.text("Salaire median", 105, yPos, { align: 'center' });
+      
+      yPos += 8;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      doc.setTextColor(0, 123, 255);
+      doc.text(median, 105, yPos, { align: 'center' });
+      
+      yPos += 10;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Fourchette : ${low} - ${high}`, 105, yPos, { align: 'center' });
+      
+      yPos += 25;
+
+      // ========================================
+      // POSITIONNEMENT MARCHE
+      // ========================================
+      
+      doc.setFillColor(0, 51, 102);
+      doc.rect(15, yPos - 5, 180, 10, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text("POSITIONNEMENT SUR LE MARCHE", 20, yPos + 2);
+      
+      yPos += 15;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(0, 0, 0);
+      
+      const marketText = document.getElementById('analysis-market').textContent;
+      const marketLines = doc.splitTextToSize(marketText, 175);
+      doc.text(marketLines, 20, yPos);
+      yPos += marketLines.length * 5 + 15;
+
+      // ========================================
+      // PAGE 3 : ANALYSE DETAILLEE
+      // ========================================
+      doc.addPage();
+      yPos = 25;
+      
+      // FACTEURS VALORISANTS
+      doc.setFillColor(34, 139, 34);
+      doc.rect(15, yPos - 5, 180, 10, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text("FACTEURS VALORISANTS", 20, yPos + 2);
+      
+      yPos += 15;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(0, 0, 0);
+      
+      const positiveItems = Array.from(document.querySelectorAll('#analysis-positive li'));
+      positiveItems.forEach((item, index) => {
+        if (yPos > 270) { doc.addPage(); yPos = 25; }
+        
+        // Puce numerotee
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(34, 139, 34);
+        doc.text(`${index + 1}.`, 20, yPos);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        const text = doc.splitTextToSize(item.textContent, 170);
+        doc.text(text, 28, yPos);
+        yPos += text.length * 5 + 4;
+      });
+      
+      yPos += 10;
+
+      // POINTS D'ATTENTION
+      if (yPos > 180) { doc.addPage(); yPos = 25; }
+      
+      doc.setFillColor(255, 140, 0);
+      doc.rect(15, yPos - 5, 180, 10, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text("POINTS D'ATTENTION", 20, yPos + 2);
+      
+      yPos += 15;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(0, 0, 0);
+      
+      const attentionItems = Array.from(document.querySelectorAll('#analysis-attention li'));
+      attentionItems.forEach((item, index) => {
+        if (yPos > 270) { doc.addPage(); yPos = 25; }
+        
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(255, 140, 0);
+        doc.text(`${index + 1}.`, 20, yPos);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        const text = doc.splitTextToSize(item.textContent, 170);
+        doc.text(text, 28, yPos);
+        yPos += text.length * 5 + 4;
+      });
+
+      // ========================================
+      // PAGE 4 : PROJECTION & RECOMMANDATIONS
+      // ========================================
+      doc.addPage();
+      yPos = 25;
+      
+      // PROJECTION CARRIERE
+      doc.setFillColor(138, 43, 226);
+      doc.rect(15, yPos - 5, 180, 10, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text("PROJECTION DE CARRIERE", 20, yPos + 2);
+      
+      yPos += 15;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(0, 0, 0);
+      
+      const projectionText = document.getElementById('analysis-projection').innerText;
+      const projectionLines = doc.splitTextToSize(projectionText, 175);
+      doc.text(projectionLines, 20, yPos);
+      yPos += projectionLines.length * 5 + 20;
+
+      // RECOMMANDATIONS
+      if (yPos > 180) { doc.addPage(); yPos = 25; }
+      
+      doc.setFillColor(255, 193, 7);
+      doc.rect(15, yPos - 5, 180, 10, 'F');
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text("RECOMMANDATIONS PERSONNALISEES", 20, yPos + 2);
+      
+      yPos += 15;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      
+      const recommendationItems = Array.from(document.querySelectorAll('#analysis-recommendations li'));
+      recommendationItems.forEach((item, index) => {
+        if (yPos > 270) { doc.addPage(); yPos = 25; }
+        
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(255, 193, 7);
+        doc.text(`${index + 1}.`, 20, yPos);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        const text = doc.splitTextToSize(item.textContent, 170);
+        doc.text(text, 28, yPos);
+        yPos += text.length * 5 + 4;
+      });
+
+      // ========================================
+      // PAGE 5 : GRAPHIQUE
+      // ========================================
+      doc.addPage();
+      
+      doc.setFillColor(0, 51, 102);
+      doc.rect(0, 0, 210, 40, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("EVOLUTION SALARIALE PROJETEE", 105, 18, { align: 'center' });
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.text("Projection sur 40 ans de carriere", 105, 28, { align: 'center' });
+
+      const canvas = document.getElementById('salaryChart');
+      html2canvas(canvas, { scale: 2, backgroundColor: '#ffffff' }).then(canvasImg => {
+        const imgData = canvasImg.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', 15, 50, 180, 100);
+        
+        // Note explicative
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Projection basee sur une augmentation annuelle moyenne de 2,3%", 105, 160, { align: 'center' });
+        doc.text("(hors promotions et changements de poste)", 105, 165, { align: 'center' });
+
+        // ===== FOOTER PROFESSIONNEL SUR TOUTES LES PAGES =====
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
           
-          doc.setTextColor(255, 255, 255);
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(22);
-          doc.text("✈️ Analyse Salariale Complète", 105, 15, { align: 'center' });
+          // Ligne decorative
+          doc.setDrawColor(0, 174, 239);
+          doc.setLineWidth(0.5);
+          doc.line(15, 285, 195, 285);
           
-          doc.setFontSize(11);
+          doc.setFontSize(8);
+          doc.setTextColor(120, 120, 120);
+          doc.setFont("helvetica", "italic");
+          doc.text('Simulateur Flying Whales - Document confidentiel', 15, 290);
+          
           doc.setFont("helvetica", "normal");
-          const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-          doc.text(`Généré le ${today}`, 105, 25, { align: 'center' });
-
-          yPos = 45;
-
-          // ===== RÉSUMÉ PROFIL =====
-          doc.setTextColor(0, 0, 0);
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(14);
-          doc.text("📋 Votre profil", 15, yPos);
-          
-          yPos += 8;
-          doc.setFontSize(10);
-          doc.setFont("helvetica", "normal");
-          
-          const profile = {
-            sector: document.getElementById('sector').value,
-            school: document.querySelector('#school option:checked')?.text || 'N/A',
-            experience: document.getElementById('experience').value,
-            region: document.getElementById('region').value === 'IDF' ? 'Île-de-France' : 'Hors IDF',
-            company: document.querySelector('#companySize option:checked')?.text || 'N/A',
-            classification: document.querySelector('#classification option:checked')?.text || 'Standard',
-            source: document.querySelector('#source option:checked')?.text || 'Marché'
-          };
-
-          doc.text(`Secteur : ${profile.sector}`, 15, yPos);
-          yPos += 6;
-          doc.text(`École : ${profile.school}`, 15, yPos);
-          yPos += 6;
-          doc.text(`Expérience : ${profile.experience} ans`, 15, yPos);
-          yPos += 6;
-          doc.text(`Localisation : ${profile.region}`, 15, yPos);
-          yPos += 6;
-          doc.text(`Entreprise : ${profile.company}`, 15, yPos);
-          yPos += 6;
-          doc.text(`Classification : ${profile.classification}`, 15, yPos);
-          yPos += 6;
-          doc.text(`Source données : ${profile.source}`, 15, yPos);
-
-          yPos += 12;
-
-          // ===== RÉSULTATS SALARIAUX =====
-          doc.setFillColor(240, 248, 255);
-          doc.rect(15, yPos, 180, 35, 'F');
-          
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(14);
-          doc.setTextColor(0, 51, 102);
-          doc.text("💰 Estimation salariale", 20, yPos + 8);
-          
-          doc.setFontSize(11);
-          doc.setFont("helvetica", "normal");
-          doc.setTextColor(0, 0, 0);
-          
-          const median = document.getElementById('median').textContent;
-          const low = document.getElementById('low').textContent;
-          const high = document.getElementById('high').textContent;
-          
-          doc.text(`Salaire médian :`, 20, yPos + 18);
-          doc.setFont("helvetica", "bold");
-          doc.setTextColor(0, 123, 255);
-          doc.setFontSize(16);
-          doc.text(median, 70, yPos + 18);
-          
-          doc.setFont("helvetica", "normal");
-          doc.setTextColor(0, 0, 0);
-          doc.setFontSize(10);
-          doc.text(`Fourchette basse : ${low}`, 20, yPos + 27);
-          doc.text(`Fourchette haute : ${high}`, 20, yPos + 32);
-
-          yPos += 45;
-
-          // ===== POSITIONNEMENT MARCHÉ =====
-          if (yPos > 250) { doc.addPage(); yPos = 20; }
-          
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(13);
-          doc.setTextColor(0, 51, 102);
-          doc.text("📊 Positionnement sur le marché", 15, yPos);
-          
-          yPos += 7;
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(9);
-          doc.setTextColor(0, 0, 0);
-          
-          const marketText = document.getElementById('analysis-market').textContent;
-          const marketLines = doc.splitTextToSize(marketText, 180);
-          doc.text(marketLines, 15, yPos);
-          yPos += marketLines.length * 5 + 8;
-
-          // ===== FACTEURS VALORISANTS =====
-          if (yPos > 240) { doc.addPage(); yPos = 20; }
-          
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(13);
-          doc.setTextColor(34, 139, 34);
-          doc.text("✅ Facteurs valorisants", 15, yPos);
-          
-          yPos += 7;
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(9);
-          doc.setTextColor(0, 0, 0);
-          
-          const positiveItems = Array.from(document.querySelectorAll('#analysis-positive li'));
-          positiveItems.forEach(item => {
-            if (yPos > 270) { doc.addPage(); yPos = 20; }
-            const text = doc.splitTextToSize(`• ${item.textContent}`, 175);
-            doc.text(text, 18, yPos);
-            yPos += text.length * 5 + 2;
-          });
-
-          yPos += 5;
-
-          // ===== POINTS D'ATTENTION =====
-          if (yPos > 240) { doc.addPage(); yPos = 20; }
-          
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(13);
-          doc.setTextColor(255, 140, 0);
-          doc.text("⚠️ Points d'attention", 15, yPos);
-          
-          yPos += 7;
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(9);
-          doc.setTextColor(0, 0, 0);
-          
-          const attentionItems = Array.from(document.querySelectorAll('#analysis-attention li'));
-          attentionItems.forEach(item => {
-            if (yPos > 270) { doc.addPage(); yPos = 20; }
-            const text = doc.splitTextToSize(`• ${item.textContent}`, 175);
-            doc.text(text, 18, yPos);
-            yPos += text.length * 5 + 2;
-          });
-
-          yPos += 5;
-
-          // ===== PROJECTION CARRIÈRE =====
-          if (yPos > 230) { doc.addPage(); yPos = 20; }
-          
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(13);
-          doc.setTextColor(138, 43, 226);
-          doc.text("🚀 Projection de carrière", 15, yPos);
-          
-          yPos += 7;
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(9);
-          doc.setTextColor(0, 0, 0);
-          
-          const projectionText = document.getElementById('analysis-projection').innerText;
-          const projectionLines = doc.splitTextToSize(projectionText, 180);
-          doc.text(projectionLines, 15, yPos);
-          yPos += projectionLines.length * 5 + 8;
-
-          // ===== RECOMMANDATIONS =====
-          if (yPos > 230) { doc.addPage(); yPos = 20; }
-          
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(13);
-          doc.setTextColor(255, 193, 7);
-          doc.text("💡 Recommandations personnalisées", 15, yPos);
-          
-          yPos += 7;
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(9);
-          doc.setTextColor(0, 0, 0);
-          
-          const recommendationItems = Array.from(document.querySelectorAll('#analysis-recommendations li'));
-          recommendationItems.forEach(item => {
-            if (yPos > 270) { doc.addPage(); yPos = 20; }
-            const text = doc.splitTextToSize(`• ${item.textContent}`, 175);
-            doc.text(text, 18, yPos);
-            yPos += text.length * 5 + 2;
-          });
-
-          // ===== GRAPHIQUE =====
-          doc.addPage();
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(14);
-          doc.setTextColor(0, 51, 102);
-          doc.text("📈 Évolution salariale projetée sur 40 ans", 105, 20, { align: 'center' });
-
-          const canvas = document.getElementById('salaryChart');
-          html2canvas(canvas, { scale: 2 }).then(canvasImg => {
-            const imgData = canvasImg.toDataURL('image/png');
-            doc.addImage(imgData, 'PNG', 15, 30, 180, 90);
-
-            // ===== FOOTER =====
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-              doc.setPage(i);
-              doc.setFontSize(8);
-              doc.setTextColor(150, 150, 150);
-              doc.text(`Page ${i} / ${pageCount}`, 105, 290, { align: 'center' });
-              doc.text('Simulateur Flying Whales - Document confidentiel', 105, 285, { align: 'center' });
-            }
-
-            doc.save('analyse_salariale_complete.pdf');
-            btn.textContent = '📄 Exporter en PDF';
-            btn.disabled = false;
-          }).catch(() => {
-            alert('Erreur lors de la génération du PDF');
-            btn.textContent = '📄 Exporter en PDF';
-            btn.disabled = false;
-          });
-
-        } catch (error) {
-          console.error('Erreur PDF:', error);
-          alert('Erreur lors de la génération du PDF');
-          btn.textContent = '📄 Exporter en PDF';
-          btn.disabled = false;
+          doc.text(`Page ${i} / ${pageCount}`, 195, 290, { align: 'right' });
         }
-      }, 100);
+
+        doc.save('analyse_salariale_premium.pdf');
+        btn.textContent = 'Exporter en PDF';
+        btn.disabled = false;
+      }).catch(() => {
+        alert('Erreur lors de la generation du PDF');
+        btn.textContent = 'Exporter en PDF';
+        btn.disabled = false;
+      });
+
+    } catch (error) {
+      console.error('Erreur PDF:', error);
+      alert('Erreur lors de la generation du PDF');
+      btn.textContent = 'Exporter en PDF';
+      btn.disabled = false;
     }
+  }, 100);
+}
 
     // ===== EXPORT PDF COMPARAISON PROFESSIONNEL =====
     function exportComparisonPDF() {
