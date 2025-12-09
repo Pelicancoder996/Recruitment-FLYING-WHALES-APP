@@ -2301,6 +2301,14 @@ function exportSimulatorPDF() {
     try {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
+      
+      // Fonction utilitaire pour formater les salaires
+      const formatSalary = (text) => {
+        if (!text) return 'N/A';
+        // Remplace tous les / par des espaces
+        return text.toString().replace(/\//g, ' ').trim();
+      };
+      
       let yPos = 20;
 
       // ========== PAGE 1: PAGE DE GARDE ==========
@@ -2345,15 +2353,25 @@ function exportSimulatorPDF() {
       doc.text('VOTRE PROFIL', 18, yPos + 5);
       yPos += 10;
       
-      // Récupération données profil
+      // Récupération données profil avec vérifications
+      const getSafeValue = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value : 'N/A';
+      };
+      
+      const getSafeText = (selector) => {
+        const el = document.querySelector(selector);
+        return el ? el.text : 'N/A';
+      };
+      
       const profile = {
-        sector: document.getElementById('sector').value,
-        school: document.querySelector('#school option:checked')?.text || 'N/A',
-        experience: document.getElementById('experience').value,
-        region: document.getElementById('region').value === 'IDF' ? 'Ile-de-France' : 'Hors IDF',
-        company: document.querySelector('#companySize option:checked')?.text || 'N/A',
-        classification: document.querySelector('#classification option:checked')?.text || 'Standard',
-        source: 'Marche'  // Fixé pour éviter problème encodage
+        sector: getSafeValue('sector'),
+        school: getSafeText('#school option:checked'),
+        experience: getSafeValue('experience'),
+        region: getSafeValue('region') === 'IDF' ? 'Ile-de-France' : 'Hors IDF',
+        company: getSafeText('#companySize option:checked'),
+        classification: getSafeText('#classification option:checked') || 'Standard',
+        source: 'Marche'
       };
       
       doc.setDrawColor(200, 200, 200);
@@ -2399,10 +2417,14 @@ function exportSimulatorPDF() {
       doc.setFont('helvetica', 'bold');
       doc.text('ESTIMATION SALARIALE', 105, yPos + 5, { align: 'center' });
       
-      // Correction format salaire : remplacer / par espace
-      const median = document.getElementById('median').textContent.replace(/\//g, ' ');
-      const low = document.getElementById('low').textContent.replace(/\//g, ' ');
-      const high = document.getElementById('high').textContent.replace(/\//g, ' ');
+      // Récupération et formatage ROBUSTE des salaires
+      const medianEl = document.getElementById('median');
+      const lowEl = document.getElementById('low');
+      const highEl = document.getElementById('high');
+      
+      const median = formatSalary(medianEl ? medianEl.textContent : '');
+      const low = formatSalary(lowEl ? lowEl.textContent : '');
+      const high = formatSalary(highEl ? highEl.textContent : '');
       
       doc.setFontSize(18);
       doc.setTextColor(0, 123, 255);
@@ -2411,41 +2433,45 @@ function exportSimulatorPDF() {
       doc.setFontSize(7);
       doc.setTextColor(100, 100, 100);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Fourchette : ${low} - ${high}`, 105, yPos + 18, { align: 'center' });
+      const fourchette = 'Fourchette : ' + low + ' - ' + high;
+      doc.text(fourchette, 105, yPos + 18, { align: 'center' });
       
       yPos += 25;
       
-      // Positionnement marché - CORRECTION ESPACEMENT
-      const marketText = document.getElementById('analysis-market').textContent;
+      // Positionnement marché - SANS JUSTIFICATION
+      const marketEl = document.getElementById('analysis-market');
+      const marketText = marketEl ? marketEl.textContent : '';
+      
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
+      
       const fullText = marketText + ' Cette estimation prend en compte votre profil complet (ecole, experience, localisation, type entreprise) et reflete les pratiques actuelles du marche francais. Les fourchettes indiquent la variance observee selon les negociations et benefices complementaires.';
       
-      // Découpage manuel en lignes sans justification
+      // Découpage ligne par ligne SANS justification automatique
+      const maxWidth = 174;
       const words = fullText.split(' ');
       let currentLine = '';
-      let lineStartY = yPos;
       
       words.forEach((word, index) => {
         const testLine = currentLine + (currentLine ? ' ' : '') + word;
         const lineWidth = doc.getTextWidth(testLine);
         
-        if (lineWidth > 174 && currentLine) {
-          doc.text(currentLine, 18, lineStartY);
+        if (lineWidth > maxWidth && currentLine) {
+          doc.text(currentLine, 18, yPos);
           currentLine = word;
-          lineStartY += 4;
+          yPos += 4;
         } else {
           currentLine = testLine;
         }
         
         if (index === words.length - 1 && currentLine) {
-          doc.text(currentLine, 18, lineStartY);
-          lineStartY += 4;
+          doc.text(currentLine, 18, yPos);
+          yPos += 4;
         }
       });
       
-      yPos = lineStartY + 5;
+      yPos += 5;
       
       // === SECTION 3: ANALYSE EN 2 COLONNES ===
       doc.setFillColor(34, 139, 34);
@@ -2474,9 +2500,25 @@ function exportSimulatorPDF() {
         doc.text((index + 1) + '.', 18, leftY);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
-        const text = doc.splitTextToSize(item.textContent, 80);
-        doc.text(text, 23, leftY);
-        leftY += text.length * 3.5 + 2;
+        
+        // Découpage manuel sans justification
+        const words = item.textContent.split(' ');
+        let line = '';
+        words.forEach((word, idx) => {
+          const test = line + (line ? ' ' : '') + word;
+          if (doc.getTextWidth(test) > 80 && line) {
+            doc.text(line, 23, leftY);
+            line = word;
+            leftY += 3.5;
+          } else {
+            line = test;
+          }
+          if (idx === words.length - 1 && line) {
+            doc.text(line, 23, leftY);
+            leftY += 3.5;
+          }
+        });
+        leftY += 2;
       });
       
       // Colonne droite
@@ -2488,9 +2530,25 @@ function exportSimulatorPDF() {
         doc.text((index + 1) + '.', 111, rightY);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
-        const text = doc.splitTextToSize(item.textContent, 80);
-        doc.text(text, 116, rightY);
-        rightY += text.length * 3.5 + 2;
+        
+        // Découpage manuel sans justification
+        const words = item.textContent.split(' ');
+        let line = '';
+        words.forEach((word, idx) => {
+          const test = line + (line ? ' ' : '') + word;
+          if (doc.getTextWidth(test) > 80 && line) {
+            doc.text(line, 116, rightY);
+            line = word;
+            rightY += 3.5;
+          } else {
+            line = test;
+          }
+          if (idx === words.length - 1 && line) {
+            doc.text(line, 116, rightY);
+            rightY += 3.5;
+          }
+        });
+        rightY += 2;
       });
       
       yPos = Math.max(leftY, rightY) + 5;
@@ -2512,14 +2570,30 @@ function exportSimulatorPDF() {
         doc.text((index + 1) + '.', 18, yPos);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
-        const text = doc.splitTextToSize(item.textContent, 170);
-        doc.text(text, 23, yPos);
-        yPos += text.length * 3.5 + 2;
+        
+        // Découpage manuel
+        const words = item.textContent.split(' ');
+        let line = '';
+        words.forEach((word, idx) => {
+          const test = line + (line ? ' ' : '') + word;
+          if (doc.getTextWidth(test) > 170 && line) {
+            doc.text(line, 23, yPos);
+            line = word;
+            yPos += 3.5;
+          } else {
+            line = test;
+          }
+          if (idx === words.length - 1 && line) {
+            doc.text(line, 23, yPos);
+            yPos += 3.5;
+          }
+        });
+        yPos += 2;
       });
       
       yPos += 3;
       
-      // === SECTION 5: PROJECTION - CORRECTION ESPACEMENT ===
+      // === SECTION 5: PROJECTION ===
       doc.setFillColor(138, 43, 226);
       doc.rect(15, yPos, 180, 6, 'F');
       doc.setTextColor(255, 255, 255);
@@ -2528,30 +2602,27 @@ function exportSimulatorPDF() {
       doc.text('PROJECTION DE CARRIERE', 18, yPos + 4);
       yPos += 9;
       
-      const projectionText = document.getElementById('analysis-projection').innerText;
+      const projectionEl = document.getElementById('analysis-projection');
+      const projectionText = projectionEl ? projectionEl.innerText : '';
       const projectionLines = projectionText.split('\n').filter(line => line.trim());
+      
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(7);
       doc.setFont('helvetica', 'normal');
       
-      // Découpage manuel pour éviter justification
       projectionLines.forEach(line => {
         const words = line.split(' ');
         let currentLine = '';
-        
-        words.forEach((word, index) => {
-          const testLine = currentLine + (currentLine ? ' ' : '') + word;
-          const lineWidth = doc.getTextWidth(testLine);
-          
-          if (lineWidth > 174 && currentLine) {
+        words.forEach((word, idx) => {
+          const test = currentLine + (currentLine ? ' ' : '') + word;
+          if (doc.getTextWidth(test) > 174 && currentLine) {
             doc.text(currentLine, 18, yPos);
             currentLine = word;
             yPos += 3.5;
           } else {
-            currentLine = testLine;
+            currentLine = test;
           }
-          
-          if (index === words.length - 1 && currentLine) {
+          if (idx === words.length - 1 && currentLine) {
             doc.text(currentLine, 18, yPos);
             yPos += 3.5;
           }
@@ -2570,47 +2641,54 @@ function exportSimulatorPDF() {
       yPos += 9;
       
       const canvas = document.getElementById('salaryChart');
-      html2canvas(canvas, { 
-        scale: 1.5, 
-        backgroundColor: '#ffffff',
-        width: canvas.offsetWidth,
-        height: canvas.offsetHeight
-      }).then(canvasImg => {
-        const imgData = canvasImg.toDataURL('image/png');
-        doc.addImage(imgData, 'PNG', 45, yPos, 120, 55);
-        yPos += 58;
-        
-        doc.setFontSize(7);
-        doc.setTextColor(100, 100, 100);
-        doc.setFont('helvetica', 'italic');
-        doc.text('Projection basee sur +2,3%/an (hors promotions). L\'evolution reelle depend de vos performances,', 105, yPos, { align: 'center' });
-        doc.text('negociations et changements de poste. Ces hypotheses sont indicatives.', 105, yPos + 3, { align: 'center' });
-        
-        // ===== FOOTER =====
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-          doc.setPage(i);
+      if (canvas) {
+        html2canvas(canvas, { 
+          scale: 1.5, 
+          backgroundColor: '#ffffff',
+          width: canvas.offsetWidth,
+          height: canvas.offsetHeight
+        }).then(canvasImg => {
+          const imgData = canvasImg.toDataURL('image/png');
+          doc.addImage(imgData, 'PNG', 45, yPos, 120, 55);
+          yPos += 58;
           
-          doc.setDrawColor(0, 174, 239);
-          doc.setLineWidth(0.5);
-          doc.line(15, 285, 195, 285);
-          
-          doc.setTextColor(150, 150, 150);
           doc.setFontSize(7);
-          doc.setFont('helvetica', 'normal');
-          doc.text('Simulateur Flying Whales - Document confidentiel', 15, 290);
-          doc.text(`Page ${i} / ${pageCount}`, 195, 290, { align: 'right' });
-        }
-        
-        doc.save('analyse_salariale_flying_whales.pdf');
+          doc.setTextColor(100, 100, 100);
+          doc.setFont('helvetica', 'italic');
+          doc.text('Projection basee sur +2,3%/an (hors promotions). L\'evolution reelle depend de vos performances,', 105, yPos, { align: 'center' });
+          doc.text('negociations et changements de poste. Ces hypotheses sont indicatives.', 105, yPos + 3, { align: 'center' });
+          
+          // ===== FOOTER =====
+          const pageCount = doc.internal.getNumberOfPages();
+          for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            
+            doc.setDrawColor(0, 174, 239);
+            doc.setLineWidth(0.5);
+            doc.line(15, 285, 195, 285);
+            
+            doc.setTextColor(150, 150, 150);
+            doc.setFontSize(7);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Simulateur Flying Whales - Document confidentiel', 15, 290);
+            doc.text('Page ' + i + ' / ' + pageCount, 195, 290, { align: 'right' });
+          }
+          
+          doc.save('analyse_salariale_flying_whales.pdf');
+          btn.textContent = 'Exporter en PDF';
+          btn.disabled = false;
+        }).catch(error => {
+          console.error('Erreur canvas:', error);
+          alert('Erreur lors de la generation du PDF');
+          btn.textContent = 'Exporter en PDF';
+          btn.disabled = false;
+        });
+      } else {
+        console.error('Canvas salaryChart non trouvé');
+        alert('Graphique non trouve');
         btn.textContent = 'Exporter en PDF';
         btn.disabled = false;
-      }).catch(error => {
-        console.error('Erreur canvas:', error);
-        alert('Erreur lors de la generation du PDF');
-        btn.textContent = 'Exporter en PDF';
-        btn.disabled = false;
-      });
+      }
 
     } catch (error) {
       console.error('Erreur PDF:', error);
