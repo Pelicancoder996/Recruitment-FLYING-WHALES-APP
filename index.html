@@ -1846,93 +1846,179 @@ function generateComparisonChart(medianA, medianB) {
   });
 }
 
+// ========== BASE MÉTIER GÉNÉRIQUE ==========
+function calculateBaseMetierSecteur(sector) {
+  const schools = allSchools[sector] || [];
+  
+  if (schools.length === 0) {
+    return 48000;
+  }
+  
+  const p50Values = schools.map(school => school.p50).filter(val => val > 0);
+  
+  if (p50Values.length === 0) {
+    return 48000;
+  }
+  
+  // MOYENNE
+  const sum = p50Values.reduce((a, b) => a + b, 0);
+  const baseMetier = sum / p50Values.length;
+  
+  return baseMetier;
+}
 
+// ========== SECTEURS AVEC MODÈLE α ==========
+const sectorsWithAlphaModel = [
+  'ingenieur',
+  'commerce',
+  'scpo',
+  'universite',
+  'it',
+  'design',
+  'fonction'
+];
+
+// ===== CALCUL SALAIRE (logique complète) =====
+function calculateSalaryForProfile(profile) {
+  const schools = allSchools[profile.sector] || [];
+  const school = schools[profile.school];
+  
+  if (!school) return null;
+  let { p25, p50, p75 } = school;
+
+  const experience = profile.experience;
+  
+  // ========== VÉRIFICATION : Ce secteur utilise-t-il le modèle α ? ==========
+  const usesAlphaModel = sectorsWithAlphaModel.includes(profile.sector);
+  
+if (usesAlphaModel) {
+  // === MODÈLE α (dégressivité école → métier) ===
+  
+  let baseMetier;
+  
+  // SI un métier est renseigné, PONDÉRER école + métier (comme ancien modèle)
+  if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+    const jobData = allFunctions[profile.jobFunction];
     
-    // ===== CALCUL SALAIRE (logique complète) =====
-    function calculateSalaryForProfile(profile) {
-      const schools = allSchools[profile.sector] || [];
-      const school = schools[profile.school];
-      
-      if (!school) return null;
-
-      let { p25, p50, p75 } = school;
-      
-      
-      // ===== INTÉGRATION MÉTIER (si sélectionné) =====
-      if (profile.jobFunction && allFunctions[profile.jobFunction]) {
-        const jobData = allFunctions[profile.jobFunction];
-        // Pondération : 50% école + 50% métier
-        p25 = (p25 * 0.5) + (jobData.p25 * 0.5);
-        p50 = (p50 * 0.5) + (jobData.p50 * 0.5);
-        p75 = (p75 * 0.5) + (jobData.p75 * 0.5);
-      }
-
-      // Expérience (+2.3%/an)
-      const expFactor = Math.pow(1.023, profile.experience);
-      p25 *= expFactor;
-      p50 *= expFactor;
-      p75 *= expFactor;
-
-      // Coefficients individuels
-      const educationCoef = {
-        technicien: 0.80, bac3: 0.89, bac5: 1.00, doctorat: 1.07
-      }[profile.educationLevel] || 1;
-
-      const englishCoef = {
-        basic: 1.00, intermediate: 1.03, advanced: 1.06, bilingual: 1.10
-      }[profile.englishLevel] || 1;
-
-      const contractCoef = {
-        cdi: 1.00, cdd: 0.96, alternance: 0.70, freelance: 1.20, expatriation: 1.15
-      }[profile.contractType] || 1;
-
-      const industryCoef = {
-        aero: 1.04, auto: 1.00, energie: 1.02, numerique: 1.05, sante: 1.04, luxe: 1.05, public: 0.88
-      }[profile.industry] || 1;
-
-      const teamCoef = {
-        none: 1.00, small: 1.05, medium: 1.10, large: 1.18, xl: 1.25
-      }[profile.teamSize] || 1;
-
-      const packageCoef = {
-        standard: 1.00, bonus: 1.07, bonusplus: 1.18, actions: 1.30
-      }[profile.packageLevel] || 1;
-
-      const regionCoef = profile.region === 'IDF' ? 1.14 : 1.00;
-      
-      const sizeCoef = {
-        'startup': 0.95, 'PME': 0.96, 'ETI': 1.00, 'grand-groupe': 1.06
-      }[profile.companySize] || 1;
-      
-      // Sous-domaine technique
-      const subdomainCoefValue = subdomainCoef[profile.subdomain] || 1;
-
-      // Classification
-      let classCoef = 1;
-      if (profile.classification === 'M1') classCoef = 1.10;
-      if (profile.classification === 'M2') classCoef = 1.15;
-      if (profile.classification === 'M3') classCoef = 1.20;
-      if (profile.classification === 'I1') classCoef = 0.95;
-      if (profile.classification === 'I2') classCoef = 1.00;
-      if (profile.classification === 'I3') classCoef = 1.10;
-      if (profile.classification === 'I4') classCoef = 1.20;
-
-      // Moyenne géométrique des raffinements
-      const refinements = [educationCoef, englishCoef, contractCoef, industryCoef, teamCoef];
-      const geoMean = Math.pow(refinements.reduce((a, b) => a * b, 1), 1 / refinements.length);
-      const refinementCoef = Math.min(Math.max(geoMean, 0.85), 1.25);
-
-      // Source
-      let sourceCoef = 1;
-      if (profile.source === 'fw') sourceCoef = 0.95;
-      if (profile.source === 'croisee') sourceCoef = 0.97;
-
-      const median = p50 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
-      const low = p25 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
-      const high = p75 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
-
-      return { median, low, high };
+    // Pondération 50% école + 50% métier (IMPORTANT !)
+    p25 = (p25 * 0.5) + (jobData.p25 * 0.5);
+    p50 = (p50 * 0.5) + (jobData.p50 * 0.5);
+    p75 = (p75 * 0.5) + (jobData.p75 * 0.5);
+    
+    baseMetier = jobData.p50;
+  } else {
+    // SINON, utiliser la moyenne du secteur
+    baseMetier = calculateBaseMetierSecteur(profile.sector);
+  }
+  
+  // Détecter si c'est une "grande école" (comparer AVANT pondération)
+  const originalP50 = school.p50;
+  const isTopSchool = originalP50 > baseMetier;
+  
+  let alpha;
+  if (experience <= 5) {
+    alpha = 1.0;  // 100% école pour tous au début
+  } else if (experience <= 15) {
+    if (isTopSchool) {
+      // Grandes écoles : descente douce de 1.0 à 0.65
+      alpha = 1 - 0.035 * (experience - 5);
+    } else {
+      // Écoles standard : descente rapide de 1.0 à 0.1
+      alpha = 1 - 0.09 * (experience - 5);
     }
+  } else {
+    // Après 15 ans : stabilisation
+    alpha = isTopSchool ? 0.65 : 0.1;  // 65/35 pour grandes écoles
+  }
+    const baseMix = Math.pow(p50, alpha) * Math.pow(baseMetier, 1 - alpha);
+    const expFactor = Math.pow(1.023, experience);
+    p50 = baseMix * expFactor;
+    
+    const ratio25 = school.p25 / school.p50;
+    const ratio75 = school.p75 / school.p50;
+    p25 = p50 * ratio25;
+    p75 = p50 * ratio75;
+    
+  } else {
+    // === MODÈLE CLASSIQUE POUR LES AUTRES SECTEURS ===
+    
+    // ===== INTÉGRATION MÉTIER (si sélectionné) =====
+    if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+      const jobData = allFunctions[profile.jobFunction];
+      // Pondération : 50% école + 50% métier
+      p25 = (p25 * 0.5) + (jobData.p25 * 0.5);
+      p50 = (p50 * 0.5) + (jobData.p50 * 0.5);
+      p75 = (p75 * 0.5) + (jobData.p75 * 0.5);
+    }
+    
+    // Expérience (+2.3%/an)
+    const expFactor = Math.pow(1.023, experience);
+    p25 *= expFactor;
+    p50 *= expFactor;
+    p75 *= expFactor;
+  }
+
+  // ========== COEFFICIENTS (COMMUNS À TOUS LES SECTEURS) ==========
+  
+  const educationCoef = {
+    technicien: 0.80, bac3: 0.89, bac5: 1.00, doctorat: 1.07
+  }[profile.educationLevel] || 1;
+
+  const englishCoef = {
+    basic: 1.00, intermediate: 1.03, advanced: 1.06, bilingual: 1.10
+  }[profile.englishLevel] || 1;
+
+  const contractCoef = {
+    cdi: 1.00, cdd: 0.96, alternance: 0.70, freelance: 1.20, expatriation: 1.15
+  }[profile.contractType] || 1;
+
+  const industryCoef = {
+    aero: 1.04, auto: 1.00, energie: 1.02, numerique: 1.05, sante: 1.04, luxe: 1.05, public: 0.88
+  }[profile.industry] || 1;
+
+  const teamCoef = {
+    none: 1.00, small: 1.05, medium: 1.10, large: 1.18, xl: 1.25
+  }[profile.teamSize] || 1;
+
+  const packageCoef = {
+    standard: 1.00, bonus: 1.07, bonusplus: 1.18, actions: 1.30
+  }[profile.packageLevel] || 1;
+
+  const regionCoef = profile.region === 'IDF' ? 1.14 : 1.00;
+  
+  const sizeCoef = {
+    'startup': 0.95, 'PME': 0.96, 'ETI': 1.00, 'grand-groupe': 1.06
+  }[profile.companySize] || 1;
+  
+  // Sous-domaine technique
+  const subdomainCoefValue = subdomainCoef[profile.subdomain] || 1;
+
+  // Classification
+  let classCoef = 1;
+  if (profile.classification === 'M1') classCoef = 1.10;
+  if (profile.classification === 'M2') classCoef = 1.15;
+  if (profile.classification === 'M3') classCoef = 1.20;
+  if (profile.classification === 'I1') classCoef = 0.95;
+  if (profile.classification === 'I2') classCoef = 1.00;
+  if (profile.classification === 'I3') classCoef = 1.10;
+  if (profile.classification === 'I4') classCoef = 1.20;
+
+  // Moyenne géométrique des raffinements
+  const refinements = [educationCoef, englishCoef, contractCoef, industryCoef, teamCoef];
+  const geoMean = Math.pow(refinements.reduce((a, b) => a * b, 1), 1 / refinements.length);
+  const refinementCoef = Math.min(Math.max(geoMean, 0.85), 1.25);
+
+  // Source
+  let sourceCoef = 1;
+  if (profile.source === 'fw') sourceCoef = 0.95;
+  if (profile.source === 'croisee') sourceCoef = 0.97;
+
+  const median = p50 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+  const low = p25 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+  const high = p75 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+
+  return { median, low, high };
+}
 
     // ===== POPULATE SCHOOLS + AFFICHER FOURCHETTES =====
     function populateSchools() {
