@@ -600,7 +600,6 @@
             <optgroup label="📈 Commercial / Business">
               <option value="Business Developer Junior">Business Developer Junior</option>
               <option value="Business Developer Confirmé">Business Developer Confirmé</option>
-              <option value="Ingénieur d'Affaires">Ingénieur d'Affaires</option>
               <option value="Responsable Commercial">Responsable Commercial</option>
               <option value="Directeur Commercial">Directeur Commercial</option>
             </optgroup>
@@ -908,7 +907,6 @@
     <optgroup label="📈 Commercial / Business">
       <option value="Business Developer Junior">Business Developer Junior</option>
       <option value="Business Developer Confirmé">Business Developer Confirmé</option>
-      <option value="Ingénieur d'Affaires">Ingénieur d'Affaires</option>
       <option value="Responsable Commercial">Responsable Commercial</option>
       <option value="Directeur Commercial">Directeur Commercial</option>
     </optgroup>
@@ -1141,7 +1139,6 @@
     <optgroup label="📈 Commercial / Business">
       <option value="Business Developer Junior">Business Developer Junior</option>
       <option value="Business Developer Confirmé">Business Developer Confirmé</option>
-      <option value="Ingénieur d'Affaires">Ingénieur d'Affaires</option>
       <option value="Responsable Commercial">Responsable Commercial</option>
       <option value="Directeur Commercial">Directeur Commercial</option>
     </optgroup>
@@ -1173,6 +1170,23 @@
     <div id="comparison-results" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-8">
       <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">📊 Analyse Comparative</h2>
       
+      <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
+  <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+    </svg>
+    Évolution salariale comparative
+  </h3>
+  
+  <div class="bg-gray-50 rounded-lg p-4">
+    <canvas id="comparisonSalaryChart"></canvas>
+  </div>
+  
+  <p class="text-xs text-gray-500 mt-3 text-center italic">
+    Projection basée sur une augmentation annuelle moyenne de 2,3% (hors promotions et changements de poste)
+  </p>
+</div>
+
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 sm:p-6">
           <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2">Différence (A - B)</p>
@@ -1574,7 +1588,6 @@
     const functionsCommerciaux = {
       "Business Developer Junior": { p25: 30000, p50: 35000, p75: 40000 },
       "Business Developer Confirmé": { p25: 38000, p50: 42000, p75: 48000 },
-      "Ingénieur d'Affaires": { p25: 45000, p50: 50000, p75: 60000 },
       "Responsable Commercial": { p25: 55000, p50: 60000, p75: 75000 },
       "Directeur Commercial": { p25: 75000, p50: 85000, p75: 110000 }
     };
@@ -1705,90 +1718,289 @@
       });
     }
     
-    // ===== CALCUL SALAIRE (logique complète) =====
-    function calculateSalaryForProfile(profile) {
-      const schools = allSchools[profile.sector] || [];
-      const school = schools[profile.school];
-      
-      if (!school) return null;
+    // ========== GRAPHIQUE COMPARATIF ==========
+let comparisonChart = null;
 
-      let { p25, p50, p75 } = school;
-      
-      // ===== INTÉGRATION MÉTIER (si sélectionné) =====
-      if (profile.jobFunction && allFunctions[profile.jobFunction]) {
-        const jobData = allFunctions[profile.jobFunction];
-        // Pondération : 50% école + 50% métier
-        p25 = (p25 * 0.5) + (jobData.p25 * 0.5);
-        p50 = (p50 * 0.5) + (jobData.p50 * 0.5);
-        p75 = (p75 * 0.5) + (jobData.p75 * 0.5);
+function generateComparisonChart(medianA, medianB) {
+  const canvas = document.getElementById('comparisonSalaryChart');
+  if (!canvas) {
+    console.error('Canvas comparisonSalaryChart non trouvé');
+    return;
+  }
+  
+  const ctx = canvas.getContext('2d');
+  
+  // Détruire l'ancien graphique s'il existe
+  if (comparisonChart) {
+    comparisonChart.destroy();
+  }
+  
+  // Calculer les projections sur 40 ans
+  const years = [];
+  const salariesA = [];
+  const salariesB = [];
+  const growthRate = 0.023; // 2.3% par an
+  
+  for (let year = 0; year <= 40; year++) {
+    years.push(year);
+    salariesA.push(Math.round(medianA * Math.pow(1 + growthRate, year)));
+    salariesB.push(Math.round(medianB * Math.pow(1 + growthRate, year)));
+  }
+  
+  // Créer le graphique
+  comparisonChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'Profil A',
+          data: salariesA,
+          borderColor: '#007bff',
+          backgroundColor: 'rgba(0, 123, 255, 0.1)',
+          borderWidth: 3,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Profil B',
+          data: salariesB,
+          borderColor: '#ff8c00',
+          backgroundColor: 'rgba(255, 140, 0, 0.1)',
+          borderWidth: 3,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          fill: true,
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Évolution salariale projetée sur 40 ans',
+          font: { size: 16, weight: 'bold' },
+          padding: { top: 10, bottom: 20 }
+        },
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: { size: 12 }
+          }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: function(context) {
+              let label = context.dataset.label || '';
+              if (label) label += ': ';
+              label += context.parsed.y.toLocaleString('fr-FR') + ' €';
+              return label;
+            },
+            title: function(context) {
+              return 'Année ' + context[0].label;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Années de carrière',
+            font: { size: 12, weight: 'bold' }
+          },
+          grid: { display: false }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Salaire projeté (€)',
+            font: { size: 12, weight: 'bold' }
+          },
+          beginAtZero: false,
+          ticks: {
+            callback: function(value) {
+              return value.toLocaleString('fr-FR') + ' €';
+            }
+          },
+          grid: { color: 'rgba(0, 0, 0, 0.05)' }
+        }
+      },
+      interaction: {
+        mode: 'nearest',
+        axis: 'x',
+        intersect: false
       }
-
-      // Expérience (+2.3%/an)
-      const expFactor = Math.pow(1.023, profile.experience);
-      p25 *= expFactor;
-      p50 *= expFactor;
-      p75 *= expFactor;
-
-      // Coefficients individuels
-      const educationCoef = {
-        technicien: 0.80, bac3: 0.89, bac5: 1.00, doctorat: 1.07
-      }[profile.educationLevel] || 1;
-
-      const englishCoef = {
-        basic: 1.00, intermediate: 1.03, advanced: 1.06, bilingual: 1.10
-      }[profile.englishLevel] || 1;
-
-      const contractCoef = {
-        cdi: 1.00, cdd: 0.96, alternance: 0.70, freelance: 1.20, expatriation: 1.15
-      }[profile.contractType] || 1;
-
-      const industryCoef = {
-        aero: 1.04, auto: 1.00, energie: 1.02, numerique: 1.05, sante: 1.04, luxe: 1.05, public: 0.88
-      }[profile.industry] || 1;
-
-      const teamCoef = {
-        none: 1.00, small: 1.05, medium: 1.10, large: 1.18, xl: 1.25
-      }[profile.teamSize] || 1;
-
-      const packageCoef = {
-        standard: 1.00, bonus: 1.07, bonusplus: 1.18, actions: 1.30
-      }[profile.packageLevel] || 1;
-
-      const regionCoef = profile.region === 'IDF' ? 1.14 : 1.00;
-      
-      const sizeCoef = {
-        'startup': 0.95, 'PME': 0.96, 'ETI': 1.00, 'grand-groupe': 1.06
-      }[profile.companySize] || 1;
-      
-      // Sous-domaine technique
-      const subdomainCoefValue = subdomainCoef[profile.subdomain] || 1;
-
-      // Classification
-      let classCoef = 1;
-      if (profile.classification === 'M1') classCoef = 1.10;
-      if (profile.classification === 'M2') classCoef = 1.15;
-      if (profile.classification === 'M3') classCoef = 1.20;
-      if (profile.classification === 'I1') classCoef = 0.95;
-      if (profile.classification === 'I2') classCoef = 1.00;
-      if (profile.classification === 'I3') classCoef = 1.10;
-      if (profile.classification === 'I4') classCoef = 1.20;
-
-      // Moyenne géométrique des raffinements
-      const refinements = [educationCoef, englishCoef, contractCoef, industryCoef, teamCoef];
-      const geoMean = Math.pow(refinements.reduce((a, b) => a * b, 1), 1 / refinements.length);
-      const refinementCoef = Math.min(Math.max(geoMean, 0.85), 1.25);
-
-      // Source
-      let sourceCoef = 1;
-      if (profile.source === 'fw') sourceCoef = 0.95;
-      if (profile.source === 'croisee') sourceCoef = 0.97;
-
-      const median = p50 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
-      const low = p25 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
-      const high = p75 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
-
-      return { median, low, high };
     }
+  });
+}
+
+
+// ========== BASE MÉTIER GÉNÉRIQUE ==========
+function calculateBaseMetierSecteur(sector) {
+  const schools = allSchools[sector] || [];
+  
+  if (schools.length === 0) {
+    return 48000;
+  }
+  
+  const p50Values = schools.map(school => school.p50).filter(val => val > 0);
+  
+  if (p50Values.length === 0) {
+    return 48000;
+  }
+  
+  // MOYENNE
+  const sum = p50Values.reduce((a, b) => a + b, 0);
+  const baseMetier = sum / p50Values.length;
+  
+  return baseMetier;
+}
+
+// ========== SECTEURS AVEC MODÈLE α ==========
+const sectorsWithAlphaModel = [
+  'ingenieur',    // ✅ Écoles d'ingénieur
+  'commerce',     // ✅ Grandes écoles de commerce
+  'scpo',         // ✅ Sciences Po
+  'universite',   // ✅ Université
+  'it',           // ✅ Informatique IT
+  'design',       // ✅ Design UX/UI
+  'fonction'      // ✅ Fonctions transverses (Com + RH)
+];
+    
+// ===== CALCUL SALAIRE (logique complète) =====
+function calculateSalaryForProfile(profile) {
+  const schools = allSchools[profile.sector] || [];
+  const school = schools[profile.school];
+  
+  if (!school) return null;
+  let { p25, p50, p75 } = school;
+
+  const experience = profile.experience;
+  
+  // ========== VÉRIFICATION : Ce secteur utilise-t-il le modèle α ? ==========
+  const usesAlphaModel = sectorsWithAlphaModel.includes(profile.sector);
+  
+  if (usesAlphaModel) {
+    // === MODÈLE α (dégressivité école → métier) ===
+    
+    // 1. Coefficient α
+    let alpha;
+    if (experience <= 5) {
+      alpha = 1.0; // 100% école, 0% métier
+    } else if (experience <= 15) {
+      alpha = 1 - 0.1 * (experience - 6); // Transition progressive
+    } else {
+      alpha = 0.1; // 10% école, 90% métier
+    }
+    
+    // 2. Base métier (moyenne du secteur)
+    const baseMetier = calculateBaseMetierSecteur(profile.sector);
+    
+    // 3. BaseMix (moyenne géométrique pondérée)
+    const baseMix = Math.pow(p50, alpha) * Math.pow(baseMetier, 1 - alpha);
+    
+    // 4. Appliquer croissance
+    const expFactor = Math.pow(1.023, experience);
+    p50 = baseMix * expFactor;
+    
+    // Calculer p25 et p75 proportionnellement
+    const ratio25 = school.p25 / school.p50;
+    const ratio75 = school.p75 / school.p50;
+    p25 = p50 * ratio25;
+    p75 = p50 * ratio75;
+    
+  } else {
+    // === MODÈLE CLASSIQUE POUR LES AUTRES SECTEURS ===
+    
+    // ===== INTÉGRATION MÉTIER (si sélectionné) =====
+    if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+      const jobData = allFunctions[profile.jobFunction];
+      // Pondération : 50% école + 50% métier
+      p25 = (p25 * 0.5) + (jobData.p25 * 0.5);
+      p50 = (p50 * 0.5) + (jobData.p50 * 0.5);
+      p75 = (p75 * 0.5) + (jobData.p75 * 0.5);
+    }
+    
+    // Expérience (+2.3%/an)
+    const expFactor = Math.pow(1.023, experience);
+    p25 *= expFactor;
+    p50 *= expFactor;
+    p75 *= expFactor;
+  }
+
+  // ========== COEFFICIENTS (COMMUNS À TOUS LES SECTEURS) ==========
+  
+  const educationCoef = {
+    technicien: 0.80, bac3: 0.89, bac5: 1.00, doctorat: 1.07
+  }[profile.educationLevel] || 1;
+
+  const englishCoef = {
+    basic: 1.00, intermediate: 1.03, advanced: 1.06, bilingual: 1.10
+  }[profile.englishLevel] || 1;
+
+  const contractCoef = {
+    cdi: 1.00, cdd: 0.96, alternance: 0.70, freelance: 1.20, expatriation: 1.15
+  }[profile.contractType] || 1;
+
+  const industryCoef = {
+    aero: 1.04, auto: 1.00, energie: 1.02, numerique: 1.05, sante: 1.04, luxe: 1.05, public: 0.88
+  }[profile.industry] || 1;
+
+  const teamCoef = {
+    none: 1.00, small: 1.05, medium: 1.10, large: 1.18, xl: 1.25
+  }[profile.teamSize] || 1;
+
+  const packageCoef = {
+    standard: 1.00, bonus: 1.07, bonusplus: 1.18, actions: 1.30
+  }[profile.packageLevel] || 1;
+
+  const regionCoef = profile.region === 'IDF' ? 1.14 : 1.00;
+  
+  const sizeCoef = {
+    'startup': 0.95, 'PME': 0.96, 'ETI': 1.00, 'grand-groupe': 1.06
+  }[profile.companySize] || 1;
+  
+  // Sous-domaine technique
+  const subdomainCoefValue = subdomainCoef[profile.subdomain] || 1;
+
+  // Classification
+  let classCoef = 1;
+  if (profile.classification === 'M1') classCoef = 1.10;
+  if (profile.classification === 'M2') classCoef = 1.15;
+  if (profile.classification === 'M3') classCoef = 1.20;
+  if (profile.classification === 'I1') classCoef = 0.95;
+  if (profile.classification === 'I2') classCoef = 1.00;
+  if (profile.classification === 'I3') classCoef = 1.10;
+  if (profile.classification === 'I4') classCoef = 1.20;
+
+  // Moyenne géométrique des raffinements
+  const refinements = [educationCoef, englishCoef, contractCoef, industryCoef, teamCoef];
+  const geoMean = Math.pow(refinements.reduce((a, b) => a * b, 1), 1 / refinements.length);
+  const refinementCoef = Math.min(Math.max(geoMean, 0.85), 1.25);
+
+  // Source
+  let sourceCoef = 1;
+  if (profile.source === 'fw') sourceCoef = 0.95;
+  if (profile.source === 'croisee') sourceCoef = 0.97;
+
+  const median = p50 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+  const low = p25 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+  const high = p75 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue;
+
+  return { median, low, high };
+}
 
     // ===== POPULATE SCHOOLS + AFFICHER FOURCHETTES =====
     function populateSchools() {
@@ -2203,8 +2415,13 @@ const ratio = resultA.median / resultB.median;
 
       // ===== ANALYSE DÉTAILLÉE PEAUFINÉE =====
       generateDetailedInsight(profileA, profileB, resultA, resultB, diff, percentDiff);
+    
+      
+      // ===== GRAPHIQUE COMPARATIF =====
+generateComparisonChart(resultA.median, resultB.median);
+      
     }
-
+    
     function generateDetailedInsight(profileA, profileB, resultA, resultB, diff, percentDiff) {
       // Insight principal
       let mainInsight = '';
@@ -2291,6 +2508,8 @@ const ratio = resultA.median / resultB.median;
 
       document.getElementById('insight-professional').textContent = professionalInsight || 'Contexte professionnel similaire.';
     }
+    
+
 
 function exportSimulatorPDF() {
   const btn = event.target;
@@ -2698,7 +2917,9 @@ function exportSimulatorPDF() {
     }
   }, 100);
 }
-function exportComparisonPDF() {
+
+
+    function exportComparisonPDF() {
   const btn = event.target;
   btn.textContent = 'Generation en cours...';
   btn.disabled = true;
@@ -3101,6 +3322,7 @@ function exportComparisonPDF() {
     }
   }, 100);
 }
+
  // ===== INITIALISATION =====
     window.onload = function() {
       // Optimisations mobile
