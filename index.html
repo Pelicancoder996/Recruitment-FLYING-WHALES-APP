@@ -339,7 +339,7 @@
         <span class="hidden sm:inline">👥 </span>Comparateur
       </button>
     </div>
-  </div>>
+  </div>
   
 <!-- ============================================= -->
   <!-- CONTENU : SIMULATEUR -->
@@ -502,6 +502,7 @@
             <option value="M1">M1 - Manager Niveau 1</option>
             <option value="M2">M2 - Manager Niveau 2</option>
             <option value="M3">M3 - Leader Département</option>
+            <option value="directeur_technique">Directeur technique</option>
           </select>
         </div>
 
@@ -837,8 +838,35 @@
               <option value="M1">M1</option>
               <option value="M2">M2</option>
               <option value="M3">M3</option>
+              <option value="directeur_technique">Directeur technique</option>
             </select>
           </div>
+          
+          <div>
+  <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">🔬 Sous-domaine technique</label>
+  <select id="subdomainA" class="w-full p-2 text-sm border rounded-lg">
+    <option value="">-- Aucun --</option>
+    <option value="Calculs & Simulation">Calculs & Simulation (+5%)</option>
+    <option value="Conception">Conception (+2%)</option>
+    <option value="Électronique">Électronique (+4%)</option>
+    <option value="Avionique">Avionique (+4%)</option>
+    <option value="Matériaux">Matériaux (+2%)</option>
+    <option value="Propulsion">Propulsion (+4%)</option>
+    <option value="Méthodes">Méthodes (neutre)</option>
+    <option value="Production">Production (neutre)</option>
+    <option value="Maintenance">Maintenance (-2%)</option>
+    <option value="Qualité">Qualité (+2%)</option>
+    <option value="Supply Chain">Supply Chain (+2%)</option>
+    <option value="Gestion de Projet">Gestion de Projet (+3%)</option>
+    <option value="Ingénierie Systèmes">Ingénierie Systèmes (+4%)</option>
+    <option value="Gestion de Programme">Gestion de Programme (+4%)</option>
+    <option value="Support Client">Support Client (-4%)</option>
+    <option value="Thermique">Thermique (+6%)</option>
+    <option value="Dynamique de Vol">Dynamique de Vol (+6%)</option>
+    <option value="Électrique">Électrique (+6%)</option>
+    <option value="Test">Test (+1%)</option>
+  </select>
+</div>
 
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Source</label>
@@ -1069,8 +1097,35 @@
               <option value="M1">M1</option>
               <option value="M2">M2</option>
               <option value="M3">M3</option>
+              <option value="directeur_technique">Directeur technique</option>
             </select>
           </div>
+          
+          <div>
+  <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">🔬 Sous-domaine technique</label>
+  <select id="subdomainB" class="w-full p-2 text-sm border rounded-lg">
+    <option value="">-- Aucun --</option>
+    <option value="Calculs & Simulation">Calculs & Simulation (+5%)</option>
+    <option value="Conception">Conception (+2%)</option>
+    <option value="Électronique">Électronique (+4%)</option>
+    <option value="Avionique">Avionique (+4%)</option>
+    <option value="Matériaux">Matériaux (+2%)</option>
+    <option value="Propulsion">Propulsion (+4%)</option>
+    <option value="Méthodes">Méthodes (neutre)</option>
+    <option value="Production">Production (neutre)</option>
+    <option value="Maintenance">Maintenance (-2%)</option>
+    <option value="Qualité">Qualité (+2%)</option>
+    <option value="Supply Chain">Supply Chain (+2%)</option>
+    <option value="Gestion de Projet">Gestion de Projet (+3%)</option>
+    <option value="Ingénierie Systèmes">Ingénierie Systèmes (+4%)</option>
+    <option value="Gestion de Programme">Gestion de Programme (+4%)</option>
+    <option value="Support Client">Support Client (-4%)</option>
+    <option value="Thermique">Thermique (+6%)</option>
+    <option value="Dynamique de Vol">Dynamique de Vol (+6%)</option>
+    <option value="Électrique">Électrique (+6%)</option>
+    <option value="Test">Test (+1%)</option>
+  </select>
+</div>
 
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Source</label>
@@ -1846,6 +1901,7 @@ function generateComparisonChart(medianA, medianB) {
   });
 }
 
+
 // ========== BASE MÉTIER GÉNÉRIQUE ==========
 function calculateBaseMetierSecteur(sector) {
   const schools = allSchools[sector] || [];
@@ -1995,13 +2051,14 @@ if (usesAlphaModel) {
 
   // Classification
   let classCoef = 1;
-  if (profile.classification === 'M1') classCoef = 1.10;
+  if (profile.classification === 'M1') classCoef = 1.12;
   if (profile.classification === 'M2') classCoef = 1.15;
   if (profile.classification === 'M3') classCoef = 1.20;
+  if (profile.classification === 'directeur_technique') classCoef = 1.30;
   if (profile.classification === 'I1') classCoef = 0.95;
   if (profile.classification === 'I2') classCoef = 1.00;
   if (profile.classification === 'I3') classCoef = 1.10;
-  if (profile.classification === 'I4') classCoef = 1.20;
+  if (profile.classification === 'I4') classCoef = 1.15;
 
   // Moyenne géométrique des raffinements
   const refinements = [educationCoef, englishCoef, contractCoef, industryCoef, teamCoef];
@@ -2362,6 +2419,7 @@ if (usesAlphaModel) {
         region: document.getElementById('regionA').value,
         companySize: document.getElementById('companySizeA').value,
         classification: document.getElementById('classificationA').value,
+        subdomain: document.getElementById('subdomainA').value,
         educationLevel: document.getElementById('educationLevelA').value,
         englishLevel: document.getElementById('englishLevelA').value,
         contractType: document.getElementById('contractTypeA').value,
@@ -2379,6 +2437,7 @@ if (usesAlphaModel) {
         region: document.getElementById('regionB').value,
         companySize: document.getElementById('companySizeB').value,
         classification: document.getElementById('classificationB').value,
+        subdomain: document.getElementById('subdomainB').value,
         educationLevel: document.getElementById('educationLevelB').value,
         englishLevel: document.getElementById('englishLevelB').value,
         contractType: document.getElementById('contractTypeB').value,
@@ -3380,10 +3439,10 @@ function exportSimulatorPDF() {
         calculateComparison();
       });
       
-      ['regionA', 'companySizeA', 'classificationA', 'educationLevelA', 'englishLevelA',
-       'contractTypeA', 'industryA', 'teamSizeA', 'packageLevelA', 'sourceA'].forEach(id => {
-        document.getElementById(id).addEventListener('change', calculateComparison);
-      });
+      ['regionA', 'companySizeA', 'classificationA', 'subdomainA', 'educationLevelA', 'englishLevelA',
+ 'contractTypeA', 'industryA', 'teamSizeA', 'packageLevelA', 'sourceA'].forEach(id => {
+  document.getElementById(id).addEventListener('change', calculateComparison);
+});
       
       document.getElementById('jobFunctionA').addEventListener('change', calculateComparison);
 
@@ -3401,10 +3460,10 @@ function exportSimulatorPDF() {
         calculateComparison();
       });
       
-      ['regionB', 'companySizeB', 'classificationB', 'educationLevelB', 'englishLevelB',
-       'contractTypeB', 'industryB', 'teamSizeB', 'packageLevelB', 'sourceB'].forEach(id => {
-        document.getElementById(id).addEventListener('change', calculateComparison);
-      });
+      ['regionB', 'companySizeB', 'classificationB', 'subdomainB', 'educationLevelB', 'englishLevelB',
+ 'contractTypeB', 'industryB', 'teamSizeB', 'packageLevelB', 'sourceB'].forEach(id => {
+  document.getElementById(id).addEventListener('change', calculateComparison);
+});
       
       document.getElementById('jobFunctionB').addEventListener('change', calculateComparison);
 
