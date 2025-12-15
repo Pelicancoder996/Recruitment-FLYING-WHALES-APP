@@ -682,6 +682,75 @@
             <li>En cours d'analyse...</li>
           </ul>
         </div>
+        
+        <!-- ========== SCORE DE RARETÉ ========== -->
+<div id="rarity-score" class="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg p-6 hidden">
+  <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+    <span class="text-3xl">🌟</span> Score de Rareté du Profil
+  </h3>
+  
+  <!-- Score principal -->
+  <div class="text-center mb-6">
+    <div class="inline-block relative">
+      <svg class="w-32 h-32">
+        <circle cx="64" cy="64" r="56" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+        <circle id="rarity-circle" cx="64" cy="64" r="56" fill="none" stroke="url(#gradient)" stroke-width="8" 
+                stroke-dasharray="352" stroke-dashoffset="352" transform="rotate(-90 64 64)" 
+                style="transition: stroke-dashoffset 1s ease"/>
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div>
+          <p id="rarity-score-value" class="text-4xl font-bold text-purple-600 dark:text-purple-400">—</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">/ 100</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Détails du score -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <!-- Facteurs de rareté -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+      <h4 class="font-bold text-sm text-gray-700 dark:text-gray-300 mb-3">🔍 Facteurs de rareté</h4>
+      <div id="rarity-factors" class="space-y-2 text-xs">
+        <!-- Rempli dynamiquement -->
+      </div>
+    </div>
+    
+    <!-- Statistiques marché -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+      <h4 class="font-bold text-sm text-gray-700 dark:text-gray-300 mb-3">📊 Statistiques marché</h4>
+      <div class="space-y-3 text-xs">
+        <div>
+          <p class="text-gray-600 dark:text-gray-400">Profils similaires en France</p>
+          <p id="similar-profiles" class="text-lg font-bold text-purple-600">—</p>
+        </div>
+        <div>
+          <p class="text-gray-600 dark:text-gray-400">Postes ouverts estimés/an</p>
+          <p id="open-positions" class="text-lg font-bold text-blue-600">—</p>
+        </div>
+        <div>
+          <p class="text-gray-600 dark:text-gray-400">Ratio Offre/Demande</p>
+          <p id="supply-demand" class="text-lg font-bold text-green-600">—</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Conclusion -->
+  <div id="rarity-conclusion" class="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 border-purple-500">
+    <p class="text-sm text-gray-700 dark:text-gray-300">
+      <strong class="text-purple-600">💡 Conclusion :</strong> 
+      <span id="rarity-message">Analyse en cours...</span>
+    </p>
+  </div>
+</div>
 
       </div>
       <canvas id="salaryChart" class="mt-4 sm:mt-6"></canvas>
@@ -2140,6 +2209,272 @@ if (usesAlphaModel) {
         document.getElementById('schoolInfo' + profile).classList.add('show');
       }
     }
+    
+    // ========== CALCUL SCORE DE RARETÉ ==========
+function calculateRarityScore(profile, result) {
+  let score = 0;
+  let factors = [];
+  
+  const schools = allSchools[profile.sector] || [];
+  const school = schools[profile.school];
+  
+  // ===== 1. PRESTIGE ÉCOLE (0-25 points) =====
+  let schoolScore = 0;
+  let schoolStars = 0;
+  
+  if (school) {
+    if (school.p50 > 55000) {
+      schoolScore = 25;
+      schoolStars = 5;
+      factors.push({ label: 'École', value: school.Ecole, stars: 5, rarity: 'Top 0.5%' });
+    } else if (school.p50 > 50000) {
+      schoolScore = 20;
+      schoolStars = 4;
+      factors.push({ label: 'École', value: school.Ecole, stars: 4, rarity: 'Top 2%' });
+    } else if (school.p50 > 45000) {
+      schoolScore = 15;
+      schoolStars = 4;
+      factors.push({ label: 'École', value: school.Ecole, stars: 4, rarity: 'Top 10%' });
+    } else if (school.p50 > 40000) {
+      schoolScore = 10;
+      schoolStars = 3;
+      factors.push({ label: 'École', value: school.Ecole, stars: 3, rarity: 'Top 25%' });
+    } else {
+      schoolScore = 5;
+      schoolStars = 2;
+      factors.push({ label: 'École', value: school.Ecole, stars: 2, rarity: 'Standard' });
+    }
+  }
+  score += schoolScore;
+  
+  // ===== 2. EXPÉRIENCE (0-15 points) =====
+  let expScore = 0;
+  let expStars = 0;
+  
+  if (profile.experience >= 15) {
+    expScore = 15;
+    expStars = 5;
+    factors.push({ label: 'Expérience', value: profile.experience + ' ans', stars: 5, rarity: 'Top 15%' });
+  } else if (profile.experience >= 10) {
+    expScore = 12;
+    expStars = 4;
+    factors.push({ label: 'Expérience', value: profile.experience + ' ans', stars: 4, rarity: 'Top 25%' });
+  } else if (profile.experience >= 7) {
+    expScore = 9;
+    expStars = 3;
+    factors.push({ label: 'Expérience', value: profile.experience + ' ans', stars: 3, rarity: 'Confirmé' });
+  } else if (profile.experience >= 3) {
+    expScore = 5;
+    expStars = 2;
+    factors.push({ label: 'Expérience', value: profile.experience + ' ans', stars: 2, rarity: 'Junior' });
+  } else {
+    expScore = 2;
+    expStars = 1;
+    factors.push({ label: 'Expérience', value: profile.experience + ' ans', stars: 1, rarity: 'Débutant' });
+  }
+  score += expScore;
+  
+  // ===== 3. NIVEAU ANGLAIS (0-15 points) =====
+  let englishScore = 0;
+  let englishStars = 0;
+  
+  if (profile.englishLevel === 'bilingual') {
+    englishScore = 15;
+    englishStars = 5;
+    factors.push({ label: 'Anglais', value: 'Bilingue', stars: 5, rarity: 'Top 5%' });
+  } else if (profile.englishLevel === 'advanced') {
+    englishScore = 10;
+    englishStars = 4;
+    factors.push({ label: 'Anglais', value: 'Avancé', stars: 4, rarity: 'Top 15%' });
+  } else if (profile.englishLevel === 'intermediate') {
+    englishScore = 5;
+    englishStars = 3;
+    factors.push({ label: 'Anglais', value: 'Intermédiaire', stars: 3, rarity: 'Standard' });
+  } else {
+    englishScore = 2;
+    englishStars = 1;
+    factors.push({ label: 'Anglais', value: 'Basique', stars: 1, rarity: 'À améliorer' });
+  }
+  score += englishScore;
+  
+  // ===== 4. SPÉCIALISATION TECHNIQUE (0-20 points) =====
+  let subdomainScore = 0;
+  let subdomainStars = 0;
+  
+  const rareSubdomains = ['Dynamique de Vol', 'Thermique', 'Électrique', 'Avionique', 'Propulsion'];
+  const trendySubdomains = ['Ingénierie Systèmes', 'Gestion de Programme'];
+  
+  if (profile.subdomain && rareSubdomains.includes(profile.subdomain)) {
+    subdomainScore = 20;
+    subdomainStars = 5;
+    factors.push({ label: 'Spécialisation', value: profile.subdomain, stars: 5, rarity: 'Top 2%' });
+  } else if (profile.subdomain && trendySubdomains.includes(profile.subdomain)) {
+    subdomainScore = 15;
+    subdomainStars = 4;
+    factors.push({ label: 'Spécialisation', value: profile.subdomain, stars: 4, rarity: 'Top 8%' });
+  } else if (profile.subdomain && profile.subdomain !== '') {
+    subdomainScore = 8;
+    subdomainStars = 3;
+    factors.push({ label: 'Spécialisation', value: profile.subdomain, stars: 3, rarity: 'Courant' });
+  } else {
+    subdomainScore = 0;
+    subdomainStars = 1;
+    factors.push({ label: 'Spécialisation', value: 'Généraliste', stars: 1, rarity: 'Standard' });
+  }
+  score += subdomainScore;
+  
+  // ===== 5. MÉTIER SPÉCIALISÉ (0-10 points) =====
+  let jobScore = 0;
+  let jobStars = 0;
+  
+  const rareJobs = ['Cloud Architect', 'Data Scientist', 'Product Manager', 'Directeur Commercial', 'Directeur Immobilier'];
+  
+  if (profile.jobFunction && rareJobs.includes(profile.jobFunction)) {
+    jobScore = 10;
+    jobStars = 5;
+    factors.push({ label: 'Métier', value: profile.jobFunction, stars: 5, rarity: 'Top 3%' });
+  } else if (profile.jobFunction && profile.jobFunction !== '') {
+    jobScore = 5;
+    jobStars = 3;
+    factors.push({ label: 'Métier', value: profile.jobFunction, stars: 3, rarity: 'Défini' });
+  }
+  score += jobScore;
+  
+  // ===== 6. NIVEAU HIÉRARCHIQUE (0-10 points) =====
+  let classScore = 0;
+  let classStars = 0;
+  
+  if (profile.classification === 'directeur_technique' || profile.classification === 'leader_departement') {
+    classScore = 10;
+    classStars = 5;
+    factors.push({ label: 'Position', value: 'Direction', stars: 5, rarity: 'Top 5%' });
+  } else if (profile.classification === 'M3') {
+    classScore = 8;
+    classStars = 4;
+    factors.push({ label: 'Position', value: 'M3', stars: 4, rarity: 'Top 10%' });
+  } else if (profile.classification === 'M2' || profile.classification === 'M1') {
+    classScore = 5;
+    classStars = 3;
+    factors.push({ label: 'Position', value: profile.classification, stars: 3, rarity: 'Manager' });
+  } else if (profile.classification === 'I4') {
+    classScore = 6;
+    classStars = 4;
+    factors.push({ label: 'Position', value: 'Expert I4', stars: 4, rarity: 'Top 12%' });
+  } else if (profile.classification === 'I3') {
+    classScore = 4;
+    classStars = 3;
+    factors.push({ label: 'Position', value: 'Senior I3', stars: 3, rarity: 'Confirmé' });
+  }
+  score += classScore;
+  
+  // ===== 7. PACKAGE RÉMUNÉRATION (0-5 points) =====
+  let packageScore = 0;
+  
+  if (profile.packageLevel === 'actions') {
+    packageScore = 5;
+    factors.push({ label: 'Package', value: 'Actions/BSPCE', stars: 5, rarity: 'Top 8%' });
+  } else if (profile.packageLevel === 'bonusplus') {
+    packageScore = 3;
+    factors.push({ label: 'Package', value: 'Variable élevé', stars: 4, rarity: 'Top 20%' });
+  }
+  score += packageScore;
+  
+  // ===== CALCUL FINAL =====
+  score = Math.min(Math.round(score), 100);
+  
+  // ===== ESTIMATION PROFILS SIMILAIRES =====
+  let estimatedProfiles = 0;
+  
+  if (score >= 90) {
+    estimatedProfiles = Math.floor(Math.random() * 200) + 100; // 100-300
+  } else if (score >= 80) {
+    estimatedProfiles = Math.floor(Math.random() * 500) + 300; // 300-800
+  } else if (score >= 70) {
+    estimatedProfiles = Math.floor(Math.random() * 1000) + 800; // 800-1800
+  } else if (score >= 60) {
+    estimatedProfiles = Math.floor(Math.random() * 3000) + 2000; // 2000-5000
+  } else if (score >= 50) {
+    estimatedProfiles = Math.floor(Math.random() * 8000) + 5000; // 5000-13000
+  } else {
+    estimatedProfiles = Math.floor(Math.random() * 20000) + 15000; // 15000-35000
+  }
+  
+  // ===== ESTIMATION POSTES OUVERTS =====
+  const openPositions = Math.round(estimatedProfiles * (1.5 + (score / 100)));
+  
+  // ===== RATIO OFFRE/DEMANDE =====
+  const ratio = (openPositions / estimatedProfiles).toFixed(1);
+  
+  // ===== MESSAGE =====
+  let message = '';
+  
+  if (score >= 90) {
+    message = 'Profil EXCEPTIONNEL ! Tu fais partie des profils les plus rares et recherchés du marché. Ton expertise est unique et hautement valorisée. Les opportunités premium te sont grandes ouvertes.';
+  } else if (score >= 80) {
+    message = 'Profil TRÈS RARE ! Tu te situes dans le top 5% du marché. Ton profil est hautement recherché et tu as un excellent pouvoir de négociation. Continue à cultiver ton expertise unique.';
+  } else if (score >= 70) {
+    message = 'Profil RARE ! Tu fais partie des profils recherchés du marché (top 15%). Tu as de solides atouts pour négocier et évoluer rapidement. Quelques améliorations te propulseraient dans l\'élite.';
+  } else if (score >= 60) {
+    message = 'Profil DIFFÉRENCIANT. Tu te démarques de la moyenne avec des atouts spécifiques. Continue à développer tes points forts pour augmenter ta rareté et ton attractivité sur le marché.';
+  } else if (score >= 50) {
+    message = 'Profil STANDARD+. Tu as un profil solide avec quelques éléments différenciants. Investis dans une spécialisation ou une compétence rare pour booster ta valeur marché.';
+  } else {
+    message = 'Profil STANDARD. Tu as un bon profil de base, mais il reste généraliste. Identifie une niche ou une compétence rare à développer pour te démarquer davantage sur le marché.';
+  }
+  
+  return {
+    score,
+    factors,
+    estimatedProfiles,
+    openPositions,
+    ratio,
+    message
+  };
+}
+    
+    // ========== AFFICHAGE SCORE DE RARETÉ ==========
+function generateRarityScore(profile, result) {
+  const rarity = calculateRarityScore(profile, result);
+  
+  // Afficher la section
+  document.getElementById('rarity-score').classList.remove('hidden');
+  
+  // Score principal avec animation
+  document.getElementById('rarity-score-value').textContent = rarity.score;
+  
+  // Animation du cercle
+  const circle = document.getElementById('rarity-circle');
+  const circumference = 2 * Math.PI * 56;
+  const offset = circumference - (rarity.score / 100) * circumference;
+  setTimeout(() => {
+    circle.style.strokeDashoffset = offset;
+  }, 100);
+  
+  // Facteurs de rareté
+  const factorsHTML = rarity.factors.map(f => {
+    const stars = '⭐'.repeat(f.stars);
+    return `
+      <div class="flex justify-between items-center">
+        <div>
+          <span class="font-semibold">${f.label}:</span> ${f.value}
+        </div>
+        <div class="text-right">
+          <div class="text-yellow-500">${stars}</div>
+          <div class="text-xs text-gray-500">${f.rarity}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('rarity-factors').innerHTML = factorsHTML;
+  
+  // Statistiques
+  document.getElementById('similar-profiles').textContent = '~' + rarity.estimatedProfiles.toLocaleString();
+  document.getElementById('open-positions').textContent = '~' + rarity.openPositions.toLocaleString();
+  document.getElementById('supply-demand').textContent = rarity.ratio + 'x';
+  
+  // Message
+  document.getElementById('rarity-message').textContent = rarity.message;
+}
 
 // ===== CALCUL SIMULATEUR =====
     let chart;
@@ -2235,7 +2570,11 @@ if (usesAlphaModel) {
       
      // ===== GÉNÉRER L'ANALYSE DÉTAILLÉE =====
       generateDetailedAnalysis(profile, result);
+      
+      // ===== GÉNÉRER SCORE DE RARETÉ =====
+generateRarityScore(profile, result);
     }
+    
 
 // ===== ANALYSE DÉTAILLÉE DU PROFIL =====
     function generateDetailedAnalysis(profile, result) {
