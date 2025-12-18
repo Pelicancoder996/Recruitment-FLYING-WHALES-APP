@@ -628,8 +628,7 @@
     <span class="text-xs font-normal text-gray-500">(cochez toutes celles que vous possédez)</span>
   </label>
   
-  <div class="max-h-64 overflow-y-auto border rounded-lg p-3 bg-gray-50 dark:bg-gray-800">
-    
+  <div class="max-h-64 overflow-y-auto border rounded-lg p-3 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200">
 <!-- Executive Education -->
 <div class="mb-3">
   <p class="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">🎓 Executive Education / Grandes Écoles</p>
@@ -1210,10 +1209,13 @@
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Niveau d'études</label>
             <select id="educationLevelA" class="w-full p-2 text-sm border rounded-lg">
-              <option value="technicien">Bac +2</option>
-              <option value="bac3">Bac +3</option>
-              <option value="bac5" selected>Bac +5</option>
-              <option value="doctorat">Doctorat</option>
+               <option value="bac2_technicien">Bac+2 (Technicien - BTS/DUT)</option>
+    <option value="bac2_technicien_sup">Bac+2/3 (Technicien supérieur / Licence pro)</option>
+    <option value="bac3">Bac+3 (Licence)</option>
+    <option value="bac5_master">Bac+5 (Master universitaire)</option>
+    <option value="bac5_master_ingenierie">Bac+5 (Master spécialisé ingénierie)</option>
+    <option value="bac5_ingenieur" selected>Bac+5 (Diplôme d'ingénieur)</option>
+    <option value="bac8">Bac+8 (Doctorat)</option>
             </select>
           </div>
 
@@ -1290,15 +1292,11 @@
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Classification</label>
             <select id="classificationA" class="w-full p-2 text-sm border rounded-lg">
-              <option value="">Standard</option>
-              <option value="I1">I1</option>
-              <option value="I2">I2</option>
-              <option value="I3">I3</option>
-              <option value="I4">I4</option>
-              <option value="M1">M1</option>
-              <option value="M2">M2</option>
-              <option value="M3">M3</option>
-              <option value="directeur_technique">Directeur technique</option>
+              <option value="">Pas de management</option>
+    <option value="M1">M1 - Manager d'équipe</option>
+    <option value="M2">M2 - Senior Manager</option>
+    <option value="M3">M3 - Leader</option>
+    <option value="directeur_technique">Directeur Technique</option>
             </select>
           </div>
           
@@ -1306,25 +1304,26 @@
   <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">🔬 Sous-domaine technique</label>
   <select id="subdomainA" class="w-full p-2 text-sm border rounded-lg">
     <option value="">-- Aucun --</option>
-    <option value="Calculs & Simulation">Calculs & Simulation (+5%)</option>
-    <option value="Conception">Conception (+2%)</option>
-    <option value="Électronique">Électronique (+4%)</option>
-    <option value="Avionique">Avionique (+4%)</option>
-    <option value="Matériaux">Matériaux (+2%)</option>
-    <option value="Propulsion">Propulsion (+4%)</option>
-    <option value="Méthodes">Méthodes (neutre)</option>
-    <option value="Production">Production (neutre)</option>
-    <option value="Maintenance">Maintenance (-2%)</option>
-    <option value="Qualité">Qualité (+2%)</option>
-    <option value="Supply Chain">Supply Chain (+2%)</option>
-    <option value="Gestion de Projet">Gestion de Projet (+3%)</option>
-    <option value="Ingénierie Systèmes">Ingénierie Systèmes (+4%)</option>
-    <option value="Gestion de Programme">Gestion de Programme (+4%)</option>
-    <option value="Support Client">Support Client (-4%)</option>
-    <option value="Thermique">Thermique (+6%)</option>
-    <option value="Dynamique de Vol">Dynamique de Vol (+6%)</option>
-    <option value="Électrique">Électrique (+6%)</option>
-    <option value="Test">Test (+1%)</option>
+    <option value="Fonction spécifique">Fonction spécifique (pilote, astronaute...)</option>
+    <option value="Calculs & Simulation">Calculs & Simulation</option>
+    <option value="Conception">Conception</option>
+    <option value="Électronique">Électronique</option>
+    <option value="Avionique">Avionique</option>
+    <option value="Matériaux">Matériaux</option>
+    <option value="Propulsion">Propulsion</option>
+    <option value="Méthodes">Méthodes </option>
+    <option value="Production">Production</option>
+    <option value="Maintenance">Maintenance </option>
+    <option value="Qualité">Qualité</option>
+    <option value="Supply Chain">Supply Chain </option>
+    <option value="Gestion de Projet">Gestion de Projet </option>
+    <option value="Ingénierie Systèmes">Ingénierie Systèmes </option>
+    <option value="Gestion de Programme">Gestion de Programme </option>
+    <option value="Support Client">Support Client </option>
+    <option value="Thermique">Thermique</option>
+    <option value="Dynamique de Vol">Dynamique de Vol</option>
+    <option value="Électrique">Électrique </option>
+    <option value="Test">Test</option>
   </select>
 </div>
 
@@ -1469,10 +1468,13 @@
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Niveau d'études</label>
             <select id="educationLevelB" class="w-full p-2 text-sm border rounded-lg">
-              <option value="technicien">Bac +2</option>
-              <option value="bac3">Bac +3</option>
-              <option value="bac5" selected>Bac +5</option>
-              <option value="doctorat">Doctorat</option>
+               <option value="bac2_technicien">Bac+2 (Technicien - BTS/DUT)</option>
+    <option value="bac2_technicien_sup">Bac+2/3 (Technicien supérieur / Licence pro)</option>
+    <option value="bac3">Bac+3 (Licence)</option>
+    <option value="bac5_master">Bac+5 (Master universitaire)</option>
+    <option value="bac5_master_ingenierie">Bac+5 (Master spécialisé ingénierie)</option>
+    <option value="bac5_ingenieur" selected>Bac+5 (Diplôme d'ingénieur)</option>
+    <option value="bac8">Bac+8 (Doctorat)</option>
             </select>
           </div>
 
@@ -1549,15 +1551,11 @@
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Classification</label>
             <select id="classificationB" class="w-full p-2 text-sm border rounded-lg">
-              <option value="">Standard</option>
-              <option value="I1">I1</option>
-              <option value="I2">I2</option>
-              <option value="I3">I3</option>
-              <option value="I4">I4</option>
-              <option value="M1">M1</option>
-              <option value="M2">M2</option>
-              <option value="M3">M3</option>
-              <option value="directeur_technique">Directeur technique</option>
+              <option value="">Pas de management</option>
+    <option value="M1">M1 - Manager d'équipe</option>
+    <option value="M2">M2 - Senior Manager</option>
+    <option value="M3">M3 - Leader</option>
+    <option value="directeur_technique">Directeur Technique</option>
             </select>
           </div>
           
@@ -1565,25 +1563,26 @@
   <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">🔬 Sous-domaine technique</label>
   <select id="subdomainB" class="w-full p-2 text-sm border rounded-lg">
     <option value="">-- Aucun --</option>
-    <option value="Calculs & Simulation">Calculs & Simulation (+5%)</option>
-    <option value="Conception">Conception (+2%)</option>
-    <option value="Électronique">Électronique (+4%)</option>
-    <option value="Avionique">Avionique (+4%)</option>
-    <option value="Matériaux">Matériaux (+2%)</option>
-    <option value="Propulsion">Propulsion (+4%)</option>
-    <option value="Méthodes">Méthodes (neutre)</option>
-    <option value="Production">Production (neutre)</option>
-    <option value="Maintenance">Maintenance (-2%)</option>
-    <option value="Qualité">Qualité (+2%)</option>
-    <option value="Supply Chain">Supply Chain (+2%)</option>
-    <option value="Gestion de Projet">Gestion de Projet (+3%)</option>
-    <option value="Ingénierie Systèmes">Ingénierie Systèmes (+4%)</option>
-    <option value="Gestion de Programme">Gestion de Programme (+4%)</option>
-    <option value="Support Client">Support Client (-4%)</option>
-    <option value="Thermique">Thermique (+6%)</option>
-    <option value="Dynamique de Vol">Dynamique de Vol (+6%)</option>
-    <option value="Électrique">Électrique (+6%)</option>
-    <option value="Test">Test (+1%)</option>
+    <option value="Fonction spécifique">Fonction spécifique (pilote, astronaute...)</option>
+    <option value="Calculs & Simulation">Calculs & Simulation</option>
+    <option value="Conception">Conception</option>
+    <option value="Électronique">Électronique</option>
+    <option value="Avionique">Avionique</option>
+    <option value="Matériaux">Matériaux</option>
+    <option value="Propulsion">Propulsion</option>
+    <option value="Méthodes">Méthodes</option>
+    <option value="Production">Production</option>
+    <option value="Maintenance">Maintenance</option>
+    <option value="Qualité">Qualité</option>
+    <option value="Supply Chain">Supply Chain</option>
+    <option value="Gestion de Projet">Gestion de Projet</option>
+    <option value="Ingénierie Systèmes">Ingénierie Systèmes</option>
+    <option value="Gestion de Programme">Gestion de Programme</option>
+    <option value="Support Client">Support Client</option>
+    <option value="Thermique">Thermique</option>
+    <option value="Dynamique de Vol">Dynamique de Vol</option>
+    <option value="Électrique">Électrique</option>
+    <option value="Test">Test</option>
   </select>
 </div>
 
@@ -3166,21 +3165,21 @@ function generateRarityScore(profile, result) {
     circle.style.strokeDashoffset = offset;
   }, 100);
   
-  // Facteurs de rareté
-  const factorsHTML = rarity.factors.map(f => {
-    const stars = '⭐'.repeat(f.stars);
-    return `
-      <div class="flex justify-between items-center">
-        <div>
-          <span class="font-semibold">${f.label}:</span> ${f.value}
-        </div>
-        <div class="text-right">
-          <div class="text-yellow-500">${stars}</div>
-          <div class="text-xs text-gray-500">${f.rarity}</div>
-        </div>
+const factorsHTML = rarity.factors.map(f => {
+  const stars = '⭐'.repeat(f.stars);
+  return `
+    <div class="flex justify-between items-center">
+      <div>
+        <span class="font-semibold text-gray-900 dark:text-gray-100">${f.label}:</span> 
+        <span class="text-gray-800 dark:text-gray-200">${f.value}</span>
       </div>
-    `;
-  }).join('');
+      <div class="text-right">
+        <div class="text-yellow-500 dark:text-yellow-400">${stars}</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">${f.rarity}</div>
+      </div>
+    </div>
+  `;
+}).join('');
   document.getElementById('rarity-factors').innerHTML = factorsHTML;
   
   // Statistiques
