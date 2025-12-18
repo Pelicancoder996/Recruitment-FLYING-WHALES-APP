@@ -402,17 +402,21 @@
           </select>
         </div>
 
-        <!-- Niveau d'études -->
-        <div>
-          <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">🎓 Niveau d'études</label>
-          <select id="educationLevel" class="w-full p-2 border rounded-lg">
-            <option value="technicien">Technicien / Bac +2</option>
-            <option value="bac3">Licence / Bac +3</option>
-            <option value="bac5" selected>Master / Ingénieur / Bac +5</option>
-            <option value="doctorat">Doctorat / PhD</option>
-          </select>
-        </div>
-
+        
+<!-- Niveau d'études -->
+<div>
+  <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">🎓 Niveau d'études</label>
+  <select id="educationLevel" class="w-full p-2 border rounded-lg">
+    <option value="bac2_technicien">Bac+2 (Technicien - BTS/DUT)</option>
+    <option value="bac2_technicien_sup">Bac+2/3 (Technicien supérieur / Licence pro)</option>
+    <option value="bac3">Bac+3 (Licence)</option>
+    <option value="bac5_master">Bac+5 (Master universitaire)</option>
+    <option value="bac5_master_ingenierie">Bac+5 (Master spécialisé ingénierie)</option>
+    <option value="bac5_ingenieur" selected>Bac+5 (Diplôme d'ingénieur)</option>
+    <option value="bac8">Bac+8 (Doctorat)</option>
+  </select>
+</div>
+        
         <!-- Type de contrat -->
         <div>
           <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">📜 Type de contrat</label>
@@ -490,21 +494,17 @@
           </select>
         </div>
 
-        <!-- Classification interne -->
-        <div>
-          <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">🏷️ Classification interne</label>
-          <select id="classification" class="w-full p-2 border rounded-lg">
-            <option value="">-- Optionnelle --</option>
-            <option value="I1">I1 - Ingénieur Débutant</option>
-            <option value="I2">I2 - Ingénieur Confirmé</option>
-            <option value="I3">I3 - Ingénieur Senior</option>
-            <option value="I4">I4 - Ingénieur Expert</option>
-            <option value="M1">M1 - Manager Niveau 1</option>
-            <option value="M2">M2 - Manager Niveau 2</option>
-            <option value="M3">M3 - Leader Département</option>
-            <option value="directeur_technique">Directeur technique</option>
-          </select>
-        </div>
+        <!-- Management -->
+<div>
+  <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">👔 Management</label>
+  <select id="classification" class="w-full p-2 border rounded-lg">
+    <option value="">Pas de management</option>
+    <option value="M1">M1 - Manager d'équipe</option>
+    <option value="M2">M2 - Senior Manager</option>
+    <option value="M3">M3 - Leader</option>
+    <option value="directeur_technique">Directeur Technique</option>
+  </select>
+</div>
 
         <!-- Source des données -->
         <div>
@@ -520,25 +520,26 @@
           <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">🔬 Sous-domaine technique</label>
           <select id="subdomain" class="w-full p-2 border rounded-lg">
             <option value="">-- Aucun --</option>
-            <option value="Calculs & Simulation">Calculs & Simulation (+5%)</option>
-            <option value="Conception">Conception (+2%)</option>
-            <option value="Électronique">Électronique (+4%)</option>
-            <option value="Avionique">Avionique (+4%)</option>
-            <option value="Matériaux">Matériaux (+2%)</option>
-            <option value="Propulsion">Propulsion (+4%)</option>
-            <option value="Méthodes">Méthodes (neutre)</option>
-            <option value="Production">Production (neutre)</option>
-            <option value="Maintenance">Maintenance (-2%)</option>
-            <option value="Qualité">Qualité (+2%)</option>
-            <option value="Supply Chain">Supply Chain (+2%)</option>
-            <option value="Gestion de Projet">Gestion de Projet (+3%)</option>
-            <option value="Ingénierie Systèmes">Ingénierie Systèmes (+4%)</option>
-            <option value="Gestion de Programme">Gestion de Programme (+4%)</option>
-            <option value="Support Client">Support Client (-4%)</option>
-            <option value="Thermique">Thermique (+6%)</option>
-            <option value="Dynamique de Vol">Dynamique de Vol (+6%)</option>
-            <option value="Électrique">Électrique (+6%)</option>
-            <option value="Test">Test (+1%)</option>
+            <option value="Fonction spécifique">Fonction spécifique (pilote, astronaute...)</option>
+            <option value="Calculs & Simulation">Calculs & Simulation </option>
+            <option value="Conception">Conception </option>
+            <option value="Électronique">Électronique </option>
+            <option value="Avionique">Avionique </option>
+            <option value="Matériaux">Matériaux </option>
+            <option value="Propulsion">Propulsion </option>
+            <option value="Méthodes">Méthodes </option>
+            <option value="Production">Production </option>
+            <option value="Maintenance">Maintenance </option>
+            <option value="Qualité">Qualité </option>
+            <option value="Supply Chain">Supply Chain </option>
+            <option value="Gestion de Projet">Gestion de Projet </option>
+            <option value="Ingénierie Systèmes">Ingénierie Systèmes </option>
+            <option value="Gestion de Programme">Gestion de Programme </option>
+            <option value="Support Client">Support Client </option>
+            <option value="Thermique">Thermique </option>
+            <option value="Dynamique de Vol">Dynamique de Vol </option>
+            <option value="Électrique">Électrique</option>
+            <option value="Test">Test </option>
           </select>
         </div>
         
@@ -629,36 +630,60 @@
   
   <div class="max-h-64 overflow-y-auto border rounded-lg p-3 bg-gray-50 dark:bg-gray-800">
     
-    <!-- Executive Education -->
-    <div class="mb-3">
-      <p class="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">🎓 Executive Education / Grandes Écoles</p>
-      <div class="space-y-1 ml-2">
-        <label class="flex items-center text-sm">
-          <input type="checkbox" name="certifications" value="escp_ai_business" class="mr-2">
-          <span>ESCP - AI & Business Strategy</span>
-        </label>
-        <label class="flex items-center text-sm">
-          <input type="checkbox" name="certifications" value="hec_digital" class="mr-2">
-          <span>HEC - Digital Leadership</span>
-        </label>
-        <label class="flex items-center text-sm">
-          <input type="checkbox" name="certifications" value="hec_ai" class="mr-2">
-          <span>HEC - AI for Business</span>
-        </label>
-        <label class="flex items-center text-sm">
-          <input type="checkbox" name="certifications" value="insead_digital" class="mr-2">
-          <span>INSEAD - Digital Transformation</span>
-        </label>
-        <label class="flex items-center text-sm">
-          <input type="checkbox" name="certifications" value="polytechnique_ai" class="mr-2">
-          <span>Polytechnique - AI & Data Science</span>
-        </label>
-        <label class="flex items-center text-sm">
-          <input type="checkbox" name="certifications" value="mit_ai" class="mr-2">
-          <span>MIT - AI for Business Executive</span>
-        </label>
-      </div>
-    </div>
+<!-- Executive Education -->
+<div class="mb-3">
+  <p class="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">🎓 Executive Education / Grandes Écoles</p>
+  <div class="space-y-1 ml-2">
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="escp_ai_business" class="mr-2">
+      <span>ESCP - Executive program</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="hec_digital" class="mr-2">
+      <span>HEC - Digital Leadership</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="hec_ai" class="mr-2">
+      <span>HEC - Executive MBA</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="insead_digital" class="mr-2">
+      <span>INSEAD - Digital Transformation</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="insead_ai" class="mr-2">
+      <span>INSEAD - General Management Programme</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="polytechnique_ai" class="mr-2">
+      <span>Polytechnique - Executive Program</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="mit_ai" class="mr-2">
+      <span>MIT - Executive Education</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="stanford_ai" class="mr-2">
+      <span>Stanford - Strategic Leadership</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="essec_management" class="mr-2">
+      <span>ESSEC - Advanced Management</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="emlyon_innovation" class="mr-2">
+      <span>emlyon - Innovation & Entrepreneurship</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="edhec_finance" class="mr-2">
+      <span>EDHEC - Executive Finance</span>
+    </label>
+    <label class="flex items-center text-sm">
+      <input type="checkbox" name="certifications" value="sciences_po_leadership" class="mr-2">
+      <span>Sciences Po - Executive Leadership</span>
+    </label>
+  </div>
+</div>
     
     <!-- IA / ML -->
     <div class="mb-3">
@@ -1986,7 +2011,8 @@
     
     // Coefficients sous-domaines techniques
     const subdomainCoef = {
-      "Calculs & Simulation": 1.05,
+      "Fonction spécifique": 1.12,
+      "Calculs & Simulation": 1.04,
       "Conception": 1.02,
       "Électronique": 1.04,
       "Avionique": 1.04,
@@ -1994,14 +2020,14 @@
       "Propulsion": 1.04,
       "Méthodes": 1.00,
       "Production": 1.00,
-      "Maintenance": 0.98,
+      "Maintenance": 1.00,
       "Qualité": 1.02,
       "Supply Chain": 1.02,
       "Gestion de Projet": 1.03,
       "Ingénierie Systèmes": 1.04,
       "Gestion de Programme": 1.04,
-      "Support Client": 0.96,
-      "Thermique": 1.06,
+      "Support Client": 0.98,
+      "Thermique": 1.04,
       "Dynamique de Vol": 1.06,
       "Électrique": 1.06,
       "Test": 1.01
@@ -2010,14 +2036,19 @@
   // Coefficients certifications professionnelles (réduits)
 const certificationCoef = {
   // Executive Education (top 1.5-2%)
-  "escp_ai_business": 1.015,      // était 1.025 → -1%
-  "hec_digital": 1.02,            // était 1.03 → -1%
-  "hec_ai": 1.015,                // était 1.025 → -1%
-  "insead_digital": 1.02,         // était 1.03 → -1%
-  "insead_ai": 1.015,             // était 1.025 → -1%
-  "polytechnique_ai": 1.02,       // était 1.03 → -1%
-  "mit_ai": 1.02,                 // était 1.03 → -1%
-  "stanford_ai": 1.02,            // était 1.03 → -1%
+  // Executive Education (top 1.5-2%)
+"escp_ai_business": 1.02,
+"hec_digital": 1.02,
+"hec_ai": 1.02,                    // (renommé en Executive MBA)
+"insead_digital": 1.02,
+"insead_ai": 1.02,                 // (renommé en General Management)
+"polytechnique_ai": 1.02,          // (renommé en Executive Program)
+"mit_ai": 1.02,                    // (renommé en Executive Education)
+"stanford_ai": 1.02,               // (renommé en Strategic Leadership)
+"essec_management": 1.015,         // NOUVEAU
+"emlyon_innovation": 1.015,        // NOUVEAU
+"edhec_finance": 1.015,            // NOUVEAU
+"sciences_po_leadership": 1.015,   // NOUVEAU          // était 1.03 → -1%
   
   // IA / ML (1-1.5%)
   "gen_ai": 1.015,                // était 1.025 → -1%
@@ -2547,9 +2578,15 @@ if (usesAlphaModel) {
 
   // ========== COEFFICIENTS (COMMUNS À TOUS LES SECTEURS) ==========
   
-  const educationCoef = {
-    technicien: 0.80, bac3: 0.89, bac5: 1.00, doctorat: 1.07
-  }[profile.educationLevel] || 1;
+const educationCoef = {
+  "bac2_technicien": 0.78,
+  "bac2_technicien_sup": 0.85,
+  "bac3": 0.85,
+  "bac5_master": 1.00,
+  "bac5_master_ingenierie": 0.98,
+  "bac5_ingenieur": 1.02,
+  "bac8": 1.05
+}[profile.educationLevel] || 1;
 
   const englishCoef = {
     basic: 1.00, intermediate: 1.03, advanced: 1.06, bilingual: 1.10
@@ -2630,10 +2667,9 @@ if (selectedCerts.length > 0) {
   if (profile.source === 'fw') sourceCoef = 0.95;
   if (profile.source === 'croisee') sourceCoef = 0.97;
 
-const median = p50 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue * certificationCoefValue;
-const low = p25 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue * certificationCoefValue;
-const high = p75 * regionCoef * sizeCoef * classCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue * certificationCoefValue;
-
+const median = p50 * regionCoef * sizeCoef * classCoef * educationCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue * certificationCoefValue;
+const low = p25 * regionCoef * sizeCoef * classCoef * educationCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue * certificationCoefValue;
+const high = p75 * regionCoef * sizeCoef * classCoef * educationCoef * refinementCoef * packageCoef * sourceCoef * subdomainCoefValue * certificationCoefValue;
   return { median, low, high };
 }
 
