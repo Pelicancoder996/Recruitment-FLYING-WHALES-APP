@@ -36,8 +36,164 @@
   background: #1f2937;
   color: #e5e7eb;
   border-color: #374151;
+  
 }
 
+/* ====================================
+   💰 TOGGLE BRUT/NET
+   ==================================== */
+
+.toggle-switch {
+  position: relative;
+  width: 200px;
+  height: 50px;
+  background: #e5e7eb;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dark .toggle-switch {
+  background: #374151;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 96px;
+  height: 42px;
+  background: linear-gradient(135deg, #00AEEF 0%, #003366 100%);
+  border-radius: 21px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.net-mode .toggle-slider {
+  left: 100px;
+}
+
+.toggle-label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.toggle-label-left {
+  left: 32px;
+  color: white;
+}
+
+.toggle-label-right {
+  right: 37px;
+  color: #6b7280;
+}
+
+.toggle-switch.net-mode .toggle-label-left {
+  color: #6b7280;
+}
+
+.toggle-switch.net-mode .toggle-label-right {
+  color: white;
+}
+
+/* ====================================
+   📊 COTISATIONS
+   ==================================== */
+
+.cotisation-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .cotisation-row {
+  border-bottom-color: #374151;
+}
+
+.dark .cotisation-row span {
+  color: #e5e7eb !important;
+}
+
+.dark .cotisation-row .font-bold {
+  color: #ffffff !important;
+}
+
+.cotisation-category {
+  font-weight: 600;
+  color: #003366;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.dark .cotisation-category {
+  color: #00AEEF;
+}
+
+/* ====================================
+   🌙 MODE DARK - Lisibilité complète
+   ==================================== */
+
+/* Cotisations */
+.dark .cotisation-row span {
+  color: #e5e7eb !important;
+}
+
+.dark .cotisation-row .font-bold,
+.dark #total-salarial,
+.dark #total-patronal {
+  color: #ffffff !important;
+}
+
+/* Détail impôt */
+.dark .bg-orange-50 .text-gray-700,
+.dark .bg-orange-900\/20 .text-gray-700 {
+  color: #e5e7eb !important;
+}
+
+.dark #revenu-imposable,
+.dark #impot-total {
+  color: #ffffff !important;
+}
+
+/* ====================================
+   📱 RESPONSIVE TOGGLE MOBILE
+   ==================================== */
+
+@media (max-width: 640px) {
+  .toggle-switch {
+    width: 180px;
+    height: 44px;
+  }
+
+  .toggle-slider {
+    width: 86px;
+    height: 36px;
+  }
+
+  .toggle-switch.net-mode .toggle-slider {
+    left: 90px;
+  }
+
+  .toggle-label {
+    font-size: 12px;
+  }
+
+  .toggle-label-left {
+    left: 28px;
+  }
+
+  .toggle-label-right {
+    right: 33px;
+  }
+}
 .comparison-bar {
   transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -325,21 +481,19 @@
 
 <!-- Navigation Tabs -->
   <div class="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
-    <div class="flex gap-2 sm:gap-4 mb-6">
-      <button 
-        id="tab-simulator" 
-        onclick="switchTab('simulator')" 
-        class="tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
-        <span class="hidden sm:inline">📊 </span>Simulateur
-      </button>
-      <button 
-        id="tab-comparator" 
-        onclick="switchTab('comparator')" 
-        class="tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
-        <span class="hidden sm:inline">👥 </span>Comparateur
-      </button>
-    </div>
+  <div class="flex gap-2 sm:gap-4 mb-6">
+    <button id="tab-simulator" onclick="switchTab('simulator')" class="tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
+      <span class="hidden sm:inline">📊 </span>Simulateur
+    </button>
+    <button id="tab-comparator" onclick="switchTab('comparator')" class="tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
+      <span class="hidden sm:inline">👥 </span>Comparateur
+    </button>
+    <button id="tab-brutnet" onclick="switchTab('brutnet')" class="tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
+      <span class="hidden sm:inline">💰 </span>Brut/Net
+    </button>
   </div>
+</div>
+  
   
 <!-- ============================================= -->
   <!-- CONTENU : SIMULATEUR -->
@@ -417,17 +571,15 @@
   </select>
 </div>
         
-        <!-- Type de contrat -->
-        <div>
-          <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">📜 Type de contrat</label>
-          <select id="contractType" class="w-full p-2 border rounded-lg">
-            <option value="cdi">CDI</option>
-            <option value="cdd">CDD</option>
-            <option value="alternance">Alternance</option>
-            <option value="freelance">Freelance / Indépendant</option>
-            <option value="expatriation">Expatrié / Détaché à l'étranger</option>
-          </select>
-        </div>
+<!-- Type de contrat -->
+<div>
+  <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">📜 Type de contrat</label>
+  <select id="contractType" class="w-full p-2 border rounded-lg">
+    <option value="cdi">CDI</option>
+    <option value="cdd">CDD</option>
+    <option value="alternance">Alternance</option>
+  </select>
+</div>
 
         <!-- Secteur industriel -->
         <div>
@@ -1220,15 +1372,13 @@
           </div>
 
           <div>
-            <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Type de contrat</label>
-            <select id="contractTypeA" class="w-full p-2 text-sm border rounded-lg">
-              <option value="cdi">CDI</option>
-              <option value="cdd">CDD</option>
-              <option value="alternance">Alternance</option>
-              <option value="freelance">Freelance</option>
-              <option value="expatriation">Expatrié</option>
-            </select>
-          </div>
+  <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Type de contrat</label>
+  <select id="contractTypeA" class="w-full p-2 text-sm border rounded-lg">
+    <option value="cdi">CDI</option>
+    <option value="cdd">CDD</option>
+    <option value="alternance">Alternance</option>
+  </select>
+</div>
 
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Secteur industriel</label>
@@ -1479,15 +1629,13 @@
           </div>
 
           <div>
-            <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Type de contrat</label>
-            <select id="contractTypeB" class="w-full p-2 text-sm border rounded-lg">
-              <option value="cdi">CDI</option>
-              <option value="cdd">CDD</option>
-              <option value="alternance">Alternance</option>
-              <option value="freelance">Freelance</option>
-              <option value="expatriation">Expatrié</option>
-            </select>
-          </div>
+  <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Type de contrat</label>
+  <select id="contractTypeB" class="w-full p-2 text-sm border rounded-lg">
+    <option value="cdi">CDI</option>
+    <option value="cdd">CDD</option>
+    <option value="alternance">Alternance</option>
+  </select>
+</div>
 
           <div>
             <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Secteur industriel</label>
@@ -1761,6 +1909,211 @@
     </div>
   </div>
   
+  <!-- ============================================= -->
+  <!-- CONTENU : BRUT/NET (NOUVEAU) -->
+  <!-- ============================================= -->
+  <div id="content-brutnet" class="max-w-5xl mx-auto px-4 sm:px-8 pb-8 sm:pb-12 hidden">
+    
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">💰 Calculateur Brut/Net 2024</h2>
+      
+      <!-- Toggle Brut/Net -->
+      <div class="flex justify-center mb-8">
+        <div id="toggle-mode" class="toggle-switch" onclick="toggleCalculationMode()">
+          <span class="toggle-label toggle-label-left">BRUT</span>
+          <span class="toggle-label toggle-label-right">NET</span>
+          <div class="toggle-slider"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Colonne Gauche : Inputs -->
+        <div class="space-y-4">
+          
+          <!-- Input Montant -->
+          <div>
+            <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300" id="input-label">
+              💶 Salaire Brut Annuel
+            </label>
+            <input 
+              type="number" 
+              id="salary-input-brutnet" 
+              placeholder="Ex: 42000" 
+              class="w-full p-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-lg font-semibold focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              oninput="calculateBrutNet()">
+          </div>
+
+          <!-- Statut -->
+          <div>
+            <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+              👔 Statut
+            </label>
+            <select id="statut-brutnet" class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:text-white" onchange="calculateBrutNet()">
+              <option value="cadre">Cadre</option>
+              <option value="non-cadre">Non-cadre</option>
+            </select>
+          </div>
+
+          <!-- Parts fiscales -->
+          <div>
+            <label class="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+              👨‍👩‍👧 Parts fiscales
+            </label>
+            <select id="parts-fiscales" class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:text-white" onchange="calculateBrutNet()">
+              <option value="1">1 part (célibataire)</option>
+              <option value="1.5">1,5 parts (célibataire + 1 enfant)</option>
+              <option value="2">2 parts (couple)</option>
+              <option value="2.5">2,5 parts (couple + 1 enfant)</option>
+              <option value="3">3 parts (couple + 2 enfants)</option>
+              <option value="3.5">3,5 parts (couple + 3 enfants)</option>
+              <option value="4">4 parts (couple + 4 enfants)</option>
+            </select>
+          </div>
+
+          <!-- Avantages en nature -->
+          <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+            <h3 class="font-semibold mb-3 text-gray-800 dark:text-white">🎁 Avantages en nature (optionnel)</h3>
+            
+            <div class="space-y-3">
+              <div>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" id="avantage-voiture" onchange="toggleAvantage('voiture')">
+                  <span class="text-gray-700 dark:text-gray-300">Voiture de fonction</span>
+                </label>
+                <input 
+                  type="number" 
+                  id="voiture-value" 
+                  placeholder="Valeur annuelle (€)" 
+                  class="w-full mt-1 p-2 border rounded text-sm dark:bg-gray-700 dark:text-white"
+                  oninput="calculateBrutNet()"
+                  disabled>
+              </div>
+
+              <div>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" id="avantage-tickets" onchange="toggleAvantage('tickets')">
+                  <span class="text-gray-700 dark:text-gray-300">Tickets restaurant</span>
+                </label>
+                <input 
+                  type="number" 
+                  id="tickets-value" 
+                  placeholder="Valeur annuelle (€)" 
+                  class="w-full mt-1 p-2 border rounded text-sm dark:bg-gray-700 dark:text-white"
+                  oninput="calculateBrutNet()"
+                  disabled>
+              </div>
+
+              <div>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" id="avantage-logement" onchange="toggleAvantage('logement')">
+                  <span class="text-gray-700 dark:text-gray-300">Logement de fonction</span>
+                </label>
+                <input 
+                  type="number" 
+                  id="logement-value" 
+                  placeholder="Valeur annuelle (€)" 
+                  class="w-full mt-1 p-2 border rounded text-sm dark:bg-gray-700 dark:text-white"
+                  oninput="calculateBrutNet()"
+                  disabled>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Colonne Droite : Résultats -->
+        <div class="space-y-4">
+          
+          <!-- Résultat Principal -->
+          <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+            <p class="text-sm opacity-80 mb-2" id="result-label">Salaire Net Annuel (avant impôts)</p>
+            <p class="text-4xl font-bold" id="result-value">—</p>
+            <p class="text-xs opacity-70 mt-2">Prélèvement à la source non déduit</p>
+          </div>
+
+          <!-- Net après impôts -->
+          <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 text-white">
+            <p class="text-sm opacity-80 mb-1">💸 Net après impôts</p>
+            <p class="text-2xl font-bold" id="net-apres-impots">—</p>
+            <p class="text-xs opacity-70 mt-1">Barème progressif 2024</p>
+          </div>
+
+          <!-- Détail impôt -->
+          <div class="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4">
+            <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">📊 Détail calcul impôt</p>
+            <div class="text-sm space-y-1">
+              <div class="flex justify-between">
+                <span class="text-gray-700 dark:text-gray-300">Revenu imposable :</span>
+                <span class="font-bold" id="revenu-imposable">—</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-700 dark:text-gray-300">Impôt annuel :</span>
+                <span class="font-bold text-orange-600" id="impot-total">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mensuel -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4">
+              <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Brut mensuel</p>
+              <p class="text-lg font-bold text-gray-900 dark:text-white" id="brut-mensuel">—</p>
+            </div>
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4">
+              <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Net mensuel</p>
+              <p class="text-lg font-bold text-gray-900 dark:text-white" id="net-mensuel">—</p>
+            </div>
+          </div>
+
+          <!-- Coût Employeur -->
+          <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white">
+            <p class="text-sm opacity-80 mb-1">💼 Coût Total Employeur</p>
+            <p class="text-2xl font-bold" id="cout-employeur">—</p>
+            <p class="text-xs opacity-70 mt-1">Charges patronales incluses</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Détail des Cotisations -->
+    <div id="cotisations-detail" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hidden">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">📋 Détail des Cotisations 2024</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Cotisations Salariales -->
+        <div>
+          <h4 class="cotisation-category">🧑 Cotisations Salariales</h4>
+          <div id="cotisations-salariales"></div>
+          <div class="cotisation-row font-bold text-lg mt-4">
+            <span>Total salarial</span>
+            <span id="total-salarial">—</span>
+          </div>
+        </div>
+
+        <!-- Cotisations Patronales -->
+        <div>
+          <h4 class="cotisation-category">🏢 Cotisations Patronales</h4>
+          <div id="cotisations-patronales"></div>
+          <div class="cotisation-row font-bold text-lg mt-4">
+            <span>Total patronal</span>
+            <span id="total-patronal">—</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Graphique Répartition -->
+      <div class="mt-6">
+        <h4 class="font-bold text-gray-800 dark:text-white mb-4">📊 Répartition</h4>
+        <canvas id="repartitionChart" class="max-h-64"></canvas>
+      </div>
+    </div>
+
+  </div>
   <!-- ============================================= -->
   <!-- SCRIPT COMPLET : DONNÉES + LOGIQUE -->
   <!-- ============================================= -->
@@ -2238,26 +2591,370 @@ const certificationCoef = {
 
     // ===== GESTION DES TABS =====
     let currentTab = 'simulator';
+    
+    // ===== VARIABLES GLOBALES BRUT/NET =====
+    let calculationMode = 'brut'; // 'brut' ou 'net'
+    let repartitionChart = null;
+
+    // ===== FONCTION TOGGLE BRUT/NET =====
+    function toggleCalculationMode() {
+      const toggle = document.getElementById('toggle-mode');
+      const inputLabel = document.getElementById('input-label');
+      const resultLabel = document.getElementById('result-label');
+      
+      if (calculationMode === 'brut') {
+        calculationMode = 'net';
+        toggle.classList.add('net-mode');
+        inputLabel.textContent = '💶 Salaire Net Annuel (avant impôts)';
+        resultLabel.textContent = 'Salaire Brut Annuel';
+      } else {
+        calculationMode = 'brut';
+        toggle.classList.remove('net-mode');
+        inputLabel.textContent = '💶 Salaire Brut Annuel';
+        resultLabel.textContent = 'Salaire Net Annuel (avant impôts)';
+      }
+      
+      calculateBrutNet();
+    }
+
+    // ===== FONCTION TOGGLE AVANTAGES =====
+    function toggleAvantage(type) {
+      const checkbox = document.getElementById('avantage-' + type);
+      const input = document.getElementById(type + '-value');
+      input.disabled = !checkbox.checked;
+      if (!checkbox.checked) input.value = '';
+      calculateBrutNet();
+    }
+
+    // ===== FONCTION PRINCIPALE DE CALCUL BRUT/NET =====
+    function calculateBrutNet() {
+      const input = parseFloat(document.getElementById('salary-input-brutnet').value) || 0;
+      if (input === 0) {
+        document.getElementById('result-value').textContent = '—';
+        document.getElementById('brut-mensuel').textContent = '—';
+        document.getElementById('net-mensuel').textContent = '—';
+        document.getElementById('net-apres-impots').textContent = '—';
+        document.getElementById('cout-employeur').textContent = '—';
+        document.getElementById('revenu-imposable').textContent = '—';
+        document.getElementById('impot-total').textContent = '—';
+        document.getElementById('cotisations-detail').classList.add('hidden');
+        return;
+      }
+
+      const statut = document.getElementById('statut-brutnet').value;
+      const partsFiscales = parseFloat(document.getElementById('parts-fiscales').value);
+      
+      // Avantages en nature
+      let avantagesTotal = 0;
+      if (document.getElementById('avantage-voiture').checked) {
+        avantagesTotal += parseFloat(document.getElementById('voiture-value').value) || 0;
+      }
+      if (document.getElementById('avantage-tickets').checked) {
+        avantagesTotal += parseFloat(document.getElementById('tickets-value').value) || 0;
+      }
+      if (document.getElementById('avantage-logement').checked) {
+        avantagesTotal += parseFloat(document.getElementById('logement-value').value) || 0;
+      }
+
+      let brut, net, coutEmployeur;
+      let cotisationsSalariales = {};
+      let cotisationsPatronales = {};
+
+      if (calculationMode === 'brut') {
+        // BRUT → NET
+        brut = input;
+        
+        const plafondSS = 46368;
+        const tranche1 = Math.min(brut, plafondSS);
+        const tranche2 = Math.max(0, brut - plafondSS);
+        const assietteCsgCrds = brut * 0.9825;
+        
+        if (statut === 'cadre') {
+          cotisationsSalariales = {
+            "CSG déductible (6,8%)": assietteCsgCrds * 0.068,
+            "CSG non déductible (2,4%)": assietteCsgCrds * 0.024,
+            "CRDS (0,5%)": assietteCsgCrds * 0.005,
+            "Retraite de base plafonnée (6,9%)": tranche1 * 0.069,
+            "Retraite de base déplafonnée (0,4%)": brut * 0.004,
+            "Retraite complémentaire T1 (3,15%)": tranche1 * 0.0315,
+            "Retraite complémentaire T2 (8,64%)": tranche2 * 0.0864,
+            "CEG T1 (0,86%)": tranche1 * 0.0086,
+            "CEG T2 (1,08%)": tranche2 * 0.0108,
+            "APEC (0,024%)": Math.min(brut, plafondSS * 4) * 0.00024
+          };
+          cotisationsPatronales = {
+            "Assurance maladie (13%)": brut * 0.13,
+            "Allocations familiales (3,45%)": brut * 0.0345,
+            "Accident du travail (1,5%)": brut * 0.015,
+            "Retraite de base (8,6%)": tranche1 * 0.086,
+            "Vieillesse déplafonnée (1,9%)": brut * 0.019,
+            "Retraite complémentaire T1 (4,72%)": tranche1 * 0.0472,
+            "Retraite complémentaire T2 (12,96%)": tranche2 * 0.1296,
+            "CEG T1 (1,29%)": tranche1 * 0.0129,
+            "CEG T2 (1,62%)": tranche2 * 0.0162,
+            "APEC (0,036%)": Math.min(brut, plafondSS * 4) * 0.00036,
+            "Chômage (4,05%)": brut * 0.0405,
+            "AGS (0,15%)": brut * 0.0015,
+            "Taxe apprentissage (0,68%)": brut * 0.0068,
+            "Formation pro (1%)": brut * 0.01
+          };
+        } else {
+          cotisationsSalariales = {
+            "CSG déductible (6,8%)": assietteCsgCrds * 0.068,
+            "CSG non déductible (2,4%)": assietteCsgCrds * 0.024,
+            "CRDS (0,5%)": assietteCsgCrds * 0.005,
+            "Retraite de base plafonnée (6,9%)": tranche1 * 0.069,
+            "Retraite de base déplafonnée (0,4%)": brut * 0.004,
+            "Retraite complémentaire T1 (3,15%)": tranche1 * 0.0315,
+            "Retraite complémentaire T2 (8,64%)": tranche2 * 0.0864,
+            "CEG T1 (0,86%)": tranche1 * 0.0086,
+            "CEG T2 (1,08%)": tranche2 * 0.0108
+          };
+          cotisationsPatronales = {
+            "Assurance maladie (13%)": brut * 0.13,
+            "Allocations familiales (3,45%)": brut * 0.0345,
+            "Accident du travail (1,5%)": brut * 0.015,
+            "Retraite de base (8,6%)": tranche1 * 0.086,
+            "Vieillesse déplafonnée (1,9%)": brut * 0.019,
+            "Retraite complémentaire T1 (4,72%)": tranche1 * 0.0472,
+            "Retraite complémentaire T2 (12,96%)": tranche2 * 0.1296,
+            "CEG T1 (1,29%)": tranche1 * 0.0129,
+            "CEG T2 (1,62%)": tranche2 * 0.0162,
+            "Chômage (4,05%)": brut * 0.0405,
+            "AGS (0,15%)": brut * 0.0015,
+            "Taxe apprentissage (0,68%)": brut * 0.0068,
+            "Formation pro (1%)": brut * 0.01
+          };
+        }
+
+        const totalSalarial = Object.values(cotisationsSalariales).reduce((a, b) => a + b, 0);
+        net = brut - totalSalarial;
+        const totalPatronal = Object.values(cotisationsPatronales).reduce((a, b) => a + b, 0);
+        coutEmployeur = brut + totalPatronal + avantagesTotal;
+
+      } else {
+        // NET → BRUT
+        net = input;
+        const coefBrut = statut === 'cadre' ? 1.264 : 1.262;
+        brut = net * coefBrut;
+
+        const plafondSS = 46368;
+        const tranche1 = Math.min(brut, plafondSS);
+        const tranche2 = Math.max(0, brut - plafondSS);
+        const assietteCsgCrds = brut * 0.9825;
+
+        if (statut === 'cadre') {
+          cotisationsSalariales = {
+            "CSG déductible (6,8%)": assietteCsgCrds * 0.068,
+            "CSG non déductible (2,4%)": assietteCsgCrds * 0.024,
+            "CRDS (0,5%)": assietteCsgCrds * 0.005,
+            "Retraite de base plafonnée (6,9%)": tranche1 * 0.069,
+            "Retraite de base déplafonnée (0,4%)": brut * 0.004,
+            "Retraite complémentaire T1 (3,15%)": tranche1 * 0.0315,
+            "Retraite complémentaire T2 (8,64%)": tranche2 * 0.0864,
+            "CEG T1 (0,86%)": tranche1 * 0.0086,
+            "CEG T2 (1,08%)": tranche2 * 0.0108,
+            "APEC (0,024%)": Math.min(brut, plafondSS * 4) * 0.00024
+          };
+          cotisationsPatronales = {
+            "Assurance maladie (13%)": brut * 0.13,
+            "Allocations familiales (3,45%)": brut * 0.0345,
+            "Accident du travail (1,5%)": brut * 0.015,
+            "Retraite de base (8,6%)": tranche1 * 0.086,
+            "Vieillesse déplafonnée (1,9%)": brut * 0.019,
+            "Retraite complémentaire T1 (4,72%)": tranche1 * 0.0472,
+            "Retraite complémentaire T2 (12,96%)": tranche2 * 0.1296,
+            "CEG T1 (1,29%)": tranche1 * 0.0129,
+            "CEG T2 (1,62%)": tranche2 * 0.0162,
+            "APEC (0,036%)": Math.min(brut, plafondSS * 4) * 0.00036,
+            "Chômage (4,05%)": brut * 0.0405,
+            "AGS (0,15%)": brut * 0.0015,
+            "Taxe apprentissage (0,68%)": brut * 0.0068,
+            "Formation pro (1%)": brut * 0.01
+          };
+        } else {
+          cotisationsSalariales = {
+            "CSG déductible (6,8%)": assietteCsgCrds * 0.068,
+            "CSG non déductible (2,4%)": assietteCsgCrds * 0.024,
+            "CRDS (0,5%)": assietteCsgCrds * 0.005,
+            "Retraite de base plafonnée (6,9%)": tranche1 * 0.069,
+            "Retraite de base déplafonnée (0,4%)": brut * 0.004,
+            "Retraite complémentaire T1 (3,15%)": tranche1 * 0.0315,
+            "Retraite complémentaire T2 (8,64%)": tranche2 * 0.0864,
+            "CEG T1 (0,86%)": tranche1 * 0.0086,
+            "CEG T2 (1,08%)": tranche2 * 0.0108
+          };
+          cotisationsPatronales = {
+            "Assurance maladie (13%)": brut * 0.13,
+            "Allocations familiales (3,45%)": brut * 0.0345,
+            "Accident du travail (1,5%)": brut * 0.015,
+            "Retraite de base (8,6%)": tranche1 * 0.086,
+            "Vieillesse déplafonnée (1,9%)": brut * 0.019,
+            "Retraite complémentaire T1 (4,72%)": tranche1 * 0.0472,
+            "Retraite complémentaire T2 (12,96%)": tranche2 * 0.1296,
+            "CEG T1 (1,29%)": tranche1 * 0.0129,
+            "CEG T2 (1,62%)": tranche2 * 0.0162,
+            "Chômage (4,05%)": brut * 0.0405,
+            "AGS (0,15%)": brut * 0.0015,
+            "Taxe apprentissage (0,68%)": brut * 0.0068,
+            "Formation pro (1%)": brut * 0.01
+          };
+        }
+
+        const totalPatronal = Object.values(cotisationsPatronales).reduce((a, b) => a + b, 0);
+        coutEmployeur = brut + totalPatronal + avantagesTotal;
+      }
+
+      // Affichage résultats
+      if (calculationMode === 'brut') {
+        document.getElementById('result-value').textContent = Math.round(net).toLocaleString() + ' €';
+      } else {
+        document.getElementById('result-value').textContent = Math.round(brut).toLocaleString() + ' €';
+      }
+
+      document.getElementById('brut-mensuel').textContent = Math.round(brut / 12).toLocaleString() + ' €';
+      document.getElementById('net-mensuel').textContent = Math.round(net / 12).toLocaleString() + ' €';
+      document.getElementById('cout-employeur').textContent = Math.round(coutEmployeur).toLocaleString() + ' €';
+
+      // ===== CALCUL IMPÔT AVEC BARÈME PROGRESSIF 2024 =====
+      const abattement = Math.min(Math.max(net * 0.10, 472), 13522);
+      const revenuImposable = net - abattement;
+      const quotientFamilial = revenuImposable / partsFiscales;
+      
+      let impotParPart = 0;
+      if (quotientFamilial <= 11497) {
+        impotParPart = 0;
+      } else if (quotientFamilial <= 29315) {
+        impotParPart = (quotientFamilial - 11497) * 0.11;
+      } else if (quotientFamilial <= 83823) {
+        impotParPart = (29315 - 11497) * 0.11 + (quotientFamilial - 29315) * 0.30;
+      } else if (quotientFamilial <= 180294) {
+        impotParPart = (29315 - 11497) * 0.11 + (83823 - 29315) * 0.30 + (quotientFamilial - 83823) * 0.41;
+      } else {
+        impotParPart = (29315 - 11497) * 0.11 + (83823 - 29315) * 0.30 + (180294 - 83823) * 0.41 + (quotientFamilial - 180294) * 0.45;
+      }
+      
+      const impotTotal = impotParPart * partsFiscales;
+      const netApresImpots = net - impotTotal;
+      const netApresImpotsMensuel = Math.round(netApresImpots / 12);
+      
+      document.getElementById('revenu-imposable').textContent = Math.round(revenuImposable).toLocaleString() + ' €';
+      document.getElementById('impot-total').textContent = Math.round(impotTotal).toLocaleString() + ' €';
+      document.getElementById('net-apres-impots').textContent = 
+        Math.round(netApresImpots).toLocaleString() + ' € / an (' + netApresImpotsMensuel.toLocaleString() + ' €/mois)';
+
+      // Affichage détail cotisations
+      document.getElementById('cotisations-detail').classList.remove('hidden');
+      
+      let htmlSalarial = '';
+      for (const [label, montant] of Object.entries(cotisationsSalariales)) {
+        htmlSalarial += `
+          <div class="cotisation-row">
+            <span class="text-sm text-gray-700 dark:text-gray-300">${label}</span>
+            <span class="font-semibold text-gray-900 dark:text-white">${Math.round(montant).toLocaleString()} €</span>
+          </div>
+        `;
+      }
+      document.getElementById('cotisations-salariales').innerHTML = htmlSalarial;
+      
+      const totalSalarial = Object.values(cotisationsSalariales).reduce((a, b) => a + b, 0);
+      document.getElementById('total-salarial').textContent = Math.round(totalSalarial).toLocaleString() + ' €';
+
+      let htmlPatronal = '';
+      for (const [label, montant] of Object.entries(cotisationsPatronales)) {
+        htmlPatronal += `
+          <div class="cotisation-row">
+            <span class="text-sm text-gray-700 dark:text-gray-300">${label}</span>
+            <span class="font-semibold text-gray-900 dark:text-white">${Math.round(montant).toLocaleString()} €</span>
+          </div>
+        `;
+      }
+      document.getElementById('cotisations-patronales').innerHTML = htmlPatronal;
+      
+      const totalPatronal = Object.values(cotisationsPatronales).reduce((a, b) => a + b, 0);
+      document.getElementById('total-patronal').textContent = Math.round(totalPatronal).toLocaleString() + ' €';
+
+      // Graphique répartition
+      generateRepartitionChart(netApresImpots, totalSalarial, totalPatronal, impotTotal);
+    }
+
+    // ===== FONCTION GRAPHIQUE RÉPARTITION =====
+    function generateRepartitionChart(netApresImpots, cotisationsSalariales, cotisationsPatronales, impot) {
+      const canvas = document.getElementById('repartitionChart');
+      const ctx = canvas.getContext('2d');
+
+      if (repartitionChart) {
+        repartitionChart.destroy();
+      }
+
+      repartitionChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Net après impôts', 'Impôts', 'Charges salariales', 'Charges patronales'],
+          datasets: [{
+            data: [
+              Math.round(netApresImpots),
+              Math.round(impot),
+              Math.round(cotisationsSalariales),
+              Math.round(cotisationsPatronales)
+            ],
+            backgroundColor: [
+              '#10b981',
+              '#f97316',
+              '#f59e0b',
+              '#ef4444'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.parsed || 0;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return label + ': ' + value.toLocaleString() + ' € (' + percentage + '%)';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
 
     function switchTab(tab) {
-      currentTab = tab;
-      
-      document.getElementById('tab-simulator').className = tab === 'simulator' ? 
-        'tab-active px-6 py-3 rounded-xl font-semibold transition-all duration-300' : 
-        'tab-inactive px-6 py-3 rounded-xl font-semibold transition-all duration-300';
-      
-      document.getElementById('tab-comparator').className = tab === 'comparator' ? 
-        'tab-active px-6 py-3 rounded-xl font-semibold transition-all duration-300' : 
-        'tab-inactive px-6 py-3 rounded-xl font-semibold transition-all duration-300';
-      
-      document.getElementById('content-simulator').classList.toggle('hidden', tab !== 'simulator');
-      document.getElementById('content-comparator').classList.toggle('hidden', tab !== 'comparator');
+  currentTab = tab;
+  
+  // Gestion des 3 boutons
+  document.getElementById('tab-simulator').className = tab === 'simulator' ? 
+    'tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
+    'tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
+  
+  document.getElementById('tab-comparator').className = tab === 'comparator' ? 
+    'tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
+    'tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
+  
+  document.getElementById('tab-brutnet').className = tab === 'brutnet' ? 
+    'tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
+    'tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
+  
+  // Gestion de l'affichage des 3 contenus
+  document.getElementById('content-simulator').classList.toggle('hidden', tab !== 'simulator');
+  document.getElementById('content-comparator').classList.toggle('hidden', tab !== 'comparator');
+  document.getElementById('content-brutnet').classList.toggle('hidden', tab !== 'brutnet');
 
-      if (tab === 'comparator') {
-        populateSchoolsComparator();
-        calculateComparison();
-      }
-    }
+  if (tab === 'comparator') {
+    populateSchoolsComparator();
+    calculateComparison();
+  }
+}
 
     // ===== DARK MODE =====
     function toggleDarkMode() {
