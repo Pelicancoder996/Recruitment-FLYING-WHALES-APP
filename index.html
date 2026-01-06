@@ -2330,8 +2330,17 @@ button#tab-expat.tab-inactive:hover {
   <!-- ============================================= -->
   <div id="content-expat" class="max-w-7xl mx-auto px-4 sm:px-8 pb-8 sm:pb-12 hidden">
     
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">🌍 Simulateur Expatriation</h2>
+    <div class="flex justify-between items-center mb-6">
+
+        
+        <button 
+          onclick="fetchExchangeRates()" 
+          class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-lg transition flex items-center gap-2"
+          title="Mettre à jour les taux de change">
+          <span>🔄</span>
+          <span class="hidden sm:inline">Actualiser taux</span>
+        </button>
+      </div>
       
       <!-- Référence France -->
       <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 mb-6">
@@ -2457,7 +2466,7 @@ button#tab-expat.tab-inactive:hover {
             </div>
           </div>
 
-          <!-- Mode Comparaison -->
+<!-- Mode Comparaison -->
           <div id="expat-mode-comparison-content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -2471,6 +2480,9 @@ button#tab-expat.tab-inactive:hover {
                     oninput="calculateExpatriation()">
                   <span id="expat-currency" class="flex items-center px-3 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-semibold">$</span>
                 </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Taux actuel : 1 € = <span id="current-rate-display">—</span>
+                </p>
               </div>
               <div>
                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Équivalent en EUR</label>
@@ -3077,6 +3089,8 @@ const certificationCoef = {
     let selectedCountry = null;
     let expatComparisonChart = null;
     let expatMode = 'comparison'; // 'comparison' ou 'equivalence'
+    let exchangeRatesLastUpdate = null;
+    let exchangeRatesFetchError = false;
 
     const countriesData = {
       usa: {
@@ -3326,6 +3340,98 @@ const certificationCoef = {
       }
     };
     
+    // ===== FONCTION : RÉCUPÉRATION TAUX DE CHANGE EN TEMPS RÉEL =====
+    async function fetchExchangeRates() {
+      try {
+        // API gratuite : https://www.exchangerate-api.com (1500 requêtes/mois)
+        const response = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+        
+        if (!response.ok) {
+          throw new Error('API non disponible');
+        }
+        
+        const data = await response.json();
+        const rates = data.rates;
+        
+        // Mise à jour des taux dans countriesData
+        countriesData.usa.exchangeRate = rates.USD || 1.17;
+        countriesData.uk.exchangeRate = rates.GBP || 0.87;
+        countriesData.switzerland.exchangeRate = rates.CHF || 0.93;
+        countriesData.dubai.exchangeRate = rates.AED || 4.30;
+        countriesData.singapore.exchangeRate = rates.SGD || 1.60;
+        countriesData.canada.exchangeRate = rates.CAD || 1.61;
+        countriesData.australia.exchangeRate = rates.AUD || 1.60;
+        countriesData.japan.exchangeRate = rates.JPY || 180;
+        countriesData.china.exchangeRate = rates.CNY || 7.9;
+        countriesData.brazil.exchangeRate = rates.BRL || 6.5;
+        countriesData.southkorea.exchangeRate = rates.KRW || 1690;
+        
+        // Date de mise à jour
+        exchangeRatesLastUpdate = new Date(data.date || Date.now());
+        exchangeRatesFetchError = false;
+        
+        console.log('✅ Taux de change mis à jour:', exchangeRatesLastUpdate.toLocaleDateString('fr-FR'));
+        
+        // Afficher un indicateur de mise à jour réussie
+        showExchangeRateStatus('success', exchangeRatesLastUpdate);
+        
+      } catch (error) {
+        console.warn('⚠️ Impossible de récupérer les taux de change en temps réel. Utilisation des taux par défaut.');
+        console.error(error);
+        exchangeRatesFetchError = true;
+        
+        // Afficher un message d'avertissement
+        showExchangeRateStatus('error');
+      }
+    }
+
+    // ===== FONCTION : AFFICHER STATUT TAUX DE CHANGE =====
+    function showExchangeRateStatus(status, date = null) {
+      const existingStatus = document.getElementById('exchange-rate-status');
+      if (existingStatus) existingStatus.remove();
+      
+      const statusDiv = document.createElement('div');
+      statusDiv.id = 'exchange-rate-status';
+      statusDiv.className = 'fixed bottom-4 right-4 z-50 p-3 rounded-lg shadow-lg transition-all duration-500';
+      
+      if (status === 'success') {
+        statusDiv.className += ' bg-green-500 text-white';
+        statusDiv.innerHTML = `
+          <div class="flex items-center gap-2 text-sm">
+            <span>✅</span>
+            <div>
+              <p class="font-semibold">Taux de change à jour</p>
+              <p class="text-xs opacity-80">${date.toLocaleDateString('fr-FR')} ${date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</p>
+            </div>
+          </div>
+        `;
+      } else {
+        statusDiv.className += ' bg-orange-500 text-white';
+        statusDiv.innerHTML = `
+          <div class="flex items-center gap-2 text-sm">
+            <span>⚠️</span>
+            <div>
+              <p class="font-semibold">Taux de change statiques</p>
+              <p class="text-xs opacity-80">API non disponible</p>
+            </div>
+          </div>
+        `;
+      }
+      
+      document.body.appendChild(statusDiv);
+      
+      // Auto-masquer après 5 secondes
+      setTimeout(() => {
+        statusDiv.style.opacity = '0';
+        setTimeout(() => statusDiv.remove(), 500);
+      }, 5000);
+    }
+
+    // ===== APPELER L'API AU CHARGEMENT DE LA PAGE =====
+    window.addEventListener('load', () => {
+      fetchExchangeRates();
+    });
+    
     // ===== FONCTION : SÉLECTION PAYS =====
     function selectCountry(country) {
       selectedCountry = country;
@@ -3344,7 +3450,11 @@ const certificationCoef = {
       document.getElementById('expat-country-flag').textContent = countryData.flag;
       document.getElementById('expat-country-name').textContent = countryData.name;
       document.getElementById('expat-currency').textContent = countryData.currency;
-      
+      document.getElementById('current-rate-display').textContent = 
+  countryData.exchangeRate.toFixed(2) + ' ' + countryData.currency;
+  
+    
+    
       // Calculer si les champs sont remplis
       calculateExpatriation();
     }
