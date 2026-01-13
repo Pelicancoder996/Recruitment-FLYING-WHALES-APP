@@ -20,6 +20,39 @@
   overflow-x: hidden;
 }
 
+/* ====================================
+   📱 SCROLL HORIZONTAL ONGLETS
+   ==================================== */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; /* ← AJOUT IMPORTANT pour iOS */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Force le scroll sur le conteneur des onglets */
+div:has(> #tab-simulator) {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch !important; /* ← AJOUT pour iOS */
+}
+
+div:has(> #tab-simulator)::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* S'assurer que les boutons ne se compriment pas */
+button[id^="tab-"] {
+  flex-shrink: 0 !important;
+  min-width: fit-content !important;
+}
+
 /* Onglets - Mode clair */
 .tab-active {
   background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
@@ -810,6 +843,7 @@ button#tab-expat.tab-inactive:hover {
 
 <div class="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
   <div class="flex gap-2 sm:gap-4 mb-6 overflow-x-auto scrollbar-hide">
+    
    <button 
   id="tab-simulator" 
   onclick="switchTab('simulator')" 
@@ -2795,7 +2829,7 @@ button#tab-expat.tab-inactive:hover {
           <span>💼</span>
           <span>Métier / Spécialisation</span>
         </label>
-        <select id="juridique-metier" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+        <select id="juridique-metier" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onchange="calculateJuridique()">
           <option value="">-- Choisissez d'abord un domaine --</option>
         </select>
       </div>
@@ -2963,73 +2997,73 @@ button#tab-expat.tab-inactive:hover {
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- BLOC JURISTE ENTREPRISE -->
-    <!-- ========================================== -->
-    <div id="juridique-bloc-juriste" class="card hidden animate-slide-up">
-      <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-        🏢 Configuration Juriste Entreprise
-      </h3>
-      
-      <div class="mb-4">
-        <label class="label">
-          <span>📊</span>
-          <span>Séniorité</span>
-        </label>
-        <select id="juridique-seniorite" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-          <option value="junior">Junior (0-3 ans)</option>
-          <option value="confirme">Confirmé (3-7 ans)</option>
-          <option value="senior">Senior (7-12 ans)</option>
-          <option value="responsable">Responsable juridique</option>
-          <option value="directeur">Directeur juridique</option>
-        </select>
-      </div>
+ <!-- ========================================== -->
+<!-- BLOC JURISTE ENTREPRISE -->
+<!-- ========================================== -->
+<div id="juridique-bloc-juriste" class="card hidden animate-slide-up">
+  <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+    🏢 Configuration Juriste Entreprise
+  </h3>
+  
+  <div class="mb-4">
+    <label class="label">
+      <span>📊</span>
+      <span>Séniorité</span>
+    </label>
+    <select id="juridique-seniorite" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onchange="calculateJuridique()">
+      <option value="junior">Junior (0-3 ans)</option>
+      <option value="confirme">Confirmé (3-7 ans)</option>
+      <option value="senior">Senior (7-12 ans)</option>
+      <option value="responsable">Responsable juridique</option>
+      <option value="directeur">Directeur juridique</option>
+    </select>
+  </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        <div>
-          <label class="label">
-            <span>🏭</span>
-            <span>Secteur activité</span>
-          </label>
-          <select id="juridique-secteur-activite" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-            <option value="tech">Tech / Numérique</option>
-            <option value="banque">Banque / Finance</option>
-            <option value="pharma">Pharmacie / Santé</option>
-            <option value="luxe">Luxe / Mode</option>
-            <option value="industrie">Industrie / BTP</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="label">
-            <span>🏢</span>
-            <span>Taille entreprise</span>
-          </label>
-          <select id="juridique-taille" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-            <option value="startup">Startup (&lt;50)</option>
-            <option value="pme">PME (50-250)</option>
-            <option value="eti">ETI (250-5000)</option>
-            <option value="cac40">CAC40 / Multi</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <label class="label">
-          <span>💰</span>
-          <span>Bonus annuel : <strong id="juridique-bonus-val" class="text-blue-600 dark:text-blue-400">10</strong>%</span>
-        </label>
-        <input type="range" id="juridique-bonus" min="0" max="30" value="10" class="w-full">
-      </div>
-
-      <div class="mb-4">
-        <label class="label">
-          <span>📈</span>
-          <span>Stock-options/actions (€/an)</span>
-        </label>
-        <input type="number" id="juridique-stock" min="0" max="100000" value="0" step="1000" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-      </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="label">
+        <span>🏭</span>
+        <span>Secteur activité</span>
+      </label>
+      <select id="juridique-secteur-activite" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onchange="calculateJuridique()">
+        <option value="tech">Tech / Numérique</option>
+        <option value="banque">Banque / Finance</option>
+        <option value="pharma">Pharmacie / Santé</option>
+        <option value="luxe">Luxe / Mode</option>
+        <option value="industrie">Industrie / BTP</option>
+      </select>
     </div>
+
+    <div>
+      <label class="label">
+        <span>🏢</span>
+        <span>Taille entreprise</span>
+      </label>
+      <select id="juridique-taille" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onchange="calculateJuridique()">
+        <option value="startup">Startup (&lt;50)</option>
+        <option value="pme">PME (50-250)</option>
+        <option value="eti">ETI (250-5000)</option>
+        <option value="cac40">CAC40 / Multi</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="label">
+      <span>💰</span>
+      <span>Bonus annuel : <strong id="juridique-bonus-val" class="text-blue-600 dark:text-blue-400">10</strong>%</span>
+    </label>
+    <input type="range" id="juridique-bonus" min="0" max="30" value="10" class="w-full" oninput="updateJuridiqueBonusDisplay(); calculateJuridique();">
+  </div>
+
+  <div class="mb-4">
+    <label class="label">
+      <span>📈</span>
+      <span>Stock-options/actions (€/an)</span>
+    </label>
+    <input type="number" id="juridique-stock" min="0" max="100000" value="0" step="1000" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" oninput="calculateJuridique()">
+  </div>
+</div>
 
     <!-- ========================================== -->
     <!-- BLOC ENSEIGNEMENT -->
@@ -3176,8 +3210,7 @@ const metiersJuridiques = {
     "juriste-rgpd": "Juriste RGPD",
     "juriste-ip": "Juriste PI",
     "juriste-immobilier": "Juriste immobilier",
-    "responsable-juridique": "Responsable juridique",
-    "directeur-juridique": "Directeur juridique"
+    
   },
   notariat: {
     "clerc": "Clerc de notaire",
@@ -6431,6 +6464,12 @@ if (domaine === 'barreau' && metier !== 'avocat-associe' && metier) {
   }
 }
 
+// ===== FONCTIONS D'UPDATE AFFICHAGE =====
+function updateJuridiqueBonusDisplay() {
+  const bonus = document.getElementById('juridique-bonus').value;
+  document.getElementById('juridique-bonus-val').textContent = bonus;
+}
+
 async function calculateJuridique() {
   const metier = get("juridique-metier");
   const statut = get("juridique-statut");
@@ -6611,39 +6650,75 @@ else if (metier === 'avocat-associe' || metier === 'notaire-associe') {
 }
   
   // C) JURISTE ENTREPRISE
-  else if (domaine === 'entreprise') {
-    const seniorite = get("juridique-seniorite");
-    const secteurAct = get("juridique-secteur-activite");
-    const taille = get("juridique-taille");
-    const bonusPct = parseInt(get("juridique-bonus")) / 100;
-    const stock = parseInt(get("juridique-stock")) || 0;
-    
-    const bases = { junior: 40000, confirme: 55000, senior: 70000, responsable: 90000, directeur: 140000 };
-    let base = bases[seniorite] || 45000;
-    
-    const coefSecteur = { tech: 1.15, banque: 1.12, pharma: 1.10, luxe: 1.08, industrie: 1.0 };
-    base *= coefSecteur[secteurAct] || 1.0;
-    
-    const coefTaille = { startup: 0.9, pme: 1.0, eti: 1.1, cac40: 1.25 };
-    base *= coefTaille[taille] || 1.0;
-    
-    const coefExp = 1 + (experience * 0.025);
-    base *= coefExp;
-    
-    const bonus = base * bonusPct;
-    resultat.brut = base + bonus + stock;
-    const tauxNet = getTauxNet(statut);
-    resultat.net = resultat.brut * tauxNet;
-    
-    resultat.details = [
-      `Salaire de base : ${formatEur(base)}`,
-      bonus > 0 ? `Bonus ${Math.round(bonusPct*100)}% : ${formatEur(bonus)}` : null,
-      stock > 0 ? `Stock-options : ${formatEur(stock)}` : null,
-      `Brut total : ${formatEur(resultat.brut)}`,
-     `Charges salariales (${Math.round((1-tauxNet)*100)}%) : -${formatEur(resultat.brut*(1-tauxNet))}`,
-      `Net : ${formatEur(resultat.net)}`
-    ].filter(Boolean);
+else if (domaine === 'entreprise') {
+  const seniorite = get("juridique-seniorite");
+  const secteurAct = get("juridique-secteur-activite");
+  const taille = get("juridique-taille");
+  const bonusPct = parseInt(get("juridique-bonus")) / 100;
+  const stock = parseInt(get("juridique-stock")) || 0;
+  
+  // ✅ UTILISER LA GRILLE SALARIALE DU MÉTIER
+  const salaireBase = salairesJuridiques[metier];
+  
+  if (!salaireBase) {
+    alert('Erreur: salaire non trouvé pour ' + metier);
+    return;
   }
+  
+  let base = salaireBase.p50; // ← Utilise la médiane du métier
+  
+  // Ajustements selon séniorité
+  const coefSeniorite = {
+    junior: 0.80,
+    confirme: 1.0,
+    senior: 1.25,
+    responsable: 1.6,
+    directeur: 2.5
+  };
+  base *= coefSeniorite[seniorite] || 1.0;
+  
+  // Ajustements secteur
+  const coefSecteur = {
+    tech: 1.10,
+    banque: 1.08,
+    pharma: 1.08,
+    luxe: 1.08,
+    industrie: 1.04
+  };
+  base *= coefSecteur[secteurAct] || 1.0;
+  
+  // Ajustements taille entreprise
+  const coefTaille = {
+    startup: 0.9,
+    pme: 1.0,
+    eti: 1.1,
+    cac40: 1.25
+  };
+  base *= coefTaille[taille] || 1.0;
+  
+  // Coefficient expérience
+  const coefExp = 1 + (experience * 0.025);
+  base *= coefExp;
+  
+  const bonus = base * bonusPct;
+  resultat.brut = base + bonus + stock;
+  const tauxNet = getTauxNet(statut);
+  resultat.net = resultat.brut * tauxNet;
+  
+  resultat.details = [
+    `Métier ${metier} : salaire médian ${formatEur(salaireBase.p50)}`,
+    `Séniorité ${seniorite} : ×${(coefSeniorite[seniorite] || 1.0).toFixed(2)}`,
+    `Secteur ${secteurAct} : ×${(coefSecteur[secteurAct] || 1.0).toFixed(2)}`,
+    `Taille ${taille} : ×${(coefTaille[taille] || 1.0).toFixed(2)}`,
+    `Expérience ${experience} ans : ×${coefExp.toFixed(2)}`,
+    `Salaire de base : ${formatEur(base)}`,
+    bonus > 0 ? `Bonus ${Math.round(bonusPct*100)}% : ${formatEur(bonus)}` : null,
+    stock > 0 ? `Stock-options : ${formatEur(stock)}` : null,
+    `Brut total : ${formatEur(resultat.brut)}`,
+    `Charges salariales (${Math.round((1-tauxNet)*100)}%) : -${formatEur(resultat.brut*(1-tauxNet))}`,
+    `Net : ${formatEur(resultat.net)}`
+  ].filter(Boolean);
+}
   
   // D) ENSEIGNEMENT
   else if (domaine === 'enseignement') {
