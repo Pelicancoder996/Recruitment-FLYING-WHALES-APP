@@ -152,6 +152,25 @@
   color: #c084fc;
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+div:has(> #tab-simulator) {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+div:has(> #tab-simulator)::-webkit-scrollbar {
+  display: none !important;
+}
 
 /* ====================================
    💰 TOGGLE BRUT/NET
