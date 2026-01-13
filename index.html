@@ -2811,42 +2811,93 @@ button#tab-expat.tab-inactive:hover {
     <!-- ========================================== -->
     <!-- BLOC AVOCAT -->
     <!-- ========================================== -->
-    <div id="juridique-bloc-avocat" class="card hidden animate-slide-up">
-      <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-        👔 Configuration Avocat
-      </h3>
-      
-      <div class="mb-4">
-        <label class="label">
-          <span>🏢</span>
-          <span>Type de structure</span>
-        </label>
-        <select id="juridique-avocat-structure" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-          <option value="big_law">Big Law / Cabinet international</option>
-          <option value="mid_size">Cabinet mid-size</option>
-          <option value="boutique">Cabinet boutique / spécialisé</option>
-          <option value="solo">Solo / Indépendant</option>
-        </select>
-      </div>
+    <!-- ========================================== -->
+<!-- BLOC AVOCAT -->
+<!-- ========================================== -->
+<div id="juridique-bloc-avocat" class="card hidden animate-slide-up">
+  <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+    👔 Configuration Avocat
+  </h3>
+  
+  <!-- STRUCTURE : Visible pour LIBÉRAL et SALARIÉ -->
+  <div id="juridique-avocat-structure-container" class="mb-4">
+    <label class="label">
+      <span>🏢</span>
+      <span>Type de structure</span>
+    </label>
+    <select id="juridique-avocat-structure" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+      <option value="big_law">Big Law / Cabinet international</option>
+      <option value="mid_size">Cabinet mid-size</option>
+      <option value="boutique">Cabinet boutique / spécialisé</option>
+      <option value="solo">Solo / Indépendant</option>
+    </select>
+  </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        <div>
-          <label class="label">
-            <span>💰</span>
-            <span>Tarif horaire (€/h)</span>
-          </label>
-          <input type="number" id="juridique-avocat-tarif" min="50" max="800" value="200" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-        </div>
+  <!-- TARIF & HEURES : Visible pour LIBÉRAL et MICRO uniquement -->
+  <div id="juridique-avocat-tarif-heures" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="label">
+        <span>💰</span>
+        <span>Tarif horaire (€/h)</span>
+      </label>
+      <input type="number" id="juridique-avocat-tarif" min="50" max="800" value="200" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+    </div>
 
-        <div>
-          <label class="label">
-            <span>⏰</span>
-            <span>Heures facturables/an</span>
-          </label>
-          <input type="number" id="juridique-avocat-heures" min="500" max="2000" value="1200" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-        </div>
-      </div>
+    <div>
+      <label class="label">
+        <span>⏰</span>
+        <span>Heures facturables/an</span>
+      </label>
+      <input type="number" id="juridique-avocat-heures" min="500" max="2000" value="1200" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+    </div>
+  </div>
 
+  <!-- CHAMPS LIBÉRAL UNIQUEMENT -->
+  <div id="juridique-avocat-champs-liberal" class="hidden">
+    <div class="mb-4">
+      <label class="label">
+        <span>📊</span>
+        <span>Taux de réalisation : <strong id="juridique-realisation-val" class="text-blue-600 dark:text-blue-400">70</strong>%</span>
+      </label>
+      <input type="range" id="juridique-avocat-realisation" min="40" max="95" value="70" class="w-full">
+    </div>
+
+    <div class="mb-4">
+      <label class="label">
+        <span>💸</span>
+        <span>Rétrocession : <strong id="juridique-retro-val" class="text-blue-600 dark:text-blue-400">75</strong>%</span>
+      </label>
+      <input type="range" id="juridique-avocat-retro" min="50" max="90" value="75" class="w-full">
+    </div>
+
+    <div class="info-box bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 rounded-xl border-l-4 border-purple-500">
+      <p class="text-sm text-gray-700 dark:text-gray-300">
+        💡 <strong>Collaborateur libéral :</strong> Revenu = (Tarif × Heures × Réalisation) × Rétrocession
+      </p>
+    </div>
+  </div>
+
+  <!-- INFO SALARIÉ -->
+  <div id="juridique-avocat-info-salarie" class="info-box bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-xl border-l-4 border-blue-500 hidden">
+    <p class="text-sm text-gray-700 dark:text-gray-300">
+      💡 <strong>Mode salarié :</strong> Le salaire est calculé à partir de la grille salariale selon votre spécialité et votre type de cabinet.
+    </p>
+  </div>
+
+  <!-- INFO MICRO -->
+  <div id="juridique-avocat-info-micro" class="info-box bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-4 rounded-xl border-l-4 border-green-500 hidden">
+    <p class="text-sm text-gray-700 dark:text-gray-300">
+      💡 <strong>Micro-entreprise :</strong> Revenu = CA (Tarif × Heures) - Cotisations (21.1%)
+    </p>
+  </div>
+
+  <!-- INFO PUBLIC -->
+  <div id="juridique-avocat-info-public" class="info-box bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 p-4 rounded-xl border-l-4 border-yellow-500 hidden">
+    <p class="text-sm text-gray-700 dark:text-gray-300">
+      💡 <strong>Fonction publique :</strong> Salaire basé sur la grille fonction publique (-15% vs privé).
+    </p>
+  </div>
+</div>
       <!-- CHAMPS LIBÉRAL UNIQUEMENT -->
       <div id="juridique-avocat-champs-liberal" class="hidden">
         <div class="mb-4">
@@ -6327,20 +6378,43 @@ function toggleBlocsJuridiques() {
   // ============================================
   
   // Bloc avocat (sauf associé)
-  if (domaine === 'barreau' && metier !== 'avocat-associe' && metier) {
-    document.getElementById('juridique-bloc-avocat').classList.remove('hidden');
-    
-    const champsLiberal = document.getElementById('juridique-avocat-champs-liberal');
-    const infoSalarie = document.getElementById('juridique-avocat-info-salarie');
-    
-    if (statut === 'liberal') {
-      champsLiberal.classList.remove('hidden');
-      infoSalarie.classList.add('hidden');
-    } else {
-      champsLiberal.classList.add('hidden');
-      infoSalarie.classList.remove('hidden');
-    }
+if (domaine === 'barreau' && metier !== 'avocat-associe' && metier) {
+  document.getElementById('juridique-bloc-avocat').classList.remove('hidden');
+  
+  // Récupérer les éléments
+  const structureContainer = document.getElementById('juridique-avocat-structure-container');
+  const tarifHeures = document.getElementById('juridique-avocat-tarif-heures');
+  const champsLiberal = document.getElementById('juridique-avocat-champs-liberal');
+  const infoSalarie = document.getElementById('juridique-avocat-info-salarie');
+  const infoMicro = document.getElementById('juridique-avocat-info-micro');
+  const infoPublic = document.getElementById('juridique-avocat-info-public');
+  
+  // Masquer tout par défaut
+  structureContainer.classList.add('hidden');
+  tarifHeures.classList.add('hidden');
+  champsLiberal.classList.add('hidden');
+  infoSalarie.classList.add('hidden');
+  infoMicro.classList.add('hidden');
+  infoPublic.classList.add('hidden');
+  
+  // Afficher selon le statut
+  if (statut === 'liberal') {
+    structureContainer.classList.remove('hidden');
+    tarifHeures.classList.remove('hidden');
+    champsLiberal.classList.remove('hidden');
+  } 
+  else if (statut === 'salarie') {
+    structureContainer.classList.remove('hidden');
+    infoSalarie.classList.remove('hidden');
+  } 
+  else if (statut === 'micro') {
+    tarifHeures.classList.remove('hidden');
+    infoMicro.classList.remove('hidden');
+  } 
+  else if (statut === 'public') {
+    infoPublic.classList.remove('hidden');
   }
+}
   
   // Bloc associé
   if (metier === 'avocat-associe' || metier === 'notaire-associe') {
