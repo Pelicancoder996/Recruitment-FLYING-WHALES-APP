@@ -794,38 +794,48 @@ button#tab-expat.tab-inactive:hover {
     <button 
   id="tab-simulator" 
   onclick="switchTab('simulator')" 
-  class="tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
-  <span class="hidden sm:inline">📊 </span>Simulateur
+  class="tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  <span class="hidden sm:inline">📊 </span>
+  <span class="sm:hidden">Simul</span>
+  <span class="hidden sm:inline">Simulateur</span>
 </button>
 
 <button 
   id="tab-comparator" 
   onclick="switchTab('comparator')" 
-  class="tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
-  <span class="hidden sm:inline">👥 </span>Comparateur
+  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  <span class="hidden sm:inline">👥 </span>
+  <span class="sm:hidden">Compa</span>
+  <span class="hidden sm:inline">Comparateur</span>
 </button>
 
 <button 
   id="tab-brutnet" 
   onclick="switchTab('brutnet')" 
-  class="tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
-  <span class="hidden sm:inline">💰 </span>Brut/Net
+  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  <span class="hidden sm:inline">💰 </span>
+  <span class="sm:hidden">Brut/Net</span>
+  <span class="hidden sm:inline">Brut/Net</span>
 </button>
 
 <button 
   id="tab-expat" 
   onclick="switchTab('expat')" 
-  class="tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
-  <span class="hidden sm:inline">🌍 </span><span id="expat-text">Expatriation</span>
+  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  <span class="hidden sm:inline">🌍 </span>
+  <span id="expat-text">
+    <span class="sm:hidden">Expat</span>
+    <span class="hidden sm:inline">Expatriation</span>
+  </span>
 </button>
 
 <button 
   id="tab-juridique" 
   onclick="switchTab('juridique')" 
-  class="tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base">
+  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
   <span class="hidden sm:inline">⚖️ </span>
   <span id="juridique-text">
-    <span class="sm:hidden">Juridique</span>
+    <span class="sm:hidden">Juri</span>
     <span class="hidden sm:inline">Juridique & Fiscal</span>
   </span>
 </button>
@@ -5224,25 +5234,25 @@ function switchTab(tab) {
   currentTab = tab;
   
   // Gestion des 4 boutons
-  document.getElementById('tab-simulator').className = tab === 'simulator' ? 
-    'tab-active flex-1 sm:flex-none px-3 sm:px-5 py-1 sm:py-2 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
-    'tab-inactive flex-1 sm:flex-none px-3 sm:px-5 py-1 sm:py-2 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
+ document.getElementById('tab-simulator').className = tab === 'simulator' ? 
+  'tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base' : 
+  'tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base';
+
+document.getElementById('tab-comparator').className = tab === 'comparator' ? 
+  'tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base' : 
+  'tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base';
+
+document.getElementById('tab-brutnet').className = tab === 'brutnet' ? 
+  'tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base' : 
+  'tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base';
   
-  document.getElementById('tab-comparator').className = tab === 'comparator' ? 
-    'tab-active flex-1 sm:flex-none px-3 sm:px-5 py-1 sm:py-2 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
-    'tab-inactive flex-1 sm:flex-none px-3 sm:px-5 py-1 sm:py-2 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
-  
-  document.getElementById('tab-brutnet').className = tab === 'brutnet' ? 
-    'tab-active flex-1 sm:flex-none px-3 sm:px-5 py-1 sm:py-2 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
-    'tab-inactive flex-1 sm:flex-none px-3 sm:px-5 py-1 sm:py-2 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
-  
-  document.getElementById('tab-expat').className = tab === 'expat' ? 
-  'tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
-  'tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
+document.getElementById('tab-expat').className = tab === 'expat' ? 
+  'tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base' : 
+  'tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base';
 
 document.getElementById('tab-juridique').className = tab === 'juridique' ? 
-  'tab-active flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base' : 
-  'tab-inactive flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base';
+  'tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base' : 
+  'tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base';
   
   // Gestion de l'affichage des 4 contenus
   document.getElementById('content-simulator').classList.toggle('hidden', tab !== 'simulator');
