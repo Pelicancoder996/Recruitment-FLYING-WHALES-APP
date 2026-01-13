@@ -6257,11 +6257,67 @@ function toggleBlocsJuridiques() {
   const statut = get('juridique-statut');
   const domaine = get('juridique-domaine');
   
+  // Masquer tous les blocs par défaut
   document.getElementById('juridique-bloc-avocat').classList.add('hidden');
   document.getElementById('juridique-bloc-associe').classList.add('hidden');
   document.getElementById('juridique-bloc-juriste').classList.add('hidden');
   document.getElementById('juridique-bloc-enseignement').classList.add('hidden');
   
+  // ============================================
+  // GESTION DU SELECT STATUT SELON LE DOMAINE
+  // ============================================
+  
+  const selectStatut = document.getElementById('juridique-statut');
+  const containerStatut = selectStatut.closest('.mb-4');
+  
+  // FONCTION PUBLIQUE : Forcer statut "public" et masquer le select
+  if (domaine === 'public') {
+    selectStatut.value = 'public';
+    containerStatut.style.display = 'none';
+  }
+  
+  // ENSEIGNEMENT : Forcer statut "public" et masquer le select
+  else if (domaine === 'enseignement') {
+    selectStatut.value = 'public';
+    containerStatut.style.display = 'none';
+  }
+  
+  // NOTARIAT : Adapter selon le métier
+  else if (domaine === 'notariat') {
+    if (metier === 'notaire-associe') {
+      selectStatut.value = 'liberal';
+      containerStatut.style.display = 'none';
+    } else if (metier === 'notaire-salarie') {
+      selectStatut.value = 'salarie';
+      containerStatut.style.display = 'none';
+    } else {
+      // Clerc ou notaire assistant : CDI uniquement
+      selectStatut.value = 'salarie';
+      containerStatut.style.display = 'none';
+    }
+  }
+  
+  // BARREAU : Tous les statuts possibles (afficher le select)
+  else if (domaine === 'barreau') {
+    containerStatut.style.display = 'block';
+  }
+  
+  // ENTREPRISE : Salarié uniquement (masquer le select)
+  else if (domaine === 'entreprise') {
+    selectStatut.value = 'salarie';
+    containerStatut.style.display = 'none';
+  }
+  
+  // Autres cas : Afficher le select
+  else {
+    containerStatut.style.display = 'block';
+  }
+  
+  // ============================================
+  // AFFICHAGE DES BLOCS SELON LE MÉTIER
+  // ============================================
+  
+  // Bloc avocat (sauf associé)
   if (domaine === 'barreau' && metier !== 'avocat-associe' && metier) {
     document.getElementById('juridique-bloc-avocat').classList.remove('hidden');
     
@@ -6277,14 +6333,17 @@ function toggleBlocsJuridiques() {
     }
   }
   
+  // Bloc associé
   if (metier === 'avocat-associe' || metier === 'notaire-associe') {
     document.getElementById('juridique-bloc-associe').classList.remove('hidden');
   }
   
+  // Bloc juriste entreprise
   if (domaine === 'entreprise' && metier) {
     document.getElementById('juridique-bloc-juriste').classList.remove('hidden');
   }
   
+  // Bloc enseignement
   if (domaine === 'enseignement' && metier) {
     document.getElementById('juridique-bloc-enseignement').classList.remove('hidden');
   }
@@ -6317,67 +6376,157 @@ async function calculateJuridique() {
   
 // A) AVOCAT
 if (domaine === 'barreau' && metier !== 'avocat-associe') {
-  const tarif = parseFloat(get("juridique-avocat-tarif")) || 200;  // ← parseFloat au lieu de parseInt
+  const tarif = parseFloat(get("juridique-avocat-tarif")) || 200;
   const heures = parseInt(get("juridique-avocat-heures")) || 1200;
   
+  // ============================================
+  // LIBÉRAL
+  // ============================================
   if (statut === 'liberal') {
-    const realisation = parseFloat(get("juridique-avocat-realisation")) / 100;  // ← parseFloat
-    const retrocession = parseFloat(get("juridique-avocat-retro")) / 100;  // ← parseFloat
+    const realisation = parseFloat(get("juridique-avocat-realisation")) / 100;
+    const retrocession = parseFloat(get("juridique-avocat-retro")) / 100;
     
     const ca = tarif * heures;
     const caReel = ca * realisation;
     const revenu = caReel * retrocession;
     
-    const tauxNet = getTauxNet(statut);  // ← JUSTE CETTE LIGNE !
-    resultat.brut = revenu;
-    resultat.net = revenu * tauxNet;
+    const coefExp = 1 + (experience * 0.025);
+    const revenuAvecExp = revenu * coefExp;
+    
+    const tauxNet = getTauxNet(statut);
+    resultat.brut = revenuAvecExp;
+    resultat.net = revenuAvecExp * tauxNet;
     
     resultat.details = [
       `CA théorique : ${tarif}€/h × ${heures}h = ${formatEur(ca)}`,
       `Réalisation ${Math.round(realisation*100)}% : ${formatEur(caReel)}`,
       `Rétrocession ${Math.round(retrocession*100)}% : ${formatEur(revenu)}`,
-      `Charges libérales (47%) : -${formatEur(revenu * 0.47)}`,
+      `Coefficient expérience (${experience} ans) : ×${coefExp.toFixed(2)}`,
+      `Revenu brut : ${formatEur(revenuAvecExp)}`,
+      `Charges libérales (47%) : -${formatEur(revenuAvecExp * 0.47)}`,
       `Net après charges : ${formatEur(resultat.net)}`
     ];
+  }
+  
+  // ============================================
+  // SALARIÉ (CDI/CDD)
+  // ============================================
+  else if (statut === 'salarie') {  // ← CORRECTION ICI
+    const salaireBase = salairesJuridiques[metier];
     
-  } else {
-    const ca = tarif * heures;
-    const coefSalarie = 0.30;
-    const salaireBrut = ca * coefSalarie;
+    if (!salaireBase) {
+      alert('Erreur: salaire non trouvé pour ' + metier);
+      return;
+    }
     
-    const tauxNet = getTauxNet('salarie');  // ← JUSTE CETTE LIGNE !
+    let salaireBrut = salaireBase.p50;
+    
+    const structure = get("juridique-avocat-structure");
+    const coefStructure = {
+      'big_law': 1.4,
+      'mid_size': 1.15,
+      'boutique': 1.0,
+      'solo': 0.85
+    };
+    salaireBrut *= coefStructure[structure] || 1.0;
+    
+    const coefExp = 1 + (experience * 0.025);
+    salaireBrut *= coefExp;
+    
+    const tauxNet = getTauxNet('salarie');
     resultat.brut = salaireBrut;
     resultat.net = salaireBrut * tauxNet;
     
     resultat.details = [
-      `CA généré : ${formatEur(ca)}`,
-      `Coefficient salarié cabinet : 30%`,
-      `Salaire brut : ${formatEur(salaireBrut)}`,
+      `Salaire de base ${metier} : ${formatEur(salaireBase.p50)}`,
+      `Type cabinet (${structure}) : ×${(coefStructure[structure] || 1.0).toFixed(2)}`,
+      `Coefficient expérience (${experience} ans) : ×${coefExp.toFixed(2)}`,
+      `Salaire brut annuel : ${formatEur(salaireBrut)}`,
       `Charges salariales (22%) : -${formatEur(salaireBrut * 0.22)}`,
-      `Net après charges : ${formatEur(resultat.net)}`
+      `Net annuel : ${formatEur(resultat.net)}`
     ];
   }
-}
   
-  // B) ASSOCIÉ
-  else if (metier === 'avocat-associe' || metier === 'notaire-associe') {
-    const ca = parseInt(get("juridique-associe-ca")) || 1500000;
-    const part = parseInt(get("juridique-associe-part")) / 100;
-    const frais = parseInt(get("juridique-associe-frais")) || 80000;
+  // ============================================
+  // MICRO-ENTREPRISE
+  // ============================================
+  else if (statut === 'micro') {
+    const ca = tarif * heures;
+    const coefExp = 1 + (experience * 0.025);
+    const caAvecExp = ca * coefExp;
     
-    resultat.brut = (ca * part) - frais;
-    const tauxNet = getTauxNet(statut);
-    resultat.net = resultat.brut * tauxNet;
+    const tauxCotisations = 0.211;
+    const cotisations = caAvecExp * tauxCotisations;
+    
+    resultat.brut = caAvecExp;
+    resultat.net = caAvecExp - cotisations;
     
     resultat.details = [
-      `CA cabinet : ${formatEur(ca)}`,
-      `Part associée ${Math.round(part*100)}% : ${formatEur(ca*part)}`,
-      `Frais structure : -${formatEur(frais)}`,
-      `Revenu brut : ${formatEur(resultat.brut)}`,
-      `Charges libérales (47%) : -${formatEur(resultat.brut*0.47)}`,
-      `Net après charges : ${formatEur(resultat.net)}`
+      `CA annuel : ${tarif}€/h × ${heures}h = ${formatEur(ca)}`,
+      `Coefficient expérience (${experience} ans) : ×${coefExp.toFixed(2)}`,
+      `CA avec expérience : ${formatEur(caAvecExp)}`,
+      `Cotisations micro-entrepreneur (21.1%) : -${formatEur(cotisations)}`,
+      `Revenu net : ${formatEur(resultat.net)}`
     ];
   }
+  
+  // ============================================
+  // FONCTION PUBLIQUE
+  // ============================================
+  else if (statut === 'public') {
+    const salaireBase = salairesJuridiques[metier];
+    
+    if (!salaireBase) {
+      alert('Erreur: salaire non trouvé pour ' + metier);
+      return;
+    }
+    
+    let salaireBrut = salaireBase.p50 * 0.85;
+    
+    const coefExp = 1 + (experience * 0.025);
+    salaireBrut *= coefExp;
+    
+    const tauxNet = 0.84;
+    resultat.brut = salaireBrut;
+    resultat.net = salaireBrut * tauxNet;
+    
+    resultat.details = [
+      `Salaire de base fonction publique : ${formatEur(salaireBase.p50 * 0.85)}`,
+      `Coefficient expérience (${experience} ans) : ×${coefExp.toFixed(2)}`,
+      `Salaire brut annuel : ${formatEur(salaireBrut)}`,
+      `Charges fonction publique (16%) : -${formatEur(salaireBrut * 0.16)}`,
+      `Net annuel : ${formatEur(resultat.net)}`
+    ];
+  }
+  
+  // ============================================
+  // STATUT NON GÉRÉ
+  // ============================================
+  else {
+    alert(`Statut "${statut}" non géré pour les avocats`);
+    return;
+  }
+}  // ← FERMETURE DU BLOC AVOCAT ICI
+
+// B) ASSOCIÉ
+else if (metier === 'avocat-associe' || metier === 'notaire-associe') {
+  const ca = parseInt(get("juridique-associe-ca")) || 1500000;
+  const part = parseInt(get("juridique-associe-part")) / 100;
+  const frais = parseInt(get("juridique-associe-frais")) || 80000;
+  
+  resultat.brut = (ca * part) - frais;
+  const tauxNet = getTauxNet(statut);
+  resultat.net = resultat.brut * tauxNet;
+  
+  resultat.details = [
+    `CA cabinet : ${formatEur(ca)}`,
+    `Part associée ${Math.round(part*100)}% : ${formatEur(ca*part)}`,
+    `Frais structure : -${formatEur(frais)}`,
+    `Revenu brut : ${formatEur(resultat.brut)}`,
+    `Charges libérales (47%) : -${formatEur(resultat.brut*0.47)}`,
+    `Net après charges : ${formatEur(resultat.net)}`
+  ];
+}
   
   // C) JURISTE ENTREPRISE
   else if (domaine === 'entreprise') {
@@ -6409,7 +6558,7 @@ if (domaine === 'barreau' && metier !== 'avocat-associe') {
       bonus > 0 ? `Bonus ${Math.round(bonusPct*100)}% : ${formatEur(bonus)}` : null,
       stock > 0 ? `Stock-options : ${formatEur(stock)}` : null,
       `Brut total : ${formatEur(resultat.brut)}`,
-      `Charges ${statut} (~${Math.round((1-getTauxCharges(statut))*100)}%) : -${formatEur(resultat.brut*(1-getTauxCharges(statut)))}`,
+     `Charges salariales (${Math.round((1-tauxNet)*100)}%) : -${formatEur(resultat.brut*(1-tauxNet))}`,
       `Net : ${formatEur(resultat.net)}`
     ].filter(Boolean);
   }
