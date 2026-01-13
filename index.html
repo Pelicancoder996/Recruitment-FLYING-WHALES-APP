@@ -152,6 +152,15 @@
   color: #c084fc;
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* ====================================
    💰 TOGGLE BRUT/NET
@@ -790,11 +799,11 @@ button#tab-expat.tab-inactive:hover {
   </header>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
-  <div class="flex gap-2 sm:gap-4 mb-6 flex-wrap">
-    <button 
+  <div class="flex gap-2 sm:gap-4 mb-6 overflow-x-auto scrollbar-hide">
+   <button 
   id="tab-simulator" 
   onclick="switchTab('simulator')" 
-  class="tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  class="tab-active flex-shrink-0 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
   <span class="hidden sm:inline">📊 </span>
   <span class="sm:hidden">Simul</span>
   <span class="hidden sm:inline">Simulateur</span>
@@ -803,7 +812,7 @@ button#tab-expat.tab-inactive:hover {
 <button 
   id="tab-comparator" 
   onclick="switchTab('comparator')" 
-  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  class="tab-inactive flex-shrink-0 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
   <span class="hidden sm:inline">👥 </span>
   <span class="sm:hidden">Compa</span>
   <span class="hidden sm:inline">Comparateur</span>
@@ -812,7 +821,7 @@ button#tab-expat.tab-inactive:hover {
 <button 
   id="tab-brutnet" 
   onclick="switchTab('brutnet')" 
-  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  class="tab-inactive flex-shrink-0 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
   <span class="hidden sm:inline">💰 </span>
   <span class="sm:hidden">Brut/Net</span>
   <span class="hidden sm:inline">Brut/Net</span>
@@ -821,7 +830,7 @@ button#tab-expat.tab-inactive:hover {
 <button 
   id="tab-expat" 
   onclick="switchTab('expat')" 
-  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  class="tab-inactive flex-shrink-0 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
   <span class="hidden sm:inline">🌍 </span>
   <span id="expat-text">
     <span class="sm:hidden">Expat</span>
@@ -832,7 +841,7 @@ button#tab-expat.tab-inactive:hover {
 <button 
   id="tab-juridique" 
   onclick="switchTab('juridique')" 
-  class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+  class="tab-inactive flex-shrink-0 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
   <span class="hidden sm:inline">⚖️ </span>
   <span id="juridique-text">
     <span class="sm:hidden">Juri</span>
