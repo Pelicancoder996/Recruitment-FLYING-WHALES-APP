@@ -1576,12 +1576,145 @@ button#tab-expat.tab-inactive:hover {
         </div>
       </div>
       
+      <!-- ========== BENCHMARK DÉTAILLÉ ========== -->
+<div id="benchmark-section" class="mb-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl shadow-lg p-6">
+  <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+    📊 Votre Positionnement Marché
+  </h3>
+  
+  <!-- Benchmark par Secteur -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-5 mb-4 border-2 border-indigo-200 dark:border-indigo-800">
+    <div class="flex items-center justify-between mb-3">
+      <h4 class="text-lg font-bold text-gray-900 dark:text-white">
+        🏭 Dans votre secteur : <span id="benchmark-sector-name" class="text-indigo-600">—</span>
+      </h4>
+      <span id="benchmark-sector-badge" class="px-3 py-1 rounded-full text-xs font-bold">—</span>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div class="text-center">
+        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Votre salaire</p>
+        <p class="text-2xl font-bold text-indigo-600" id="benchmark-sector-you">—</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Médiane secteur</p>
+        <p class="text-2xl font-bold text-gray-700 dark:text-gray-300" id="benchmark-sector-median">—</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Écart</p>
+        <p class="text-2xl font-bold" id="benchmark-sector-diff">—</p>
+      </div>
+    </div>
+    
+    <!-- Barre de progression -->
+    <div class="mb-3">
+      <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
+        <span>P10</span>
+        <span>P25</span>
+        <span>Médiane</span>
+        <span>P75</span>
+        <span>P90</span>
+      </div>
+      <div class="relative h-8 bg-gradient-to-r from-red-200 via-yellow-200 via-green-200 to-blue-200 rounded-full overflow-hidden">
+        <div id="benchmark-sector-marker" class="absolute top-0 bottom-0 w-1 bg-indigo-600 transition-all duration-700" style="left: 50%">
+          <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded whitespace-nowrap">
+            Vous
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-between text-xs font-semibold text-gray-700 dark:text-gray-300 mt-1">
+        <span id="benchmark-sector-p10">—</span>
+        <span id="benchmark-sector-p25">—</span>
+        <span id="benchmark-sector-p50">—</span>
+        <span id="benchmark-sector-p75">—</span>
+        <span id="benchmark-sector-p90">—</span>
+      </div>
+    </div>
+    
+    <!-- Position percentile -->
+    <div class="bg-indigo-50 dark:bg-indigo-900/30 rounded-lg p-3 text-center">
+      <p class="text-sm text-gray-700 dark:text-gray-300">
+        <strong>Position :</strong> <span id="benchmark-sector-percentile" class="text-indigo-600 font-bold text-lg">—</span> percentile
+        <span id="benchmark-sector-percentile-text" class="block text-xs mt-1 text-gray-600 dark:text-gray-400">—</span>
+      </p>
+    </div>
+  </div>
+  
+  <!-- Benchmark par Métier (si sélectionné) -->
+  <div id="benchmark-job-section" class="bg-white dark:bg-gray-800 rounded-xl p-5 mb-4 border-2 border-purple-200 dark:border-purple-800 hidden">
+    <div class="flex items-center justify-between mb-3">
+      <h4 class="text-lg font-bold text-gray-900 dark:text-white">
+        💼 Pour votre métier : <span id="benchmark-job-name" class="text-purple-600">—</span>
+      </h4>
+      <span id="benchmark-job-badge" class="px-3 py-1 rounded-full text-xs font-bold">—</span>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div class="text-center">
+        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Votre salaire</p>
+        <p class="text-2xl font-bold text-purple-600" id="benchmark-job-you">—</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Médiane métier</p>
+        <p class="text-2xl font-bold text-gray-700 dark:text-gray-300" id="benchmark-job-median">—</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Écart</p>
+        <p class="text-2xl font-bold" id="benchmark-job-diff">—</p>
+      </div>
+    </div>
+    
+    <!-- Barre de progression -->
+    <div class="mb-3">
+      <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
+        <span>P10</span>
+        <span>P25</span>
+        <span>Médiane</span>
+        <span>P75</span>
+        <span>P90</span>
+      </div>
+      <div class="relative h-8 bg-gradient-to-r from-red-200 via-yellow-200 via-green-200 to-blue-200 rounded-full overflow-hidden">
+        <div id="benchmark-job-marker" class="absolute top-0 bottom-0 w-1 bg-purple-600 transition-all duration-700" style="left: 50%">
+          <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded whitespace-nowrap">
+            Vous
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-between text-xs font-semibold text-gray-700 dark:text-gray-300 mt-1">
+        <span id="benchmark-job-p10">—</span>
+        <span id="benchmark-job-p25">—</span>
+        <span id="benchmark-job-p50">—</span>
+        <span id="benchmark-job-p75">—</span>
+        <span id="benchmark-job-p90">—</span>
+      </div>
+    </div>
+    
+    <!-- Position percentile -->
+    <div class="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-3 text-center">
+      <p class="text-sm text-gray-700 dark:text-gray-300">
+        <strong>Position :</strong> <span id="benchmark-job-percentile" class="text-purple-600 font-bold text-lg">—</span> percentile
+        <span id="benchmark-job-percentile-text" class="block text-xs mt-1 text-gray-600 dark:text-gray-400">—</span>
+      </p>
+    </div>
+  </div>
+  
+  <!-- Synthèse globale -->
+  <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-5 text-white">
+    <h4 class="text-lg font-bold mb-3 flex items-center gap-2">
+      💡 Synthèse de votre positionnement
+    </h4>
+    <p id="benchmark-synthesis" class="text-sm leading-relaxed">
+      Analyse en cours...
+    </p>
+  </div>
+</div>
+      
       <!-- Synthèse d'analyse détaillée -->
       <div id="detailedAnalysis" class="mb-6 space-y-4">
         
         <!-- Positionnement marché -->
         <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border-l-4 border-blue-500">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">📊 Positionnement sur le marché</h3>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">📊 Marché</h3>
           <p id="analysis-market" class="text-sm text-gray-700 dark:text-gray-300">—</p>
         </div>
 
@@ -6205,6 +6338,297 @@ const factorsHTML = rarity.factors.map(f => {
   document.getElementById('rarity-message').textContent = rarity.message;
 }
 
+// ===== CALCUL BENCHMARK DÉTAILLÉ AJUSTÉ =====
+function calculateBenchmark(profile, userSalary) {
+  const schools = allSchools[profile.sector] || [];
+  
+  // ===== CRÉER UNE COHORTE VIRTUELLE AJUSTÉE =====
+  // On va calculer ce que donnerait CHAQUE école avec le profil utilisateur
+  
+  const cohortSalaries = schools.map(school => {
+    // Créer un profil fictif avec cette école mais TOUT LE RESTE identique à l'utilisateur
+    const virtualProfile = {
+      ...profile,
+      school: schools.indexOf(school) // Index de l'école dans le secteur
+    };
+    
+    // Calculer le salaire que cette école générerait avec LE MÊME profil utilisateur
+    const result = calculateSalaryForProfile(virtualProfile);
+    
+    return result ? result.median : school.p50;
+  }).filter(s => s > 0).sort((a, b) => a - b);
+  
+  // ===== BENCHMARK PAR SECTEUR (AJUSTÉ) =====
+  const sectorName = {
+    'ingenieur': 'Ingénierie',
+    'commerce': 'Commerce',
+    'scpo': 'Sciences Po',
+    'universite': 'Université',
+    'it': 'IT / Tech',
+    'design': 'Design',
+    'fonction': 'Fonctions transverses'
+  }[profile.sector] || profile.sector;
+  
+  // Calculer les percentiles de la cohorte ajustée
+  const sectorP10 = calculatePercentile(cohortSalaries, 10);
+  const sectorP25 = calculatePercentile(cohortSalaries, 25);
+  const sectorP50 = calculatePercentile(cohortSalaries, 50);
+  const sectorP75 = calculatePercentile(cohortSalaries, 75);
+  const sectorP90 = calculatePercentile(cohortSalaries, 90);
+  
+  const sectorPercentile = calculateUserPercentile(cohortSalaries, userSalary);
+  const sectorDiff = userSalary - sectorP50;
+  const sectorDiffPercent = ((sectorDiff / sectorP50) * 100).toFixed(1);
+  
+  // ===== BENCHMARK PAR MÉTIER (AJUSTÉ) =====
+  let jobBenchmark = null;
+  if (profile.jobFunction && allFunctions[profile.jobFunction]) {
+    const jobData = allFunctions[profile.jobFunction];
+    
+    // Appliquer les MÊMES coefficients que l'utilisateur au métier de référence
+    const expFactor = Math.pow(1.023, profile.experience);
+    const regionCoef = profile.region === 'IDF' ? 1.14 : 1.00;
+    const sizeCoef = {
+      'startup': 0.95, 'PME': 0.96, 'ETI': 1.00, 'grand-groupe': 1.06
+    }[profile.companySize] || 1;
+    
+    // Coefficients de classification
+    let classCoef = 1;
+    if (profile.classification === 'M1') classCoef = 1.12;
+    if (profile.classification === 'M2') classCoef = 1.15;
+    if (profile.classification === 'M3') classCoef = 1.20;
+    if (profile.classification === 'directeur_technique') classCoef = 1.30;
+    
+    // Sous-domaine
+    const subdomainCoefValue = subdomainCoef[profile.subdomain] || 1;
+    
+    // Package
+    const packageCoef = {
+      standard: 1.00, bonus: 1.07, bonusplus: 1.18, actions: 1.30
+    }[profile.packageLevel] || 1;
+    
+    // Appliquer TOUS les coefs au métier
+    const adjustedJobP25 = jobData.p25 * expFactor * regionCoef * sizeCoef * classCoef * subdomainCoefValue * packageCoef;
+    const adjustedJobP50 = jobData.p50 * expFactor * regionCoef * sizeCoef * classCoef * subdomainCoefValue * packageCoef;
+    const adjustedJobP75 = jobData.p75 * expFactor * regionCoef * sizeCoef * classCoef * subdomainCoefValue * packageCoef;
+    
+    // Créer une distribution ajustée
+    const jobP10 = adjustedJobP25 * 0.85;
+    const jobP90 = adjustedJobP75 * 1.15;
+    
+    const jobSalaries = [jobP10, adjustedJobP25, adjustedJobP50, adjustedJobP75, jobP90].sort((a, b) => a - b);
+    
+    const jobPercentile = calculateUserPercentile(jobSalaries, userSalary);
+    const jobDiff = userSalary - adjustedJobP50;
+    const jobDiffPercent = ((jobDiff / adjustedJobP50) * 100).toFixed(1);
+    
+    jobBenchmark = {
+      name: profile.jobFunction,
+      p10: jobP10,
+      p25: adjustedJobP25,
+      p50: adjustedJobP50,
+      p75: adjustedJobP75,
+      p90: jobP90,
+      percentile: jobPercentile,
+      diff: jobDiff,
+      diffPercent: jobDiffPercent
+    };
+  }
+  
+  return {
+    sector: {
+      name: sectorName,
+      context: `${profile.experience} ans exp, ${profile.region === 'IDF' ? 'IDF' : 'Province'}, ${profile.companySize}`,
+      p10: sectorP10,
+      p25: sectorP25,
+      p50: sectorP50,
+      p75: sectorP75,
+      p90: sectorP90,
+      percentile: sectorPercentile,
+      diff: sectorDiff,
+      diffPercent: sectorDiffPercent
+    },
+    job: jobBenchmark
+  };
+}
+
+// Calculer un percentile
+function calculatePercentile(sortedArray, percentile) {
+  if (sortedArray.length === 0) return 0;
+  
+  const index = (percentile / 100) * (sortedArray.length - 1);
+  const lower = Math.floor(index);
+  const upper = Math.ceil(index);
+  const weight = index % 1;
+  
+  if (lower === upper) {
+    return sortedArray[lower];
+  }
+  
+  return sortedArray[lower] * (1 - weight) + sortedArray[upper] * weight;
+}
+
+// Calculer le percentile de l'utilisateur
+function calculateUserPercentile(sortedArray, userValue) {
+  if (sortedArray.length === 0) return 50;
+  
+  let count = 0;
+  for (let i = 0; i < sortedArray.length; i++) {
+    if (sortedArray[i] < userValue) {
+      count++;
+    }
+  }
+  
+  const percentile = Math.round((count / sortedArray.length) * 100);
+  return Math.max(1, Math.min(99, percentile)); // Entre 1 et 99
+}
+
+// Afficher le benchmark
+function displayBenchmark(benchmark, userSalary) {
+  // ===== SECTEUR =====
+  document.getElementById('benchmark-sector-name').textContent = benchmark.sector.name;
+  document.getElementById('benchmark-sector-name').textContent = benchmark.sector.name;
+const contextEl = document.createElement('div');
+contextEl.className = 'text-xs text-gray-600 dark:text-gray-400 mt-1';
+document.getElementById('benchmark-sector-name').parentElement.appendChild(contextEl);
+  document.getElementById('benchmark-sector-you').textContent = Math.round(userSalary).toLocaleString() + ' €';
+  document.getElementById('benchmark-sector-median').textContent = Math.round(benchmark.sector.p50).toLocaleString() + ' €';
+  
+  // Différence
+  const sectorDiffEl = document.getElementById('benchmark-sector-diff');
+  const sectorDiffText = (benchmark.sector.diff > 0 ? '+' : '') + Math.round(benchmark.sector.diff).toLocaleString() + ' €';
+  sectorDiffEl.textContent = sectorDiffText;
+  sectorDiffEl.className = 'text-2xl font-bold ' + (benchmark.sector.diff > 0 ? 'text-green-600' : 'text-red-600');
+  
+  // Badge
+  const sectorBadgeEl = document.getElementById('benchmark-sector-badge');
+  if (Math.abs(benchmark.sector.diffPercent) < 5) {
+    sectorBadgeEl.textContent = '✓ Bien positionné';
+    sectorBadgeEl.className = 'px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+  } else if (benchmark.sector.diffPercent >= 5) {
+    sectorBadgeEl.textContent = '↑ Au-dessus du marché';
+    sectorBadgeEl.className = 'px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+  } else {
+    sectorBadgeEl.textContent = '↓ Sous le marché';
+    sectorBadgeEl.className = 'px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
+  }
+  
+  // Percentiles
+  document.getElementById('benchmark-sector-p10').textContent = Math.round(benchmark.sector.p10 / 1000) + 'k';
+  document.getElementById('benchmark-sector-p25').textContent = Math.round(benchmark.sector.p25 / 1000) + 'k';
+  document.getElementById('benchmark-sector-p50').textContent = Math.round(benchmark.sector.p50 / 1000) + 'k';
+  document.getElementById('benchmark-sector-p75').textContent = Math.round(benchmark.sector.p75 / 1000) + 'k';
+  document.getElementById('benchmark-sector-p90').textContent = Math.round(benchmark.sector.p90 / 1000) + 'k';
+  
+  // Position marker
+  const sectorMarkerPosition = ((userSalary - benchmark.sector.p10) / (benchmark.sector.p90 - benchmark.sector.p10)) * 100;
+  document.getElementById('benchmark-sector-marker').style.left = Math.max(0, Math.min(100, sectorMarkerPosition)) + '%';
+  
+  // Percentile
+  document.getElementById('benchmark-sector-percentile').textContent = benchmark.sector.percentile + 'e';
+  
+  let percentileText = '';
+  if (benchmark.sector.percentile >= 90) {
+    percentileText = 'Top 10% du secteur ! Excellent positionnement.';
+  } else if (benchmark.sector.percentile >= 75) {
+    percentileText = 'Top 25% du secteur. Très bien positionné.';
+  } else if (benchmark.sector.percentile >= 50) {
+    percentileText = 'Au-dessus de la médiane. Bon positionnement.';
+  } else if (benchmark.sector.percentile >= 25) {
+    percentileText = 'En dessous de la médiane. Marge de progression.';
+  } else {
+    percentileText = 'Bas de fourchette. Forte marge de négociation.';
+  }
+  document.getElementById('benchmark-sector-percentile-text').textContent = percentileText;
+  
+  // ===== MÉTIER =====
+  if (benchmark.job) {
+    document.getElementById('benchmark-job-section').classList.remove('hidden');
+    
+    document.getElementById('benchmark-job-name').textContent = benchmark.job.name;
+    document.getElementById('benchmark-job-you').textContent = Math.round(userSalary).toLocaleString() + ' €';
+    document.getElementById('benchmark-job-median').textContent = Math.round(benchmark.job.p50).toLocaleString() + ' €';
+    
+    // Différence
+    const jobDiffEl = document.getElementById('benchmark-job-diff');
+    const jobDiffText = (benchmark.job.diff > 0 ? '+' : '') + Math.round(benchmark.job.diff).toLocaleString() + ' €';
+    jobDiffEl.textContent = jobDiffText;
+    jobDiffEl.className = 'text-2xl font-bold ' + (benchmark.job.diff > 0 ? 'text-green-600' : 'text-red-600');
+    
+    // Badge
+    const jobBadgeEl = document.getElementById('benchmark-job-badge');
+    if (Math.abs(benchmark.job.diffPercent) < 5) {
+      jobBadgeEl.textContent = '✓ Cohérent';
+      jobBadgeEl.className = 'px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+    } else if (benchmark.job.diffPercent >= 5) {
+      jobBadgeEl.textContent = '↑ Au-dessus';
+      jobBadgeEl.className = 'px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+    } else {
+      jobBadgeEl.textContent = '↓ En-dessous';
+      jobBadgeEl.className = 'px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
+    }
+    
+    // Percentiles
+    document.getElementById('benchmark-job-p10').textContent = Math.round(benchmark.job.p10 / 1000) + 'k';
+    document.getElementById('benchmark-job-p25').textContent = Math.round(benchmark.job.p25 / 1000) + 'k';
+    document.getElementById('benchmark-job-p50').textContent = Math.round(benchmark.job.p50 / 1000) + 'k';
+    document.getElementById('benchmark-job-p75').textContent = Math.round(benchmark.job.p75 / 1000) + 'k';
+    document.getElementById('benchmark-job-p90').textContent = Math.round(benchmark.job.p90 / 1000) + 'k';
+    
+    // Position marker
+    const jobMarkerPosition = ((userSalary - benchmark.job.p10) / (benchmark.job.p90 - benchmark.job.p10)) * 100;
+    document.getElementById('benchmark-job-marker').style.left = Math.max(0, Math.min(100, jobMarkerPosition)) + '%';
+    
+    // Percentile
+    document.getElementById('benchmark-job-percentile').textContent = benchmark.job.percentile + 'e';
+    
+    let jobPercentileText = '';
+    if (benchmark.job.percentile >= 90) {
+      jobPercentileText = 'Top 10% pour ce métier ! Excellent.';
+    } else if (benchmark.job.percentile >= 75) {
+      jobPercentileText = 'Top 25% pour ce métier. Très bien.';
+    } else if (benchmark.job.percentile >= 50) {
+      jobPercentileText = 'Au-dessus de la médiane métier.';
+    } else if (benchmark.job.percentile >= 25) {
+      jobPercentileText = 'En dessous de la médiane métier.';
+    } else {
+      jobPercentileText = 'Bas de fourchette pour ce métier.';
+    }
+    document.getElementById('benchmark-job-percentile-text').textContent = jobPercentileText;
+  } else {
+    document.getElementById('benchmark-job-section').classList.add('hidden');
+  }
+  
+  // ===== SYNTHÈSE =====
+  let synthesis = '';
+  
+  if (benchmark.sector.percentile >= 75 && (!benchmark.job || benchmark.job.percentile >= 75)) {
+    synthesis = '🎉 <strong>Excellent positionnement !</strong> Vous êtes dans le top 25% de votre secteur';
+    if (benchmark.job) synthesis += ' et de votre métier';
+    synthesis += '. Votre salaire reflète bien votre profil et votre valeur sur le marché. Continuez à cultiver votre expertise pour maintenir cet avantage compétitif.';
+  } else if (benchmark.sector.percentile >= 50 && (!benchmark.job || benchmark.job.percentile >= 50)) {
+    synthesis = '✅ <strong>Bon positionnement.</strong> Vous êtes au-dessus de la médiane de votre secteur';
+    if (benchmark.job) synthesis += ' et de votre métier';
+    synthesis += '. Votre salaire est cohérent avec le marché. Pour progresser, envisagez d\'obtenir des certifications valorisées ou d\'évoluer vers un poste à responsabilités.';
+  } else if (benchmark.sector.percentile < 50 && benchmark.sector.diffPercent < -10) {
+    synthesis = '⚠️ <strong>Marge de progression significative.</strong> Votre salaire est ';
+    synthesis += Math.abs(Math.round(benchmark.sector.diffPercent)) + '% en dessous de la médiane de votre secteur';
+    if (benchmark.job) synthesis += ' et ' + Math.abs(Math.round(benchmark.job.diffPercent)) + '% en dessous de votre métier';
+    synthesis += '. Vous avez une forte marge de négociation. Préparez des arguments chiffrés (école, expérience, certifications) pour justifier une augmentation lors de votre prochain entretien annuel.';
+  } else {
+    synthesis = '📊 <strong>Positionnement standard.</strong> Votre salaire est ';
+    if (benchmark.sector.diff > 0) {
+      synthesis += 'légèrement au-dessus (+' + Math.abs(Math.round(benchmark.sector.diffPercent)) + '%)';
+    } else {
+      synthesis += 'légèrement en dessous (' + Math.round(benchmark.sector.diffPercent) + '%)';
+    }
+    synthesis += ' de la médiane de votre secteur. Vous êtes dans la fourchette attendue pour votre profil. ';
+    synthesis += 'Pour progresser plus rapidement, investissez dans des compétences rares ou visez un poste managérial.';
+  }
+  
+  document.getElementById('benchmark-synthesis').innerHTML = synthesis;
+}
+
 // ===== CALCUL SIMULATEUR =====
     let chart;
     function calculateSimulator() {
@@ -6236,6 +6660,10 @@ const factorsHTML = rarity.factors.map(f => {
       document.getElementById('median').textContent = Math.round(result.median).toLocaleString() + ' €';
       document.getElementById('low').textContent = Math.round(result.low).toLocaleString() + ' €';
       document.getElementById('high').textContent = Math.round(result.high).toLocaleString() + ' €';
+      
+      // ===== NOUVEAU : BENCHMARK =====
+  const benchmark = calculateBenchmark(profile, result.median);
+  displayBenchmark(benchmark, result.median);
       
       document.getElementById('result').classList.remove('hidden');
 
