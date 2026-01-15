@@ -844,55 +844,44 @@ button#tab-expat.tab-inactive:hover {
 <!-- Navigation Tabs -->
 <div class="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
   <!-- Tabs principales (3 en haut) -->
-  <div class="flex gap-2 sm:gap-4 mb-3">
-    <button 
-      id="tab-simulator" 
-      onclick="switchTab('simulator')" 
-      class="tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
-      <span class="hidden sm:inline">📊 </span>Simulateur
-    </button>
-    <button 
-      id="tab-comparator" 
-      onclick="switchTab('comparator')" 
-      class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
-      <span class="hidden sm:inline">👥 </span>Comparateur
-    </button>
-    <button 
-      id="tab-brutnet" 
-      onclick="switchTab('brutnet')" 
-      class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base opacity-50 cursor-not-allowed"
-      title="Prochainement">
-      <span class="hidden sm:inline">💰 </span>
-      <span id="brutnet-text">
-        <span class="sm:hidden">Brut/Net</span>
-        <span class="hidden sm:inline">Brut → Net</span>
-      </span>
-    </button>
-  </div>
-  
-  <!-- Tabs secondaires (2 en bas) -->
-  <div class="flex gap-2 sm:gap-4">
-    <button 
-      id="tab-expat" 
-      onclick="switchTab('expat')" 
-      class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base opacity-50 cursor-not-allowed"
-      title="Prochainement">
-      <span class="hidden sm:inline">🌍 </span>
-      <span id="expat-text">
-        <span class="sm:hidden">Expat</span>
-        <span class="hidden sm:inline">Expatriation</span>
-      </span>
-    </button>
-    <button 
-      id="tab-juridique" 
-      onclick="switchTab('juridique')" 
-      class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base opacity-50 cursor-not-allowed"
-      title="Prochainement">
-      <span class="hidden sm:inline">⚖️ </span>
-      <span id="juridique-text">
-        <span class="sm:hidden">Juri</span>
-        <span class="hidden sm:inline">Juridique & Fiscal</span>
-      </span>
+<div class="flex gap-2 sm:gap-4 mb-3">
+  <button 
+    id="tab-simulator" 
+    onclick="switchTab('simulator')" 
+    class="tab-active flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+    <span class="hidden sm:inline">📊 </span>Simulateur
+  </button>
+  <button 
+    id="tab-comparator" 
+    onclick="switchTab('comparator')" 
+    class="tab-inactive flex-1 sm:flex-none px-2 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-base">
+    <span class="hidden sm:inline">👥 </span>Comparateur
+  </button>
+  <button 
+    id="tab-brutnet" 
+    onclick="switchTab('brutnet')" 
+    class="tab-inactive flex-1 sm:flex-none px-2 sm:px-4 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-[10px] sm:text-base opacity-50 cursor-not-allowed"
+    title="Prochainement">
+    <span class="hidden sm:inline">💰 </span>Brut/Net
+  </button>
+</div>
+
+<!-- Tabs secondaires (2 en bas) -->
+<div class="flex gap-2 sm:gap-4">
+  <button 
+    id="tab-expat" 
+    onclick="switchTab('expat')" 
+    class="tab-inactive flex-1 sm:flex-none px-2 sm:px-4 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-[10px] sm:text-base opacity-50 cursor-not-allowed"
+    title="Prochainement">
+    <span class="hidden sm:inline">🌍 </span>Expatriation
+  </button>
+  <button 
+    id="tab-juridique" 
+    onclick="switchTab('juridique')" 
+    class="tab-inactive flex-1 sm:flex-none px-1.5 sm:px-4 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 text-[9px] sm:text-base opacity-50 cursor-not-allowed"
+    title="Prochainement">
+    <span class="hidden sm:inline">⚖️ </span>Juridique & Fiscal
+  </button>
     </button>
   </div>
 </div>
