@@ -842,7 +842,7 @@ button#tab-expat.tab-inactive:hover {
   </header>
 
 <!-- Navigation Tabs -->
-<div class="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-8 mt-8">
   <!-- Tabs principales (3 en haut) -->
 <div class="flex gap-2 sm:gap-4 mb-3">
   <button 
@@ -1698,57 +1698,58 @@ button#tab-expat.tab-inactive:hover {
     </div>
   </div>
   
-  <!-- Synthèse globale -->
-  <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-5 text-white">
-    <h4 class="text-lg font-bold mb-3 flex items-center gap-2">
-      💡 Synthèse de votre positionnement
-    </h4>
-    <p id="benchmark-synthesis" class="text-sm leading-relaxed">
-      Analyse en cours...
-    </p>
+</div>
+  
+<!-- Synthèse d'analyse détaillée -->
+<div id="detailedAnalysis" class="mb-6 space-y-4">
+  
+<!-- Positionnement marché -->
+<div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border-l-4 border-blue-500">
+  <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Marché</h3>
+  
+  <div class="space-y-3 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+    <p id="analysis-market">—</p>
+    <p id="benchmark-synthesis">—</p>
   </div>
 </div>
-      
-      <!-- Synthèse d'analyse détaillée -->
-      <div id="detailedAnalysis" class="mb-6 space-y-4">
-        
-        <!-- Positionnement marché -->
-        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border-l-4 border-blue-500">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">📊 Marché</h3>
-          <p id="analysis-market" class="text-sm text-gray-700 dark:text-gray-300">—</p>
-        </div>
+    <!-- Séparateur visuel -->
+    <div class="border-t border-indigo-200 dark:border-indigo-800"></div>
+    
+  
 
-        <!-- Facteurs valorisants -->
-        <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border-l-4 border-green-500">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">✅ Facteurs valorisants</h3>
-          <ul id="analysis-positive" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
-            <li>En cours d'analyse...</li>
-          </ul>
-        </div>
+  <!-- Facteurs valorisants -->
+  <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border-l-4 border-green-500">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">✅ Facteurs valorisants</h3>
+    <ul id="analysis-positive" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
+      <li>En cours d'analyse...</li>
+    </ul>
+  </div>
 
-        <!-- Points d'attention -->
-        <div class="p-4 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl border-l-4 border-orange-500">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">⚠️ Points d'attention</h3>
-          <ul id="analysis-attention" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
-            <li>En cours d'analyse...</li>
-          </ul>
-        </div>
+  <!-- Points d'attention -->
+  <div class="p-4 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl border-l-4 border-orange-500">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">⚠️ Points d'attention</h3>
+    <ul id="analysis-attention" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
+      <li>En cours d'analyse...</li>
+    </ul>
+  </div>
 
-        <!-- Projection carrière -->
-        <div class="p-4 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border-l-4 border-purple-500">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">🚀 Projection de carrière</h3>
-          <div id="analysis-projection" class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-            <p>—</p>
-          </div>
-        </div>
+  <!-- Projection carrière -->
+  <div class="p-4 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border-l-4 border-purple-500">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">🚀 Projection de carrière</h3>
+    <div id="analysis-projection" class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+      <p>—</p>
+    </div>
+  </div>
 
-        <!-- Recommandations -->
-        <div class="p-4 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-xl border-l-4 border-yellow-500">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">💡 Recommandations</h3>
-          <ul id="analysis-recommendations" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
-            <li>En cours d'analyse...</li>
-          </ul>
-        </div>
+  <!-- Recommandations -->
+  <div class="p-4 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-xl border-l-4 border-yellow-500">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">💡 Recommandations</h3>
+    <ul id="analysis-recommendations" class="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
+      <li>En cours d'analyse...</li>
+    </ul>
+  </div>
+  
+</div>
         
         <!-- ========== SCORE DE RARETÉ ========== -->
 <div id="rarity-score" class="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg p-6 hidden">
@@ -1838,7 +1839,7 @@ button#tab-expat.tab-inactive:hover {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
       
       <!-- ========== PROFIL A ========== -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mt-8">
         <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-4 sm:p-6 text-white">
           <h2 class="text-xl sm:text-2xl font-bold mb-2">Profil A</h2>
           <p class="text-2xl sm:text-4xl font-bold" id="resultA-median">—</p>
@@ -6603,27 +6604,27 @@ document.getElementById('benchmark-sector-name').parentElement.appendChild(conte
   let synthesis = '';
   
   if (benchmark.sector.percentile >= 75 && (!benchmark.job || benchmark.job.percentile >= 75)) {
-    synthesis = '🎉 <strong>Excellent positionnement !</strong> Vous êtes dans le top 25% de votre secteur';
-    if (benchmark.job) synthesis += ' et de votre métier';
-    synthesis += '. Votre salaire reflète bien votre profil et votre valeur sur le marché. Continuez à cultiver votre expertise pour maintenir cet avantage compétitif.';
+    synthesis = '🎉 <strong>Excellent positionnement !</strong>Tu es dans le top 25% de ton secteur';
+    if (benchmark.job) synthesis += ' et de ton métier';
+    synthesis += '. Ton salaire reflète bien ton profil et ta valeur sur le marché. Continue à cultiver  expertise pour maintenir cet avantage compétitif.';
   } else if (benchmark.sector.percentile >= 50 && (!benchmark.job || benchmark.job.percentile >= 50)) {
-    synthesis = '✅ <strong>Bon positionnement.</strong> Vous êtes au-dessus de la médiane de votre secteur';
-    if (benchmark.job) synthesis += ' et de votre métier';
-    synthesis += '. Votre salaire est cohérent avec le marché. Pour progresser, envisagez d\'obtenir des certifications valorisées ou d\'évoluer vers un poste à responsabilités.';
+    synthesis = '✅ <strong>Bon positionnement.</strong> Tu es au dessus de la médiane de ton secteur';
+    if (benchmark.job) synthesis += ' et de ton métier';
+    synthesis += '. Ton salaire est cohérent avec le marché. Pour progresser, envisage d\'obtenir des certifications valorisées ou d\'évoluer vers un poste à responsabilités.';
   } else if (benchmark.sector.percentile < 50 && benchmark.sector.diffPercent < -10) {
-    synthesis = '⚠️ <strong>Marge de progression significative.</strong> Votre salaire est ';
-    synthesis += Math.abs(Math.round(benchmark.sector.diffPercent)) + '% en dessous de la médiane de votre secteur';
+    synthesis = '⚠️ <strong>Marge de progression significative.</strong> Ton salaire est ';
+    synthesis += Math.abs(Math.round(benchmark.sector.diffPercent)) + '% en dessous de la médiane de ton secteur';
     if (benchmark.job) synthesis += ' et ' + Math.abs(Math.round(benchmark.job.diffPercent)) + '% en dessous de votre métier';
-    synthesis += '. Vous avez une forte marge de négociation. Préparez des arguments chiffrés (école, expérience, certifications) pour justifier une augmentation lors de votre prochain entretien annuel.';
+    synthesis += '. Tu as une forte marge de négociation. Prépare des arguments chiffrés (école, expérience, certifications) pour justifier une augmentation lors de ton prochain entretien annuel.';
   } else {
-    synthesis = '📊 <strong>Positionnement standard.</strong> Votre salaire est ';
+    synthesis = '📊 <strong>Positionnement standard.</strong> Ton salaire est ';
     if (benchmark.sector.diff > 0) {
       synthesis += 'légèrement au-dessus (+' + Math.abs(Math.round(benchmark.sector.diffPercent)) + '%)';
     } else {
       synthesis += 'légèrement en dessous (' + Math.round(benchmark.sector.diffPercent) + '%)';
     }
-    synthesis += ' de la médiane de votre secteur. Vous êtes dans la fourchette attendue pour votre profil. ';
-    synthesis += 'Pour progresser plus rapidement, investissez dans des compétences rares ou visez un poste managérial.';
+    synthesis += ' de la médiane de ton secteur. Tu es dans la fourchette attendue pour ton profil. ';
+    synthesis += 'Pour progresser plus rapidement, investis dans des compétences rares ou visez un poste managérial.';
   }
   
   document.getElementById('benchmark-synthesis').innerHTML = synthesis;
